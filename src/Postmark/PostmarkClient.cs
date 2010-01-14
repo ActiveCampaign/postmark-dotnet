@@ -159,8 +159,8 @@ namespace PostmarkDotNet
 
         private static void CleanPostmarkMessage(PostmarkMessage message)
         {
-            message.From = message.From.ToLowerInvariant().Trim();
-            message.To = message.To.ToLowerInvariant().Trim();
+            message.From = message.From.Trim();
+            message.To = message.To.Trim();
             message.Subject = message.Subject.Trim();
         }
 

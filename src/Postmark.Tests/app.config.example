@@ -2,7 +2,7 @@
 <configuration>
   <appSettings>
     <clear/>
-    <!-- Set this your email server's API token (Guid) -->
+    <!-- Set this to your email server's API token (Guid) -->
     <add key="ServerToken" value=""/>
     
     <!-- Set this to a valid sender signature (email address) -->

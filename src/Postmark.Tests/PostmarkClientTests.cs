@@ -135,6 +135,30 @@ namespace Postmark.Tests
             Console.WriteLine("Postmark -> " + response.Message);
         }
 
+
+        [Test]
+        [Ignore("This test sends a real email.")]
+        public void Can_send_message_with_token_and_signature_and_name_based_email()
+        {
+            var postmark = new PostmarkClient(_serverToken);
+
+            var email = new PostmarkMessage
+            {
+                To = _to,
+                From = "The Team <" + _from + ">", // This must be a verified sender signature
+                Subject = _subject,
+                TextBody = _textBody
+            };
+
+            var response = postmark.SendMessage(email);
+
+            Assert.IsNotNull(response);
+            Assert.IsNotNullOrEmpty(response.Message);
+            Assert.IsTrue(response.Status == PostmarkStatus.Success);
+
+            Console.WriteLine("Postmark -> " + response.Message);
+        }
+
         [Test]
         [Ignore("This test sends a real email.")]
         public void Can_send_message_with_token_and_signature_and_headers()

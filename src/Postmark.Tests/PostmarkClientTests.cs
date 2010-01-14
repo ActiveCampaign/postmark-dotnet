@@ -53,6 +53,7 @@
 #endregion
 
 using System;
+using System.Collections.Specialized;
 using System.Configuration;
 using NUnit.Framework;
 using PostmarkDotNet;
@@ -135,7 +136,6 @@ namespace Postmark.Tests
             Console.WriteLine("Postmark -> " + response.Message);
         }
 
-
         [Test]
         [Ignore("This test sends a real email.")]
         public void Can_send_message_with_token_and_signature_and_name_based_email()
@@ -145,7 +145,7 @@ namespace Postmark.Tests
             var email = new PostmarkMessage
             {
                 To = _to,
-                From = "The Team <" + _from + ">", // This must be a verified sender signature
+                From = string.Format("The Team <{0}>", _from), // This must be a verified sender signature
                 Subject = _subject,
                 TextBody = _textBody
             };

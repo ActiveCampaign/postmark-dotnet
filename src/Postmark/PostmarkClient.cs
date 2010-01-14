@@ -101,14 +101,14 @@ namespace PostmarkDotNet
         /// sender signature, log in to Postmark and navigate to:
         /// http://postmarkapp.com/signatures.
         /// </summary>
-        /// <param name="to">An email address for a recipient.</param>
         /// <param name="from">An email address for a sender.</param>
+        /// <param name="to">An email address for a recipient.</param>
         /// <param name="subject">The message subject line.</param>
         /// <param name="body">The message body.</param>
         /// <returns>A <see cref="PostmarkResponse"/> with details about the transaction.</returns>
-        public PostmarkResponse SendMessage(string to, string from, string subject, string body)
+        public PostmarkResponse SendMessage(string from, string to, string subject, string body)
         {
-            return SendMessage(to, from, subject, body, null);
+            return SendMessage(from, to, subject, body, null);
         }
 
         /// <summary>

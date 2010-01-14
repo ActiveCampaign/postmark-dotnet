@@ -76,7 +76,6 @@
   </Target>
   -->
   <PropertyGroup>
-    <PostBuildEvent>
-    </PostBuildEvent>
+    <PostBuildEvent>"$(SolutionDir)..\lib\ILMerge.exe" /t:library /out:"$(TargetDir)Postmark.dll" "$(TargetDir)Newtonsoft.Json.dll" "$(TargetDir)RestSharp.dll" "$(TargetDir)$(TargetName).dll"</PostBuildEvent>
   </PropertyGroup>
 </Project>

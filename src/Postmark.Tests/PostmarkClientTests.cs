@@ -53,7 +53,6 @@
 #endregion
 
 using System;
-using System.Collections.Specialized;
 using System.Configuration;
 using NUnit.Framework;
 using PostmarkDotNet;

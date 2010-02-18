@@ -55,6 +55,7 @@
 using System.Collections.Specialized;
 using System.Net.Mail;
 using Newtonsoft.Json;
+using PostmarkDotNet.Converters;
 using PostmarkDotNet.Validation;
 using RestSharp;
 
@@ -74,6 +75,13 @@ namespace PostmarkDotNet
     public class PostmarkClient
     {
         private readonly RestClient _client;
+        private static readonly JsonSerializerSettings _settings;
+
+        static PostmarkClient()
+        {
+            _settings = new JsonSerializerSettings();
+            _settings.Converters.Add(new UnicodeJsonStringConverter());
+        }
 
         /// <summary>
         /// Initializes a new instance of the <see cref="PostmarkClient"/> class.
@@ -84,7 +92,6 @@ namespace PostmarkDotNet
         public PostmarkClient(string serverToken)
         {
             ServerToken = serverToken;
-
             _client = new RestClient();
         }
 
@@ -145,7 +152,7 @@ namespace PostmarkDotNet
             var request = NewRequest();
 
             request.AddParameter("Accept", "application/json", ParameterType.HttpHeader);
-            request.AddParameter("Content-Type", "application/json", ParameterType.HttpHeader);
+            request.AddParameter("Content-Type", "application/json; charset=utf-8", ParameterType.HttpHeader);
             request.AddParameter("X-Postmark-Server-Token", ServerToken, ParameterType.HttpHeader);
             request.AddParameter("User-Agent", "Postmark.NET", ParameterType.HttpHeader);
 
@@ -161,7 +168,7 @@ namespace PostmarkDotNet
         {
             message.From = message.From.Trim();
             message.To = message.To.Trim();
-            message.Subject = message.Subject.Trim();
+            message.Subject = message.Subject != null ? message.Subject.Trim() : "";
         }
 
         private static void ValidatePostmarkMessage(PostmarkMessage message)
@@ -185,6 +192,7 @@ namespace PostmarkDotNet
         {
             var response = _client.Execute(request);
 
+            
             PostmarkResponse result;
             switch ((int) response.StatusCode)
             {
@@ -197,7 +205,7 @@ namespace PostmarkDotNet
                     break;
                 case 401:
                 case 422:
-                    result = JsonConvert.DeserializeObject<PostmarkResponse>(response.Content);
+                    result = JsonConvert.DeserializeObject<PostmarkResponse>(response.Content, _settings);
                     result.Status = PostmarkStatus.UserError;
                     break;
                 case 500:

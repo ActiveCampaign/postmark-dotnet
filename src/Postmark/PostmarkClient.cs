@@ -59,7 +59,6 @@ using PostmarkDotNet.Converters;
 using PostmarkDotNet.Serializers;
 using PostmarkDotNet.Validation;
 using RestSharp;
-using JsonSerializer = RestSharp.Serializers.JsonSerializer;
 
 /*
 del /q "$(TargetDir)$(TargetName).dll"

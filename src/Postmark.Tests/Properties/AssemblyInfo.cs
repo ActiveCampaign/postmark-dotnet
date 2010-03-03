@@ -62,9 +62,9 @@ using System.Runtime.InteropServices;
 [assembly: AssemblyTitle("Postmark.Tests")]
 [assembly: AssemblyDescription("")]
 [assembly: AssemblyConfiguration("")]
-[assembly: AssemblyCompany("Microsoft")]
+[assembly: AssemblyCompany("Lunarbits")]
 [assembly: AssemblyProduct("Postmark.Tests")]
-[assembly: AssemblyCopyright("Copyright © Microsoft 2010")]
+[assembly: AssemblyCopyright("Copyright © Lunarbits 2010")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 

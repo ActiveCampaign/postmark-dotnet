@@ -13,7 +13,7 @@ namespace PostmarkDotNet.Converters
 
     internal class NameValueCollectionConverter : JsonConverter
     {
-        public override void WriteJson(JsonWriter writer, object value, Newtonsoft.Json.JsonSerializer serializer)
+        public override void WriteJson(JsonWriter writer, object value, JsonSerializer serializer)
         {
             if (!(value is NameValueCollection))
             {
@@ -32,7 +32,7 @@ namespace PostmarkDotNet.Converters
             writer.WriteRawValue(serialized);
         }
 
-        public override object ReadJson(JsonReader reader, Type objectType, Newtonsoft.Json.JsonSerializer serializer)
+        public override object ReadJson(JsonReader reader, Type objectType, JsonSerializer serializer)
         {
             return reader.Value;
         }

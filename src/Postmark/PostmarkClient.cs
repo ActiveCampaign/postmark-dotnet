@@ -56,8 +56,10 @@ using System.Collections.Specialized;
 using System.Net.Mail;
 using Newtonsoft.Json;
 using PostmarkDotNet.Converters;
+using PostmarkDotNet.Serializers;
 using PostmarkDotNet.Validation;
 using RestSharp;
+using JsonSerializer = RestSharp.Serializers.JsonSerializer;
 
 /*
 del /q "$(TargetDir)$(TargetName).dll"
@@ -76,11 +78,20 @@ namespace PostmarkDotNet
     {
         private readonly RestClient _client;
         private static readonly JsonSerializerSettings _settings;
+        private static readonly PostmarkSerializer _serializer;
 
         static PostmarkClient()
         {
-            _settings = new JsonSerializerSettings();
+            _settings = new JsonSerializerSettings
+                            {
+                                MissingMemberHandling = MissingMemberHandling.Ignore,
+                                NullValueHandling = NullValueHandling.Include,
+                                DefaultValueHandling = DefaultValueHandling.Include
+                            };
+
             _settings.Converters.Add(new UnicodeJsonStringConverter());
+            _settings.Converters.Add(new NameValueCollectionConverter());
+            _serializer = new PostmarkSerializer(_settings);
         }
 
         /// <summary>
@@ -92,7 +103,10 @@ namespace PostmarkDotNet
         public PostmarkClient(string serverToken)
         {
             ServerToken = serverToken;
-            _client = new RestClient();
+            _client = new RestClient
+                          {
+                              BaseUrl = "http://api.postmarkapp.com/email"
+                          };
         }
 
         /// <summary>
@@ -159,7 +173,7 @@ namespace PostmarkDotNet
             ValidatePostmarkMessage(message);
             CleanPostmarkMessage(message);
 
-            request.AddBody(message, RequestFormat.Json);
+            request.AddBody(message);
 
             return GetResponse(request);
         }
@@ -192,7 +206,6 @@ namespace PostmarkDotNet
         {
             var response = _client.Execute(request);
 
-            
             PostmarkResponse result;
             switch ((int) response.StatusCode)
             {
@@ -232,8 +245,9 @@ namespace PostmarkDotNet
             var request = new RestRequest
                               {
                                   Verb = Method.POST,
-                                  BaseUrl = "http://api.postmarkapp.com/email",
-                                  ResponseFormat = ResponseFormat.Json
+                                  ResponseFormat = ResponseFormat.Json,
+                                  RequestFormat = RequestFormat.Json,
+                                  JsonSerializer = _serializer
                               };
 
             return request;

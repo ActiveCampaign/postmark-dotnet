@@ -40,7 +40,7 @@
     </Reference>
     <Reference Include="RestSharp, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\lib\RestSharp.dll</HintPath>
+      <HintPath>..\..\..\restsharp\RestSharp\bin\Release\RestSharp.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core">
@@ -51,7 +51,9 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Converters\NameValueCollectionConverter.cs" />
     <Compile Include="Converters\UnicodeJsonStringConverter.cs" />
+    <Compile Include="Serializers\PostmarkSerializer.cs" />
     <Compile Include="Specifications\AndSpecification.cs" />
     <Compile Include="Specifications\CompositeSpecificationBase.cs" />
     <Compile Include="Specifications\ISpecification.cs" />

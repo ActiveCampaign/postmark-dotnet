@@ -25,7 +25,7 @@ namespace Postmark.Tests.Converters
         [Test]
         public void Danish_chars_represented_by_unicode_code_escapes()
         {
-            string stringValue = SerializeString("æ ø å Æ Ø Å");
+            var stringValue = SerializeString("æ ø å Æ Ø Å");
             AssertJsonString("\\u00e6 \\u00f8 \\u00e5 \\u00c6 \\u00d8 \\u00c5", stringValue);
         }
 

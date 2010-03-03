@@ -245,7 +245,6 @@ namespace PostmarkDotNet
             var request = new RestRequest
                               {
                                   Verb = Method.POST,
-                                  ResponseFormat = ResponseFormat.Json,
                                   RequestFormat = RequestFormat.Json,
                                   JsonSerializer = _serializer
                               };

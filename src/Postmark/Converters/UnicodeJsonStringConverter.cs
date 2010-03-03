@@ -14,17 +14,24 @@ namespace PostmarkDotNet.Converters
             foreach (var c in stringValue)
             {
                 var code = (int)c;
-                if (c == '\"')
+                switch (c)
                 {
-                    buffer.Append("\\\"");
-                }
-                else if (code > 255)
-                {
-                    buffer.AppendFormat("\\u{0:x4}", code);
-                }
-                else
-                {
-                    buffer.Append(c);
+                    case '\"':
+                        buffer.Append("\\\"");
+                        break;
+                    case '\\':
+                        buffer.Append("\\\\");
+                        break;
+                    default:
+                        if (code > 127)
+                        {
+                            buffer.AppendFormat("\\u{0:x4}", code);
+                        }
+                        else
+                        {
+                            buffer.Append(c);
+                        }
+                        break;
                 }
             }
             buffer.Append("\"");

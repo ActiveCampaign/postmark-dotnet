@@ -62,11 +62,11 @@ namespace PostmarkDotNet
         /// <summary>
         /// The response is unknown to this version of the Postmark.NET API.
         /// </summary>
-        Unknown = 0,
+        Unknown = -1,
         /// <summary>
         /// The request was successful.
         /// </summary>
-        Success,
+        Success = 0,
         /// <summary>
         /// The request was unsuccessful because of a user error.
         /// </summary>

@@ -52,6 +52,8 @@
 
 #endregion
 
+using System;
+
 namespace PostmarkDotNet
 {
     /// <summary>
@@ -69,5 +71,21 @@ namespace PostmarkDotNet
         /// In the event of an error, this message may contain helpful text.
         /// </summary>
         public string Message { get; set; }
+
+        /// <summary>
+        /// The time the request was received by Postmark.
+        /// </summary>
+        public DateTime SubmittedAt { get; set; }
+
+        /// <summary>
+        /// The recipient of the submitted request.
+        /// </summary>
+        public string To { get; set; }
+
+        /// <summary>
+        /// The error code returned from Postmark.
+        /// This does not map to HTTP status codes.
+        /// </summary>
+        public int ErrorCode { get; set; }
     }
 }

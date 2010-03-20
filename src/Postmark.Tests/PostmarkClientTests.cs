@@ -180,6 +180,7 @@ namespace Postmark.Tests
             Assert.IsNotNull(response);
             Assert.IsNotNullOrEmpty(response.Message);
             Assert.IsTrue(response.Status == PostmarkStatus.Success);
+            Assert.AreNotEqual(default(DateTime), response.SubmittedAt, "Missing submitted time value.");
 
             Console.WriteLine("Postmark -> " + response.Message);
         }

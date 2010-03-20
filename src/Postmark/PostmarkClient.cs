@@ -210,11 +210,8 @@ namespace PostmarkDotNet
             switch ((int) response.StatusCode)
             {
                 case 200:
-                    result = new PostmarkResponse
-                                 {
-                                     Status = PostmarkStatus.Success,
-                                     Message = response.StatusDescription
-                                 };
+                    result = JsonConvert.DeserializeObject<PostmarkResponse>(response.Content, _settings);
+                    result.Status = PostmarkStatus.Success;
                     break;
                 case 401:
                 case 422:
@@ -222,11 +219,8 @@ namespace PostmarkDotNet
                     result.Status = PostmarkStatus.UserError;
                     break;
                 case 500:
-                    result = new PostmarkResponse
-                                 {
-                                     Status = PostmarkStatus.ServerError,
-                                     Message = response.StatusDescription
-                                 };
+                    result = JsonConvert.DeserializeObject<PostmarkResponse>(response.Content, _settings);
+                    result.Status = PostmarkStatus.ServerError;
                     break;
                 default:
                     result = new PostmarkResponse

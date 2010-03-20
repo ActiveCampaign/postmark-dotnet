@@ -244,9 +244,9 @@ namespace PostmarkDotNet
         {
             var request = new RestRequest
                               {
+                                  Path = "email",
                                   Method = WebMethod.Post,
-                                  Serializer = _serializer,
-                                  
+                                  Serializer = _serializer
                               };
 
             return request;

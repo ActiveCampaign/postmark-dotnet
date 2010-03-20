@@ -54,11 +54,12 @@
 
 using System.Collections.Specialized;
 using System.Net.Mail;
+using Hammock;
+using Hammock.Web;
 using Newtonsoft.Json;
 using PostmarkDotNet.Converters;
 using PostmarkDotNet.Serializers;
 using PostmarkDotNet.Validation;
-using RestSharp;
 
 /*
 del /q "$(TargetDir)$(TargetName).dll"
@@ -104,7 +105,7 @@ namespace PostmarkDotNet
             ServerToken = serverToken;
             _client = new RestClient
                           {
-                              BaseUrl = "http://api.postmarkapp.com/email"
+                              Authority = "http://api.postmarkapp.com"
                           };
         }
 
@@ -164,15 +165,15 @@ namespace PostmarkDotNet
         {
             var request = NewRequest();
 
-            request.AddParameter("Accept", "application/json", ParameterType.HttpHeader);
-            request.AddParameter("Content-Type", "application/json; charset=utf-8", ParameterType.HttpHeader);
-            request.AddParameter("X-Postmark-Server-Token", ServerToken, ParameterType.HttpHeader);
-            request.AddParameter("User-Agent", "Postmark.NET", ParameterType.HttpHeader);
+            request.AddHeader("Accept", "application/json");
+            request.AddHeader("Content-Type", "application/json; charset=utf-8");
+            request.AddHeader("X-Postmark-Server-Token", ServerToken);
+            request.AddHeader("User-Agent", "Postmark.NET");
 
             ValidatePostmarkMessage(message);
             CleanPostmarkMessage(message);
 
-            request.AddBody(message);
+            request.Entity = message;
 
             return GetResponse(request);
         }
@@ -203,7 +204,7 @@ namespace PostmarkDotNet
 
         private PostmarkResponse GetResponse(RestRequest request)
         {
-            var response = _client.Execute(request);
+            var response = _client.Request(request);
 
             PostmarkResponse result;
             switch ((int) response.StatusCode)
@@ -243,9 +244,9 @@ namespace PostmarkDotNet
         {
             var request = new RestRequest
                               {
-                                  Verb = Method.POST,
-                                  RequestFormat = RequestFormat.Json,
-                                  JsonSerializer = _serializer
+                                  Method = WebMethod.Post,
+                                  Serializer = _serializer,
+                                  
                               };
 
             return request;

@@ -54,6 +54,12 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="..\Postmark\Converters\NameValueCollectionConverter.cs">
+      <Link>Converters\NameValueCollectionConverter.cs</Link>
+    </Compile>
+    <Compile Include="..\Postmark\Converters\UnicodeJsonStringConverter.cs">
+      <Link>Converters\UnicodeJsonStringConverter.cs</Link>
+    </Compile>
     <Compile Include="Converters\UnicodeJsonStringConverterTests.cs" />
     <Compile Include="PostmarkClientTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -61,6 +67,7 @@
   <ItemGroup>
     <None Include="app.config" />
     <None Include="app.config.example" />
+    <None Include="key.snk" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Postmark\Postmark.csproj">

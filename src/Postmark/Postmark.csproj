@@ -14,6 +14,8 @@
     <FileAlignment>512</FileAlignment>
     <TargetFrameworkSubset>
     </TargetFrameworkSubset>
+    <SignAssembly>true</SignAssembly>
+    <AssemblyOriginatorKeyFile>key.snk</AssemblyOriginatorKeyFile>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -70,6 +72,7 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="app.config" />
+    <None Include="key.snk" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
@@ -80,6 +83,6 @@
   </Target>
   -->
   <PropertyGroup>
-    <PostBuildEvent>"$(SolutionDir)..\lib\ILMerge.exe" /t:library /out:"$(TargetDir)Postmark.dll" "$(TargetDir)Newtonsoft.Json.dll" "$(TargetDir)Hammock.dll" "$(TargetDir)$(TargetName).dll" /Internalize</PostBuildEvent>
+    <PostBuildEvent>"$(SolutionDir)..\lib\ILMerge.exe" /t:library /out:"$(TargetDir)Postmark.dll" "$(TargetDir)$(TargetName).dll" "$(TargetDir)Newtonsoft.Json.dll" "$(TargetDir)Hammock.dll"  /ndebug  /internalize</PostBuildEvent>
   </PropertyGroup>
 </Project>

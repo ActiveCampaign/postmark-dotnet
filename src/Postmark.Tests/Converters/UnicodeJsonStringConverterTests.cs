@@ -43,6 +43,13 @@ namespace Postmark.Tests.Converters
             AssertJsonString("Find it at C:\\\\Test.", stringValue);
         }
 
+        [Test]
+        public void CR_LF_in_string_are_escaped()
+        {
+            var stringValue = SerializeString("blah\r\nblah");
+            AssertJsonString("blah\\r\\nblah", stringValue);
+        }
+
         private static void AssertJsonString(string expected, string actual)
         {
             var expectedStringValue = string.Format("\"{0}\"", expected);

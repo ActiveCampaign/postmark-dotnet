@@ -22,6 +22,12 @@ namespace PostmarkDotNet.Converters
                     case '\\':
                         buffer.Append("\\\\");
                         break;
+                    case '\r':
+                        buffer.Append("\\r");
+                        break;
+                    case '\n':
+                        buffer.Append("\\n");
+                        break;
                     default:
                         if (code > 127)
                         {

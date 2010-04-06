@@ -10,10 +10,10 @@ namespace PostmarkDotNet.Converters
         {
             var buffer = new StringBuilder();
             buffer.Append("\"");
-            var stringValue = (string)value;
+            var stringValue = (string) value;
             foreach (var c in stringValue)
             {
-                var code = (int)c;
+                var code = (int) c;
                 switch (c)
                 {
                     case '\"':
@@ -27,6 +27,18 @@ namespace PostmarkDotNet.Converters
                         break;
                     case '\n':
                         buffer.Append("\\n");
+                        break;
+                    case '\t':
+                        buffer.Append("\\t");
+                        break;
+                    case '\b':
+                        buffer.Append("\\b");
+                        break;
+                    case '/':
+                        buffer.Append("\\/");
+                        break;
+                    case '\f':
+                        buffer.Append("\\f");
                         break;
                     default:
                         if (code > 127)

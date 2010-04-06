@@ -49,6 +49,20 @@ namespace Postmark.Tests.Converters
             var stringValue = SerializeString("blah\r\nblah");
             AssertJsonString("blah\\r\\nblah", stringValue);
         }
+        
+        [Test]
+        public void Tabs_in_string_are_escaped()
+        {
+            var stringValue = SerializeString("blah\tblah");
+            AssertJsonString("blah\\tblah", stringValue);
+        }
+
+        [Test]
+        public void String_special_chars_are_escaped()
+        {
+            var stringValue = SerializeString("\b\\/\f");
+            AssertJsonString(@"\b\\\/\f", stringValue);
+        }
 
         private static void AssertJsonString(string expected, string actual)
         {

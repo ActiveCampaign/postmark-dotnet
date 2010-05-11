@@ -134,6 +134,16 @@ namespace PostmarkDotNet
         public string To { get; set; }
 
         /// <summary>
+        /// Any CC recipients. Separate multiple recipients with a comma.
+        /// </summary>
+        public string Cc { get; set; }
+
+        /// <summary>
+        /// Any BCC recipients. Separate multiple recipients with a comma.
+        /// </summary>
+        public string Bcc { get; set; }
+
+        /// <summary>
         /// The email address to reply to. This is optional.
         /// </summary>
         public string ReplyTo { get; set; }

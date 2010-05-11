@@ -245,5 +245,29 @@ namespace Postmark.Tests
 
             Console.WriteLine("Postmark -> " + response.Message);
         }
+
+        [Test]
+        public void Can_send_message_with_CC_and_BCC()
+        {
+            var postmark = new PostmarkClient("POSTMARK_API_TEST");
+
+            var email = new PostmarkMessage
+                            {
+                                To = _invalidRecipient,
+                                Cc = "test-cc@example.com",
+                                Bcc = "test-bcc@example.com",
+                                From = _invalidRecipient,
+                                Subject = _subject,
+                                TextBody = _textBody
+                            };
+
+            var response = postmark.SendMessage(email);
+
+            Assert.IsNotNull(response);
+            Assert.IsNotNullOrEmpty(response.Message);
+            Assert.IsTrue(response.Status == PostmarkStatus.Success);
+
+            Console.WriteLine("Postmark -> " + response.Message);
+        }
     }
 }

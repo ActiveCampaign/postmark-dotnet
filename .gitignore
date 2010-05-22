@@ -32,3 +32,4 @@ Examples*/
 publish.xml
 TestResults
 /src/Postmark.Tests/app.config
+src/Postmark.Tests/App.config

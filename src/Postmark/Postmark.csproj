@@ -76,6 +76,7 @@
     <Compile Include="Converters\UnicodeJsonStringConverter.cs" />
     <Compile Include="Model\PostmarkBounce.cs" />
     <Compile Include="Model\PostmarkBounceActivation.cs" />
+    <Compile Include="Model\PostmarkBounceDump.cs" />
     <Compile Include="Model\PostmarkBounces.cs" />
     <Compile Include="Model\PostmarkBounceSummary.cs" />
     <Compile Include="Model\PostmarkBounceType.cs" />
@@ -96,7 +97,6 @@
     <Compile Include="Validation\ValidEmailSpecification.cs" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="app.config" />
     <None Include="key.snk" />
   </ItemGroup>
   <ItemGroup>

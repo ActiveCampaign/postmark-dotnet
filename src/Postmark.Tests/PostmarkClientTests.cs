@@ -61,10 +61,8 @@ using PostmarkDotNet.Validation;
 namespace Postmark.Tests
 {
     [TestFixture]
-    public class PostmarkClientTests
+    public partial class PostmarkClientTests
     {
-        #region Setup/Teardown
-
         [SetUp]
         public void SetUp()
         {
@@ -78,8 +76,6 @@ namespace Postmark.Tests
             _from = settings["From"];
             _to = settings["To"];
         }
-
-        #endregion
 
         private const string _subject = "A test from Postmark.NET";
         private const string _textBody = "This is a test message!";

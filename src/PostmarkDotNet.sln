@@ -1,14 +1,14 @@
 ﻿
-Microsoft Visual Studio Solution File, Format Version 10.00
-# Visual Studio 2008
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Postmark", "Postmark\Postmark.csproj", "{53A0C8D4-DF26-4082-B815-0CAE3E2B402F}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Postmark.Tests", "Postmark.Tests\Postmark.Tests.csproj", "{A9DFDACE-1288-4120-B618-695E4FAAF3FD}"
-EndProject
+Microsoft Visual Studio Solution File, Format Version 11.00
+# Visual Studio 2010
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Documentation", "Documentation", "{85F9EBD5-6906-496B-9479-1012C9AF4E06}"
 	ProjectSection(SolutionItems) = preProject
 		LICENSE.txt = LICENSE.txt
 	EndProjectSection
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Postmark", "Postmark\Postmark.csproj", "{53A0C8D4-DF26-4082-B815-0CAE3E2B402F}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Postmark.Tests", "Postmark.Tests\Postmark.Tests.csproj", "{A9DFDACE-1288-4120-B618-695E4FAAF3FD}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

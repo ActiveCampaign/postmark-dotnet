@@ -52,12 +52,16 @@
 
 #endregion
 
+using System;
+using System.Collections.Generic;
 using System.Collections.Specialized;
+using System.Linq;
 using System.Net.Mail;
 using Hammock;
 using Hammock.Web;
 using Newtonsoft.Json;
 using PostmarkDotNet.Converters;
+using PostmarkDotNet.Model;
 using PostmarkDotNet.Serializers;
 using PostmarkDotNet.Validation;
 
@@ -107,6 +111,21 @@ namespace PostmarkDotNet
                           {
                               Authority = "http://api.postmarkapp.com"
                           };
+        }
+
+        ///<summary>
+        /// Override the REST API endpoint by specifying your own address, if necessary.
+        ///</summary>
+        public string Authority
+        {
+            get
+            {
+                return _client.Authority;
+            }
+            set
+            {
+                _client.Authority = value;
+            }
         }
 
         /// <summary>
@@ -163,20 +182,210 @@ namespace PostmarkDotNet
         /// <returns></returns>
         public PostmarkResponse SendMessage(PostmarkMessage message)
         {
-            var request = NewRequest();
-
-            request.AddHeader("Accept", "application/json");
-            request.AddHeader("Content-Type", "application/json; charset=utf-8");
-            request.AddHeader("X-Postmark-Server-Token", ServerToken);
-            request.AddHeader("User-Agent", "Postmark.NET");
+            var request = NewEmailRequest();
 
             ValidatePostmarkMessage(message);
             CleanPostmarkMessage(message);
 
             request.Entity = message;
 
-            return GetResponse(request);
+            return GetPostmarkResponse(request);
         }
+
+        private void SetPostmarkMeta(RestBase request)
+        {
+            request.AddHeader("Accept", "application/json");
+            request.AddHeader("Content-Type", "application/json; charset=utf-8");
+            request.AddHeader("X-Postmark-Server-Token", ServerToken);
+            request.AddHeader("User-Agent", "Postmark.NET");
+        }
+
+        #region Bounce API
+
+        /// <summary>
+        /// Retrieves the bounce-related <see cref="PostmarkDeliveryStats" /> results for the
+        /// associated mail server.
+        /// </summary>
+        /// <returns></returns>
+        public PostmarkDeliveryStats GetDeliveryStats()
+        {
+            var request = NewBouncesRequest();
+            request.Path = "deliverystats";
+
+            var response = _client.Request(request);
+
+            return JsonConvert.DeserializeObject<PostmarkDeliveryStats>(response.Content, _settings);
+        }
+
+        /// <summary>
+        /// Retrieves a collection of <see cref="PostmarkBounce" /> instances along
+        /// with a sum total of bounces recorded by the server, based on filter parameters.
+        /// </summary>
+        /// <param name="type">The type of bounces to filter on</param>
+        /// <param name="inactive">Whether to return only inactive or active bounces; use null to return all bounces</param>
+        /// <param name="emailFilter">Filters based on whether the filter value is contained in the bounce source's email</param>
+        /// <param name="tag">Filters on the bounce tag</param>
+        /// <param name="offset">The page offset for the returned results; mandatory</param>
+        /// <param name="count">The number of results to return by the page offset; mandatory.</param>
+        /// <returns></returns>
+        /// <seealso href="http://developer.postmarkapp.com/bounces" />
+        public PostmarkBounces GetBounces(PostmarkBounceType type, bool? inactive, string emailFilter, string tag, int offset, int count)
+        {
+            var request = NewBouncesRequest();
+            request.Path = "bounces";
+            if (inactive.HasValue) request.AddParameter("inactive", inactive.Value.ToString().ToLowerInvariant());
+            if (!string.IsNullOrEmpty(emailFilter)) request.AddParameter("emailFilter", emailFilter);
+            if (!string.IsNullOrEmpty(tag)) request.AddParameter("tag", tag);
+            request.AddParameter("offset", offset.ToString());
+            request.AddParameter("count", count.ToString());
+
+            var response = _client.Request(request);
+
+            return JsonConvert.DeserializeObject<PostmarkBounces>(response.Content, _settings);
+        }
+
+        /// <summary>
+        /// Retrieves a collection of <see cref="PostmarkBounce"/> instances along
+        /// with a sum total of bounces recorded by the server, based on filter parameters.
+        /// </summary>
+        /// <param name="type">The type of bounces to filter on</param>
+        /// <param name="offset">The page offset for the returned results; mandatory</param>
+        /// <param name="count">The number of results to return by the page offset; mandatory.</param>
+        /// <returns></returns>
+        /// <seealso href="http://developer.postmarkapp.com/bounces" />
+        public PostmarkBounces GetBounces(PostmarkBounceType type, int offset, int count)
+        {
+            return GetBounces(type, null, null, null, offset, count);
+        }
+
+        /// <summary>
+        /// Retrieves a collection of <see cref="PostmarkBounce"/> instances along
+        /// with a sum total of bounces recorded by the server, based on filter parameters.
+        /// </summary>
+        /// <param name="type">The type of bounces to filter on</param>
+        /// <param name="inactive">Whether to return only inactive or active bounces; use null to return all bounces</param>
+        /// <param name="offset">The page offset for the returned results; mandatory</param>
+        /// <param name="count">The number of results to return by the page offset; mandatory.</param>
+        /// <returns></returns>
+        /// <seealso href="http://developer.postmarkapp.com/bounces" />
+        public PostmarkBounces GetBounces(PostmarkBounceType type, bool? inactive, int offset, int count)
+        {
+            return GetBounces(type, inactive, null, null, offset, count);
+        }
+
+        /// <summary>
+        /// Retrieves a collection of <see cref="PostmarkBounce"/> instances along
+        /// with a sum total of bounces recorded by the server, based on filter parameters.
+        /// </summary>
+        /// <param name="type">The type of bounces to filter on</param>
+        /// <param name="emailFilter">Filters based on whether the filter value is contained in the bounce source's email</param>
+        /// <param name="offset">The page offset for the returned results; mandatory</param>
+        /// <param name="count">The number of results to return by the page offset; mandatory.</param>
+        /// <returns></returns>
+        /// <seealso href="http://developer.postmarkapp.com/bounces" />
+        public PostmarkBounces GetBounces(PostmarkBounceType type, string emailFilter, int offset, int count)
+        {
+            return GetBounces(type, null, emailFilter, null, offset, count);
+        }
+
+        /// <summary>
+        /// Retrieves a collection of <see cref="PostmarkBounce"/> instances along
+        /// with a sum total of bounces recorded by the server, based on filter parameters.
+        /// </summary>
+        /// <param name="type">The type of bounces to filter on</param>
+        /// <param name="emailFilter">Filters based on whether the filter value is contained in the bounce source's email</param>
+        /// <param name="tag">Filters on the bounce tag</param>
+        /// <param name="offset">The page offset for the returned results; mandatory</param>
+        /// <param name="count">The number of results to return by the page offset; mandatory.</param>
+        /// <returns></returns>
+        /// <seealso href="http://developer.postmarkapp.com/bounces" />
+        public PostmarkBounces GetBounces(PostmarkBounceType type, string emailFilter, string tag, int offset, int count)
+        {
+            return GetBounces(type, null, emailFilter, tag, offset, count);
+        }
+
+        /// <summary>
+        /// Retrieves a collection of <see cref="PostmarkBounce"/> instances along
+        /// with a sum total of bounces recorded by the server, based on filter parameters.
+        /// </summary>
+        /// <param name="type">The type of bounces to filter on</param>
+        /// <param name="inactive">Whether to return only inactive or active bounces; use null to return all bounces</param>
+        /// <param name="emailFilter">Filters based on whether the filter value is contained in the bounce source's email</param>
+        /// <param name="offset">The page offset for the returned results; mandatory</param>
+        /// <param name="count">The number of results to return by the page offset; mandatory.</param>
+        /// <returns></returns>
+        /// <seealso href="http://developer.postmarkapp.com/bounces" />
+        public PostmarkBounces GetBounces(PostmarkBounceType type, bool? inactive, string emailFilter, int offset, int count)
+        {
+            return GetBounces(type, inactive, emailFilter, null, offset, count);
+        }
+
+        /// <summary>
+        /// Retrieves a single <see cref="PostmarkBounce" /> based on a specified ID.
+        /// </summary>
+        /// <param name="bounceId">The bounce ID</param>
+        /// <returns></returns>
+        /// <seealso href="http://developer.postmarkapp.com/bounces" />
+        public PostmarkBounce GetBounce(string bounceId)
+        {
+            var request = NewBouncesRequest();
+            request.Path = string.Format("bounces/{0}", bounceId);
+
+            var response = _client.Request(request);
+
+            return JsonConvert.DeserializeObject<PostmarkBounce>(response.Content, _settings);
+        }
+
+        /// <summary>
+        /// Returns a list of tags used for the current server.
+        /// </summary>
+        /// <returns></returns>
+        /// <seealso href="http://developer.postmarkapp.com/bounces" />
+        public IEnumerable<string> GetBounceTags()
+        {
+            var request = NewBouncesRequest();
+            request.Path = "bounces/tags";
+
+            var response = _client.Request(request);
+
+            return JsonConvert.DeserializeObject<IEnumerable<string>>(response.Content, _settings);
+        }
+
+        /// <summary>
+        /// Returns the raw source of the bounce we accepted. 
+        /// If Postmark does not have a dump for that bounce, it will return an empty string.
+        /// </summary>
+        /// <param name="bounceId">The bounce ID</param>
+        /// <returns></returns>
+        /// <seealso href="http://developer.postmarkapp.com/bounces" />
+        public PostmarkBounceDump GetBounceDump(string bounceId)
+        {
+            var request = NewBouncesRequest();
+            request.Path = string.Format("bounces/{0}/dump", bounceId.Trim());
+
+            var response = _client.Request(request);
+
+            return JsonConvert.DeserializeObject<PostmarkBounceDump>(response.Content, _settings);
+        }
+
+        /// <summary>
+        /// Activates a deactivated bounce.
+        /// </summary>
+        /// <param name="bounceId">The bounce ID</param>
+        /// <returns></returns>
+        /// <seealso href="http://developer.postmarkapp.com/bounces" />
+        public PostmarkBounceActivation ActivateBounce(string bounceId)
+        {
+            var request = NewBouncesRequest();
+            request.Method = WebMethod.Put;
+            request.Path = string.Format("bounces/{0}/activate", bounceId.Trim());
+
+            var response = _client.Request(request);
+
+            return JsonConvert.DeserializeObject<PostmarkBounceActivation>(response.Content, _settings);
+        }
+
+        #endregion
 
         private static void CleanPostmarkMessage(PostmarkMessage message)
         {
@@ -200,9 +409,31 @@ namespace PostmarkDotNet
             {
                 throw new ValidationException("If a 'ReplyTo' email address is included, it must be valid.");
             }
+
+            if(!string.IsNullOrEmpty(message.Cc))
+            {
+                var ccs = message.Cc.Split(new char[] { ',' }, StringSplitOptions.RemoveEmptyEntries);
+                foreach (var cc in ccs.Where(cc => !specification.IsSatisfiedBy(cc)))
+                {
+                    throw new ValidationException(
+                        string.Format("The provided CC address '{0}' is not valid", cc)
+                        );
+                }
+            }
+
+            if (!string.IsNullOrEmpty(message.Bcc))
+            {
+                var bccs = message.Bcc.Split(new char[] { ',' }, StringSplitOptions.RemoveEmptyEntries);
+                foreach (var bcc in bccs.Where(cc => !specification.IsSatisfiedBy(cc)))
+                {
+                    throw new ValidationException(
+                        string.Format("The provided BCC address '{0}' is not valid", bcc)
+                        );
+                }
+            }
         }
 
-        private PostmarkResponse GetResponse(RestRequest request)
+        private PostmarkResponse GetPostmarkResponse(RestRequest request)
         {
             var response = _client.Request(request);
 
@@ -234,7 +465,19 @@ namespace PostmarkDotNet
             return result;
         }
 
-        private static RestRequest NewRequest()
+        private RestRequest NewBouncesRequest()
+        {
+            var request = new RestRequest
+            {
+                Serializer = _serializer
+            };
+
+            SetPostmarkMeta(request);
+
+            return request;
+        }
+
+        private RestRequest NewEmailRequest()
         {
             var request = new RestRequest
                               {
@@ -242,6 +485,8 @@ namespace PostmarkDotNet
                                   Method = WebMethod.Post,
                                   Serializer = _serializer
                               };
+
+            SetPostmarkMeta(request);
 
             return request;
         }

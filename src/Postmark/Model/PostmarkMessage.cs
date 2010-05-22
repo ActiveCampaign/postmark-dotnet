@@ -129,7 +129,7 @@ namespace PostmarkDotNet
         public string From { get; set; }
 
         /// <summary>
-        /// The recipients's email address.
+        /// Any recipients. Separate multiple recipients with a comma.
         /// </summary>
         public string To { get; set; }
 
@@ -162,6 +162,14 @@ namespace PostmarkDotNet
         /// The message body, if the message is plain text.
         /// </summary>
         public string TextBody { get; set; }
+
+        /// <summary>
+        /// An optional message tag, that is used for breaking down
+        /// statistics using the Postmark web administration UI.
+        /// For example, you can break email down into application specific
+        /// areas like "Invitation", or "BillingReminder".
+        /// </summary>
+        public string Tag { get; set; }
 
         /// <summary>
         /// A collection of optional message headers.

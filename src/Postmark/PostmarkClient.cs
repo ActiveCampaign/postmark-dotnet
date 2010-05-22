@@ -134,6 +134,8 @@ namespace PostmarkDotNet
         /// <value>The server token.</value>
         public string ServerToken { get; private set; }
 
+        #region Mail API
+
         /// <summary>
         /// Sends a message through the Postmark API.
         /// All email addresses must be valid, and the sender must be
@@ -190,15 +192,8 @@ namespace PostmarkDotNet
             request.Entity = message;
 
             return GetPostmarkResponse(request);
-        }
-
-        private void SetPostmarkMeta(RestBase request)
-        {
-            request.AddHeader("Accept", "application/json");
-            request.AddHeader("Content-Type", "application/json; charset=utf-8");
-            request.AddHeader("X-Postmark-Server-Token", ServerToken);
-            request.AddHeader("User-Agent", "Postmark.NET");
-        }
+        } 
+        #endregion
 
         #region Bounce API
 
@@ -387,6 +382,14 @@ namespace PostmarkDotNet
 
         #endregion
 
+        private void SetPostmarkMeta(RestBase request)
+        {
+            request.AddHeader("Accept", "application/json");
+            request.AddHeader("Content-Type", "application/json; charset=utf-8");
+            request.AddHeader("X-Postmark-Server-Token", ServerToken);
+            request.AddHeader("User-Agent", "Postmark.NET");
+        }
+
         private static void CleanPostmarkMessage(PostmarkMessage message)
         {
             message.From = message.From.Trim();
@@ -401,10 +404,18 @@ namespace PostmarkDotNet
             {
                 throw new ValidationException("You must specify a valid 'From' email address.");
             }
-            if (string.IsNullOrEmpty(message.To) || !specification.IsSatisfiedBy(message.To))
+            if (string.IsNullOrEmpty(message.To))
             {
                 throw new ValidationException("You must specify a valid 'To' email address.");
             }
+            var recipients = message.To.Split(new[] { ',' }, StringSplitOptions.RemoveEmptyEntries);
+            foreach (var recipient in recipients.Where(email => !specification.IsSatisfiedBy(email)))
+            {
+                throw new ValidationException(
+                    string.Format("The provided recipient address '{0}' is not valid", recipient)
+                    );
+            }
+
             if (!string.IsNullOrEmpty(message.ReplyTo) && !specification.IsSatisfiedBy(message.ReplyTo))
             {
                 throw new ValidationException("If a 'ReplyTo' email address is included, it must be valid.");
@@ -412,8 +423,8 @@ namespace PostmarkDotNet
 
             if(!string.IsNullOrEmpty(message.Cc))
             {
-                var ccs = message.Cc.Split(new char[] { ',' }, StringSplitOptions.RemoveEmptyEntries);
-                foreach (var cc in ccs.Where(cc => !specification.IsSatisfiedBy(cc)))
+                var ccs = message.Cc.Split(new[] { ',' }, StringSplitOptions.RemoveEmptyEntries);
+                foreach (var cc in ccs.Where(email => !specification.IsSatisfiedBy(email)))
                 {
                     throw new ValidationException(
                         string.Format("The provided CC address '{0}' is not valid", cc)
@@ -423,8 +434,8 @@ namespace PostmarkDotNet
 
             if (!string.IsNullOrEmpty(message.Bcc))
             {
-                var bccs = message.Bcc.Split(new char[] { ',' }, StringSplitOptions.RemoveEmptyEntries);
-                foreach (var bcc in bccs.Where(cc => !specification.IsSatisfiedBy(cc)))
+                var bccs = message.Bcc.Split(new[] { ',' }, StringSplitOptions.RemoveEmptyEntries);
+                foreach (var bcc in bccs.Where(email => !specification.IsSatisfiedBy(email)))
                 {
                     throw new ValidationException(
                         string.Format("The provided BCC address '{0}' is not valid", bcc)

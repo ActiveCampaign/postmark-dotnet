@@ -31,5 +31,5 @@ Examples*/
 *.testrunconfig
 publish.xml
 TestResults
-/src/Postmark.Tests/app.config
-src/Postmark.Tests/App.config
+/src/Postmark.Tests/App.config
+App.config

@@ -81,6 +81,7 @@
     <Compile Include="Model\PostmarkBounceSummary.cs" />
     <Compile Include="Model\PostmarkBounceType.cs" />
     <Compile Include="Model\PostmarkDeliveryStats.cs" />
+    <Compile Include="Model\PostmarkMessageAttachment.cs" />
     <Compile Include="Serializers\PostmarkSerializer.cs" />
     <Compile Include="Specifications\AndSpecification.cs" />
     <Compile Include="Specifications\CompositeSpecificationBase.cs" />

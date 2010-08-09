@@ -182,6 +182,30 @@ namespace Postmark.Tests
         }
 
         [Test]
+        [Ignore("This test sends a real email.")]
+        public void Can_send_message_with_file_attachment()
+        {
+            var postmark = new PostmarkClient(_serverToken);
+
+            var email = new PostmarkMessage
+            {
+                To = _to,
+                From = _from, // This must be a verified sender signature
+                Subject = _subject,
+                TextBody = _textBody,
+            };
+
+            email.AddAttachment("logo.png", "image/png");
+            
+            var response = postmark.SendMessage(email);
+
+            Assert.IsNotNull(response);
+            Assert.IsNotNullOrEmpty(response.Message);
+            Assert.IsTrue(response.Status == PostmarkStatus.Success);
+            Console.WriteLine("Postmark -> " + response.Message);
+        }
+
+        [Test]
         [ExpectedException(typeof (ValidationException))]
         public void Can_send_message_with_token_and_signature_and_invalid_recipient_and_throw_validation_exception()
         {

@@ -53,9 +53,14 @@
 #endregion
 
 using System;
+using System.Collections.Generic;
 using System.Collections.Specialized;
+using System.IO;
+using System.Linq;
 using System.Net.Mail;
 using System.Web;
+using PostmarkDotNet.Model;
+using PostmarkDotNet.Validation;
 
 namespace PostmarkDotNet
 {
@@ -64,12 +69,45 @@ namespace PostmarkDotNet
     /// </summary>
     public class PostmarkMessage
     {
+        private static readonly ICollection<string> _whitelist  = new List<string>
+                             {
+                                 "gif",
+                                 "jpg",
+                                 "jpeg",
+                                 "png",
+                                 "swf",
+                                 "flv",
+                                 "avi",
+                                 "mpg",
+                                 "mp3",
+                                 "mp3",
+                                 "rm",
+                                 "mov",
+                                 "psd",
+                                 "ai",
+                                 "tif",
+                                 "tiff",
+                                 "txt",
+                                 "rtf",
+                                 "htm",
+                                 "html",
+                                 "pdf",
+                                 "doc",
+                                 "docx",
+                                 "ppt",
+                                 "pptx",
+                                 "ps",
+                                 "eps",
+                                 "log"
+                             };
+
         /// <summary>
         /// Initializes a new instance of the <see cref="PostmarkMessage"/> class.
         /// </summary>
         public PostmarkMessage()
         {
             Headers = new NameValueCollection(0);
+            Attachments = new List<PostmarkMessageAttachment>(0);
         }
 
         /// <summary>
@@ -121,6 +159,91 @@ namespace PostmarkDotNet
             TextBody = message.IsBodyHtml ? null : message.Body;
             ReplyTo = message.ReplyTo.DisplayName;
             Headers = message.Headers;
+            Attachments = new List<PostmarkMessageAttachment>(0);
+
+            foreach (var item in from attachment in message.Attachments
+                                 where attachment.ContentStream != null
+                                 let content = ReadStream(attachment.ContentStream, 8192)
+                                 select new PostmarkMessageAttachment
+                                            {
+                                                Name = attachment.Name, 
+                                                ContentType = attachment.ContentType.ToString(), 
+                                                Content = Convert.ToBase64String(content)
+                                            })
+            {
+                Attachments.Add(item);
+            }
+        }
+
+        private static byte[] ReadStream(Stream input, int bufferSize)
+        {
+            var buffer = new byte[bufferSize];
+            using (var ms = new MemoryStream())
+            {
+                int read;
+                while ((read = input.Read(buffer, 0, buffer.Length)) > 0)
+                {
+                    ms.Write(buffer, 0, read);
+                }
+                return ms.ToArray();
+            }
+        }
+
+        /// <summary>
+        /// Adds a file attachment.
+        /// Assumes the content type default of "application/octet-stream".
+        /// </summary>
+        /// <param name="path">The full path to the file to attach</param>
+        public void AddAttachment(string path)
+        {
+            AddAttachment(path, "application/octet-stream");
+        }
+
+        /// <summary>
+        /// Adds a file attachment.
+        /// </summary>
+        /// <param name="path">The full path to the file to attach</param>
+        /// <param name="contentType">The content type.</param>
+        public void AddAttachment(string path, string contentType)
+        {
+            ValidateAttachment(path);
+
+            var stream = File.OpenRead(path);
+
+            var content = ReadStream(stream, 8067);
+
+            var attachment = new PostmarkMessageAttachment
+            {
+                Name = new FileInfo(path).Name,
+                ContentType = contentType,
+                Content = Convert.ToBase64String(content)
+            };
+
+            Attachments.Add(attachment);
+        }
+
+        private static void ValidateAttachment(string path)
+        {
+            var fileInfo = new FileInfo(path);
+            if(fileInfo.Length > 10485760)
+            {
+                throw new ValidationException("Attachments must be less than 10MB in length.");
+            }
+            if(fileInfo.Length == 0)
+            {
+                throw new ValidationException("File path provided has no length.");
+            }
+
+            //Image files: gif, jpg, jpeg, png, swf, flv, avi, mpg, mp3, rm, mov, psd, ai, tif, tiff
+            //Documents: txt, rtf, htm, html, pdf, doc, docx, ppt, pptx, xls, xlsx, ps, eps
+            //Miscellaneous: log
+
+            var extension = fileInfo.Extension.ToLowerInvariant().Substring(1);
+            if(!_whitelist.Contains(extension))
+            {
+                throw new ValidationException("Attachments must have a whitelisted extension. The whitelist is available at: " +
+                                              "http://developer.postmarkapp.com/developer-build.html#attachments");
+            }
         }
 
         /// <summary>
@@ -175,5 +298,10 @@ namespace PostmarkDotNet
         /// A collection of optional message headers.
         /// </summary>
         public NameValueCollection Headers { get; set; }
+
+        /// <summary>
+        /// A collection of optional file attachments.
+        /// </summary>
+        public ICollection<PostmarkMessageAttachment> Attachments { get; set; }
     }
 }

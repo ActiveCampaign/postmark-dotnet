@@ -4,7 +4,6 @@
 // http://postmarkapp.com
 // (c) 2010 Wildbit
 // 
-// 
 // Postmark.NET
 // http://github.com/lunarbits/postmark-dotnet
 // 
@@ -18,37 +17,31 @@
 // 
 // THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 // 
-// 
 // Json.NET 
 // http://codeplex.com/json
-// 
+//  
 // Copyright (c) 2007 James Newton-King
 // 
 // The MIT License
+// 
+// Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the "Software"), to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions:
+//  
+// The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
+//  
+// THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+// 
+// Hammock for REST
+// http://hammock.codeplex.com
+// 
+// The MIT License
+// 
+// Copyright (c) 2010 Daniel Crenna and Jason Diller
 // 
 // Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the "Software"), to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions:
 // 
 // The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
 // 
 // THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
-// 
-// 
-// RestSharp
-// http://github.com/johnsheehan/RestSharp 
-// 
-// Copyright (c) 2010 John Sheehan
-// 
-// Licensed under the Apache License, Version 2.0 (the "License");
-// you may not use this file except in compliance with the License.
-// You may obtain a copy of the License at
-// 
-// http://www.apache.org/licenses/LICENSE-2.0
-// 
-// Unless required by applicable law or agreed to in writing, software
-// distributed under the License is distributed on an "AS IS" BASIS,
-// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-// See the License for the specific language governing permissions and
-// limitations under the License. 
 
 #endregion
 
@@ -61,7 +54,6 @@ using Hammock;
 using Hammock.Web;
 using Newtonsoft.Json;
 using PostmarkDotNet.Converters;
-using PostmarkDotNet.Model;
 using PostmarkDotNet.Serializers;
 using PostmarkDotNet.Validation;
 
@@ -74,15 +66,15 @@ del /q "$(TargetDir)$(TargetName).pdb"
 namespace PostmarkDotNet
 {
     /// <summary>
-    /// A client for the Postmark application. 
-    /// Use this client in place of an <see cref="SmtpClient" /> to send messages
-    /// through this service.
+    ///   A client for the Postmark application. 
+    ///   Use this client in place of an <see cref = "SmtpClient" /> to send messages
+    ///   through this service.
     /// </summary>
     public class PostmarkClient
     {
-        private readonly RestClient _client;
         private static readonly JsonSerializerSettings _settings;
         private static readonly PostmarkSerializer _serializer;
+        private readonly RestClient _client;
 
         static PostmarkClient()
         {
@@ -99,11 +91,11 @@ namespace PostmarkDotNet
         }
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="PostmarkClient"/> class.
-        /// If you do not have a server token you can request one by signing up to
-        /// use Postmark: http://postmarkapp.com.
+        ///   Initializes a new instance of the <see cref = "PostmarkClient" /> class.
+        ///   If you do not have a server token you can request one by signing up to
+        ///   use Postmark: http://postmarkapp.com.
         /// </summary>
-        /// <param name="serverToken">The server token.</param>
+        /// <param name = "serverToken">The server token.</param>
         public PostmarkClient(string serverToken)
         {
             ServerToken = serverToken;
@@ -114,22 +106,16 @@ namespace PostmarkDotNet
         }
 
         ///<summary>
-        /// Override the REST API endpoint by specifying your own address, if necessary.
+        ///  Override the REST API endpoint by specifying your own address, if necessary.
         ///</summary>
         public string Authority
         {
-            get
-            {
-                return _client.Authority;
-            }
-            set
-            {
-                _client.Authority = value;
-            }
+            get { return _client.Authority; }
+            set { _client.Authority = value; }
         }
 
         /// <summary>
-        /// Gets the server token issued with your Postmark email server configuration.
+        ///   Gets the server token issued with your Postmark email server configuration.
         /// </summary>
         /// <value>The server token.</value>
         public string ServerToken { get; private set; }
@@ -137,36 +123,37 @@ namespace PostmarkDotNet
         #region Mail API
 
         /// <summary>
-        /// Sends a message through the Postmark API.
-        /// All email addresses must be valid, and the sender must be
-        /// a valid sender signature according to Postmark. To obtain a valid
-        /// sender signature, log in to Postmark and navigate to:
-        /// http://postmarkapp.com/signatures.
+        ///   Sends a message through the Postmark API.
+        ///   All email addresses must be valid, and the sender must be
+        ///   a valid sender signature according to Postmark. To obtain a valid
+        ///   sender signature, log in to Postmark and navigate to:
+        ///   http://postmarkapp.com/signatures.
         /// </summary>
-        /// <param name="from">An email address for a sender.</param>
-        /// <param name="to">An email address for a recipient.</param>
-        /// <param name="subject">The message subject line.</param>
-        /// <param name="body">The message body.</param>
-        /// <returns>A <see cref="PostmarkResponse"/> with details about the transaction.</returns>
+        /// <param name = "from">An email address for a sender.</param>
+        /// <param name = "to">An email address for a recipient.</param>
+        /// <param name = "subject">The message subject line.</param>
+        /// <param name = "body">The message body.</param>
+        /// <returns>A <see cref = "PostmarkResponse" /> with details about the transaction.</returns>
         public PostmarkResponse SendMessage(string from, string to, string subject, string body)
         {
             return SendMessage(from, to, subject, body, null);
         }
 
         /// <summary>
-        /// Sends a message through the Postmark API.
-        /// All email addresses must be valid, and the sender must be
-        /// a valid sender signature according to Postmark. To obtain a valid
-        /// sender signature, log in to Postmark and navigate to:
-        /// http://postmarkapp.com/signatures.
+        ///   Sends a message through the Postmark API.
+        ///   All email addresses must be valid, and the sender must be
+        ///   a valid sender signature according to Postmark. To obtain a valid
+        ///   sender signature, log in to Postmark and navigate to:
+        ///   http://postmarkapp.com/signatures.
         /// </summary>
-        /// <param name="from">An email address for a sender.</param>
-        /// <param name="to">An email address for a recipient.</param>
-        /// <param name="subject">The message subject line.</param>
-        /// <param name="body">The message body.</param>
-        /// <param name="headers">A collection of additional mail headers to send with the message.</param>
-        /// <returns>A <see cref="PostmarkResponse"/> with details about the transaction.</returns>       
-        public PostmarkResponse SendMessage(string from, string to, string subject, string body, NameValueCollection headers)
+        /// <param name = "from">An email address for a sender.</param>
+        /// <param name = "to">An email address for a recipient.</param>
+        /// <param name = "subject">The message subject line.</param>
+        /// <param name = "body">The message body.</param>
+        /// <param name = "headers">A collection of additional mail headers to send with the message.</param>
+        /// <returns>A <see cref = "PostmarkResponse" /> with details about the transaction.</returns>
+        public PostmarkResponse SendMessage(string from, string to, string subject, string body,
+                                            NameValueCollection headers)
         {
             var message = new PostmarkMessage(from, to, subject, body, headers);
 
@@ -174,13 +161,13 @@ namespace PostmarkDotNet
         }
 
         /// <summary>
-        /// Sends a message through the Postmark API.
-        /// All email addresses must be valid, and the sender must be
-        /// a valid sender signature according to Postmark. To obtain a valid
-        /// sender signature, log in to Postmark and navigate to:
-        /// http://postmarkapp.com/signatures.
+        ///   Sends a message through the Postmark API.
+        ///   All email addresses must be valid, and the sender must be
+        ///   a valid sender signature according to Postmark. To obtain a valid
+        ///   sender signature, log in to Postmark and navigate to:
+        ///   http://postmarkapp.com/signatures.
         /// </summary>
-        /// <param name="message">A prepared message instance.</param>
+        /// <param name = "message">A prepared message instance.</param>
         /// <returns></returns>
         public PostmarkResponse SendMessage(PostmarkMessage message)
         {
@@ -192,14 +179,15 @@ namespace PostmarkDotNet
             request.Entity = message;
 
             return GetPostmarkResponse(request);
-        } 
+        }
+
         #endregion
 
         #region Bounce API
 
         /// <summary>
-        /// Retrieves the bounce-related <see cref="PostmarkDeliveryStats" /> results for the
-        /// associated mail server.
+        ///   Retrieves the bounce-related <see cref = "PostmarkDeliveryStats" /> results for the
+        ///   associated mail server.
         /// </summary>
         /// <returns></returns>
         public PostmarkDeliveryStats GetDeliveryStats()
@@ -213,18 +201,19 @@ namespace PostmarkDotNet
         }
 
         /// <summary>
-        /// Retrieves a collection of <see cref="PostmarkBounce" /> instances along
-        /// with a sum total of bounces recorded by the server, based on filter parameters.
+        ///   Retrieves a collection of <see cref = "PostmarkBounce" /> instances along
+        ///   with a sum total of bounces recorded by the server, based on filter parameters.
         /// </summary>
-        /// <param name="type">The type of bounces to filter on</param>
-        /// <param name="inactive">Whether to return only inactive or active bounces; use null to return all bounces</param>
-        /// <param name="emailFilter">Filters based on whether the filter value is contained in the bounce source's email</param>
-        /// <param name="tag">Filters on the bounce tag</param>
-        /// <param name="offset">The page offset for the returned results; mandatory</param>
-        /// <param name="count">The number of results to return by the page offset; mandatory.</param>
+        /// <param name = "type">The type of bounces to filter on</param>
+        /// <param name = "inactive">Whether to return only inactive or active bounces; use null to return all bounces</param>
+        /// <param name = "emailFilter">Filters based on whether the filter value is contained in the bounce source's email</param>
+        /// <param name = "tag">Filters on the bounce tag</param>
+        /// <param name = "offset">The page offset for the returned results; mandatory</param>
+        /// <param name = "count">The number of results to return by the page offset; mandatory.</param>
         /// <returns></returns>
-        /// <seealso href="http://developer.postmarkapp.com/bounces" />
-        public PostmarkBounces GetBounces(PostmarkBounceType type, bool? inactive, string emailFilter, string tag, int offset, int count)
+        /// <seealso href = "http://developer.postmarkapp.com/bounces" />
+        public PostmarkBounces GetBounces(PostmarkBounceType type, bool? inactive, string emailFilter, string tag,
+                                          int offset, int count)
         {
             var request = NewBouncesRequest();
             request.Path = "bounces";
@@ -240,87 +229,88 @@ namespace PostmarkDotNet
         }
 
         /// <summary>
-        /// Retrieves a collection of <see cref="PostmarkBounce"/> instances along
-        /// with a sum total of bounces recorded by the server, based on filter parameters.
+        ///   Retrieves a collection of <see cref = "PostmarkBounce" /> instances along
+        ///   with a sum total of bounces recorded by the server, based on filter parameters.
         /// </summary>
-        /// <param name="type">The type of bounces to filter on</param>
-        /// <param name="offset">The page offset for the returned results; mandatory</param>
-        /// <param name="count">The number of results to return by the page offset; mandatory.</param>
+        /// <param name = "type">The type of bounces to filter on</param>
+        /// <param name = "offset">The page offset for the returned results; mandatory</param>
+        /// <param name = "count">The number of results to return by the page offset; mandatory.</param>
         /// <returns></returns>
-        /// <seealso href="http://developer.postmarkapp.com/bounces" />
+        /// <seealso href = "http://developer.postmarkapp.com/bounces" />
         public PostmarkBounces GetBounces(PostmarkBounceType type, int offset, int count)
         {
             return GetBounces(type, null, null, null, offset, count);
         }
 
         /// <summary>
-        /// Retrieves a collection of <see cref="PostmarkBounce"/> instances along
-        /// with a sum total of bounces recorded by the server, based on filter parameters.
+        ///   Retrieves a collection of <see cref = "PostmarkBounce" /> instances along
+        ///   with a sum total of bounces recorded by the server, based on filter parameters.
         /// </summary>
-        /// <param name="type">The type of bounces to filter on</param>
-        /// <param name="inactive">Whether to return only inactive or active bounces; use null to return all bounces</param>
-        /// <param name="offset">The page offset for the returned results; mandatory</param>
-        /// <param name="count">The number of results to return by the page offset; mandatory.</param>
+        /// <param name = "type">The type of bounces to filter on</param>
+        /// <param name = "inactive">Whether to return only inactive or active bounces; use null to return all bounces</param>
+        /// <param name = "offset">The page offset for the returned results; mandatory</param>
+        /// <param name = "count">The number of results to return by the page offset; mandatory.</param>
         /// <returns></returns>
-        /// <seealso href="http://developer.postmarkapp.com/bounces" />
+        /// <seealso href = "http://developer.postmarkapp.com/bounces" />
         public PostmarkBounces GetBounces(PostmarkBounceType type, bool? inactive, int offset, int count)
         {
             return GetBounces(type, inactive, null, null, offset, count);
         }
 
         /// <summary>
-        /// Retrieves a collection of <see cref="PostmarkBounce"/> instances along
-        /// with a sum total of bounces recorded by the server, based on filter parameters.
+        ///   Retrieves a collection of <see cref = "PostmarkBounce" /> instances along
+        ///   with a sum total of bounces recorded by the server, based on filter parameters.
         /// </summary>
-        /// <param name="type">The type of bounces to filter on</param>
-        /// <param name="emailFilter">Filters based on whether the filter value is contained in the bounce source's email</param>
-        /// <param name="offset">The page offset for the returned results; mandatory</param>
-        /// <param name="count">The number of results to return by the page offset; mandatory.</param>
+        /// <param name = "type">The type of bounces to filter on</param>
+        /// <param name = "emailFilter">Filters based on whether the filter value is contained in the bounce source's email</param>
+        /// <param name = "offset">The page offset for the returned results; mandatory</param>
+        /// <param name = "count">The number of results to return by the page offset; mandatory.</param>
         /// <returns></returns>
-        /// <seealso href="http://developer.postmarkapp.com/bounces" />
+        /// <seealso href = "http://developer.postmarkapp.com/bounces" />
         public PostmarkBounces GetBounces(PostmarkBounceType type, string emailFilter, int offset, int count)
         {
             return GetBounces(type, null, emailFilter, null, offset, count);
         }
 
         /// <summary>
-        /// Retrieves a collection of <see cref="PostmarkBounce"/> instances along
-        /// with a sum total of bounces recorded by the server, based on filter parameters.
+        ///   Retrieves a collection of <see cref = "PostmarkBounce" /> instances along
+        ///   with a sum total of bounces recorded by the server, based on filter parameters.
         /// </summary>
-        /// <param name="type">The type of bounces to filter on</param>
-        /// <param name="emailFilter">Filters based on whether the filter value is contained in the bounce source's email</param>
-        /// <param name="tag">Filters on the bounce tag</param>
-        /// <param name="offset">The page offset for the returned results; mandatory</param>
-        /// <param name="count">The number of results to return by the page offset; mandatory.</param>
+        /// <param name = "type">The type of bounces to filter on</param>
+        /// <param name = "emailFilter">Filters based on whether the filter value is contained in the bounce source's email</param>
+        /// <param name = "tag">Filters on the bounce tag</param>
+        /// <param name = "offset">The page offset for the returned results; mandatory</param>
+        /// <param name = "count">The number of results to return by the page offset; mandatory.</param>
         /// <returns></returns>
-        /// <seealso href="http://developer.postmarkapp.com/bounces" />
+        /// <seealso href = "http://developer.postmarkapp.com/bounces" />
         public PostmarkBounces GetBounces(PostmarkBounceType type, string emailFilter, string tag, int offset, int count)
         {
             return GetBounces(type, null, emailFilter, tag, offset, count);
         }
 
         /// <summary>
-        /// Retrieves a collection of <see cref="PostmarkBounce"/> instances along
-        /// with a sum total of bounces recorded by the server, based on filter parameters.
+        ///   Retrieves a collection of <see cref = "PostmarkBounce" /> instances along
+        ///   with a sum total of bounces recorded by the server, based on filter parameters.
         /// </summary>
-        /// <param name="type">The type of bounces to filter on</param>
-        /// <param name="inactive">Whether to return only inactive or active bounces; use null to return all bounces</param>
-        /// <param name="emailFilter">Filters based on whether the filter value is contained in the bounce source's email</param>
-        /// <param name="offset">The page offset for the returned results; mandatory</param>
-        /// <param name="count">The number of results to return by the page offset; mandatory.</param>
+        /// <param name = "type">The type of bounces to filter on</param>
+        /// <param name = "inactive">Whether to return only inactive or active bounces; use null to return all bounces</param>
+        /// <param name = "emailFilter">Filters based on whether the filter value is contained in the bounce source's email</param>
+        /// <param name = "offset">The page offset for the returned results; mandatory</param>
+        /// <param name = "count">The number of results to return by the page offset; mandatory.</param>
         /// <returns></returns>
-        /// <seealso href="http://developer.postmarkapp.com/bounces" />
-        public PostmarkBounces GetBounces(PostmarkBounceType type, bool? inactive, string emailFilter, int offset, int count)
+        /// <seealso href = "http://developer.postmarkapp.com/bounces" />
+        public PostmarkBounces GetBounces(PostmarkBounceType type, bool? inactive, string emailFilter, int offset,
+                                          int count)
         {
             return GetBounces(type, inactive, emailFilter, null, offset, count);
         }
 
         /// <summary>
-        /// Retrieves a single <see cref="PostmarkBounce" /> based on a specified ID.
+        ///   Retrieves a single <see cref = "PostmarkBounce" /> based on a specified ID.
         /// </summary>
-        /// <param name="bounceId">The bounce ID</param>
+        /// <param name = "bounceId">The bounce ID</param>
         /// <returns></returns>
-        /// <seealso href="http://developer.postmarkapp.com/bounces" />
+        /// <seealso href = "http://developer.postmarkapp.com/bounces" />
         public PostmarkBounce GetBounce(string bounceId)
         {
             var request = NewBouncesRequest();
@@ -332,10 +322,10 @@ namespace PostmarkDotNet
         }
 
         /// <summary>
-        /// Returns a list of tags used for the current server.
+        ///   Returns a list of tags used for the current server.
         /// </summary>
         /// <returns></returns>
-        /// <seealso href="http://developer.postmarkapp.com/bounces" />
+        /// <seealso href = "http://developer.postmarkapp.com/bounces" />
         public IEnumerable<string> GetBounceTags()
         {
             var request = NewBouncesRequest();
@@ -347,12 +337,12 @@ namespace PostmarkDotNet
         }
 
         /// <summary>
-        /// Returns the raw source of the bounce we accepted. 
-        /// If Postmark does not have a dump for that bounce, it will return an empty string.
+        ///   Returns the raw source of the bounce we accepted. 
+        ///   If Postmark does not have a dump for that bounce, it will return an empty string.
         /// </summary>
-        /// <param name="bounceId">The bounce ID</param>
+        /// <param name = "bounceId">The bounce ID</param>
         /// <returns></returns>
-        /// <seealso href="http://developer.postmarkapp.com/bounces" />
+        /// <seealso href = "http://developer.postmarkapp.com/bounces" />
         public PostmarkBounceDump GetBounceDump(string bounceId)
         {
             var request = NewBouncesRequest();
@@ -364,11 +354,11 @@ namespace PostmarkDotNet
         }
 
         /// <summary>
-        /// Activates a deactivated bounce.
+        ///   Activates a deactivated bounce.
         /// </summary>
-        /// <param name="bounceId">The bounce ID</param>
+        /// <param name = "bounceId">The bounce ID</param>
         /// <returns></returns>
-        /// <seealso href="http://developer.postmarkapp.com/bounces" />
+        /// <seealso href = "http://developer.postmarkapp.com/bounces" />
         public PostmarkBounceActivation ActivateBounce(string bounceId)
         {
             var request = NewBouncesRequest();
@@ -408,7 +398,7 @@ namespace PostmarkDotNet
             {
                 throw new ValidationException("You must specify a valid 'To' email address.");
             }
-            var recipients = message.To.Split(new[] { ',' }, StringSplitOptions.RemoveEmptyEntries);
+            var recipients = message.To.Split(new[] {','}, StringSplitOptions.RemoveEmptyEntries);
             foreach (var recipient in recipients.Where(email => !specification.IsSatisfiedBy(email)))
             {
                 throw new ValidationException(
@@ -421,9 +411,9 @@ namespace PostmarkDotNet
                 throw new ValidationException("If a 'ReplyTo' email address is included, it must be valid.");
             }
 
-            if(!string.IsNullOrEmpty(message.Cc))
+            if (!string.IsNullOrEmpty(message.Cc))
             {
-                var ccs = message.Cc.Split(new[] { ',' }, StringSplitOptions.RemoveEmptyEntries);
+                var ccs = message.Cc.Split(new[] {','}, StringSplitOptions.RemoveEmptyEntries);
                 foreach (var cc in ccs.Where(email => !specification.IsSatisfiedBy(email)))
                 {
                     throw new ValidationException(
@@ -434,7 +424,7 @@ namespace PostmarkDotNet
 
             if (!string.IsNullOrEmpty(message.Bcc))
             {
-                var bccs = message.Bcc.Split(new[] { ',' }, StringSplitOptions.RemoveEmptyEntries);
+                var bccs = message.Bcc.Split(new[] {','}, StringSplitOptions.RemoveEmptyEntries);
                 foreach (var bcc in bccs.Where(email => !specification.IsSatisfiedBy(email)))
                 {
                     throw new ValidationException(
@@ -479,9 +469,9 @@ namespace PostmarkDotNet
         private RestRequest NewBouncesRequest()
         {
             var request = new RestRequest
-            {
-                Serializer = _serializer
-            };
+                              {
+                                  Serializer = _serializer
+                              };
 
             SetPostmarkMeta(request);
 

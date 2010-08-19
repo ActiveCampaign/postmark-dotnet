@@ -144,12 +144,26 @@ namespace PostmarkDotNet
         /// <param name = "message">The existing message.</param>
         public PostmarkMessage(MailMessage message)
         {
-            From = message.From.DisplayName;
-            To = message.To.Count > 0 ? message.To[0].DisplayName : null;
+            if (message.From != null) {
+                if (!string.IsNullOrEmpty (message.From.DisplayName))
+                    From = string.Format ("{0} <{1}>", message.From.DisplayName, message.From.Address);
+                else
+                    From = message.From.Address;
+            }
+            To = message.To.Count > 0 ? message.To[0].Address : null;
             Subject = message.Subject;
             HtmlBody = message.IsBodyHtml ? message.Body : null;
             TextBody = message.IsBodyHtml ? null : message.Body;
-            ReplyTo = message.ReplyTo != null ? message.ReplyTo.DisplayName : null;
+            if (message.ReplyTo != null) {
+                if (!string.IsNullOrEmpty (message.ReplyTo.DisplayName))
+                    ReplyTo = string.Format ("{0} <{1}>", message.ReplyTo.DisplayName, message.ReplyTo.Address);
+                else
+                    ReplyTo = message.ReplyTo.Address;
+            }
+            var header = message.Headers.Get ("X-PostmarkTag");
+            if (header != null) {
+                Tag = (string) header;
+            }
             Headers = message.Headers;
             Attachments = new List<PostmarkMessageAttachment>(0);
 

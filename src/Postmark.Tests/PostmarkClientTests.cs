@@ -54,6 +54,7 @@
 
 using System;
 using System.Configuration;
+using System.Net.Mail;
 using NUnit.Framework;
 using PostmarkDotNet;
 using PostmarkDotNet.Validation;
@@ -288,6 +289,20 @@ namespace Postmark.Tests
             Assert.IsTrue(response.Status == PostmarkStatus.Success);
 
             Console.WriteLine("Postmark -> " + response.Message);
+        }
+
+        [Test]
+        public void Can_generate_postmarkmessage_from_mailmessage ()
+        {
+            var mm = new MailMessage ();
+            mm.Subject = "test";
+            mm.Body = "test";
+            mm.Headers.Add ("X-PostmarkTag", "mytag");
+
+            var pm = new PostmarkMessage (mm);
+            Assert.AreEqual (mm.Subject, pm.Subject);
+            Assert.AreEqual (mm.Body, pm.TextBody);
+            Assert.AreEqual ("mytag", pm.Tag);
         }
     }
 }

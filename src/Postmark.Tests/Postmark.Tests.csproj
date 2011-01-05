@@ -82,6 +82,7 @@
       <Link>Converters\UnicodeJsonStringConverter.cs</Link>
     </Compile>
     <Compile Include="Converters\UnicodeJsonStringConverterTests.cs" />
+    <Compile Include="PostmarkClientTests.Async.cs" />
     <Compile Include="PostmarkClientTests.Bounces.cs" />
     <Compile Include="PostmarkClientTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

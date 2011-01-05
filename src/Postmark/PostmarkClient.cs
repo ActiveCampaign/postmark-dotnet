@@ -70,7 +70,7 @@ namespace PostmarkDotNet
     ///   Use this client in place of an <see cref = "SmtpClient" /> to send messages
     ///   through this service.
     /// </summary>
-    public class PostmarkClient
+    public partial class PostmarkClient
     {
         private static readonly JsonSerializerSettings _settings;
         private static readonly PostmarkSerializer _serializer;
@@ -438,11 +438,16 @@ namespace PostmarkDotNet
         {
             var response = _client.Request(request);
 
+            return GetPostmarkResponseImpl(response);
+        }
+
+        private static PostmarkResponse GetPostmarkResponseImpl(RestResponseBase response)
+        {
             var result = TryGetPostmarkResponse(response) ?? new PostmarkResponse
-                                                                 {
-                                                                     Status = PostmarkStatus.Unknown,
-                                                                     Message = response.StatusDescription
-                                                                 };
+            {
+                Status = PostmarkStatus.Unknown,
+                Message = response.StatusDescription
+            };
 
             switch ((int)response.StatusCode)
             {

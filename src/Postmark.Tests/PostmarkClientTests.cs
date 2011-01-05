@@ -1,58 +1,4 @@
-﻿#region License
-
-// Postmark
-// http://postmarkapp.com
-// (c) 2010 Wildbit
-// 
-// 
-// Postmark.NET
-// http://github.com/lunarbits/postmark-dotnet
-// 
-// The MIT License
-// 
-// Copyright (c) 2010 Daniel Crenna
-// 
-// Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the "Software"), to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions:
-// 
-// The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
-// 
-// THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
-// 
-// 
-// Json.NET 
-// http://codeplex.com/json
-// 
-// Copyright (c) 2007 James Newton-King
-// 
-// The MIT License
-// 
-// Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the "Software"), to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions:
-// 
-// The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
-// 
-// THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
-// 
-// 
-// RestSharp
-// http://github.com/johnsheehan/RestSharp 
-// 
-// Copyright (c) 2010 John Sheehan
-// 
-// Licensed under the Apache License, Version 2.0 (the "License");
-// you may not use this file except in compliance with the License.
-// You may obtain a copy of the License at
-// 
-// http://www.apache.org/licenses/LICENSE-2.0
-// 
-// Unless required by applicable law or agreed to in writing, software
-// distributed under the License is distributed on an "AS IS" BASIS,
-// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-// See the License for the specific language governing permissions and
-// limitations under the License. 
-
-#endregion
-
-using System;
+﻿using System;
 using System.Configuration;
 using System.Net.Mail;
 using NUnit.Framework;
@@ -78,9 +24,9 @@ namespace Postmark.Tests
             _to = settings["To"];
         }
 
-        private const string _subject = "A test from Postmark.NET";
-        private const string _textBody = "This is a test message!";
-        private const string _invalidRecipient = "test@mctesterton.com";
+        private const string Subject = "A test from Postmark.NET";
+        private const string TextBody = "This is a test message!";
+        private const string InvalidRecipient = "test@mctesterton.com";
 
         private static string _serverToken;
         private static string _from;
@@ -89,7 +35,7 @@ namespace Postmark.Tests
         [Test]
         public void Can_detect_html_in_message()
         {
-            var message = new PostmarkMessage(_from, _to, _subject, "Have a <b>great</b> day!");
+            var message = new PostmarkMessage(_from, _to, Subject, "Have a <b>great</b> day!");
 
             Assert.IsNotNull(message);
             Assert.IsTrue(IsBodyHtml(message));
@@ -98,7 +44,7 @@ namespace Postmark.Tests
         [Test]
         public void Can_detect_plain_text_message()
         {
-            var message = new PostmarkMessage(_from, _to, _subject, "Have a great day!");
+            var message = new PostmarkMessage(_from, _to, Subject, "Have a great day!");
 
             Assert.IsNotNull(message);
             Assert.IsFalse(IsBodyHtml(message));
@@ -119,8 +65,8 @@ namespace Postmark.Tests
                             {
                                 To = _to,
                                 From = _from, // This must be a verified sender signature
-                                Subject = _subject,
-                                TextBody = _textBody
+                                Subject = Subject,
+                                TextBody = TextBody
                             };
 
             var response = postmark.SendMessage(email);
@@ -142,8 +88,8 @@ namespace Postmark.Tests
             {
                 To = _to,
                 From = string.Format("The Team <{0}>", _from), // This must be a verified sender signature
-                Subject = _subject,
-                TextBody = _textBody
+                Subject = Subject,
+                TextBody = TextBody
             };
 
             var response = postmark.SendMessage(email);
@@ -165,8 +111,8 @@ namespace Postmark.Tests
             {
                 To = _to,
                 From = _from, // This must be a verified sender signature
-                Subject = _subject,
-                TextBody = _textBody,
+                Subject = Subject,
+                TextBody = TextBody,
             };
 
             email.Headers.Add("X-Header-Test-1", "This is a header value");
@@ -192,8 +138,8 @@ namespace Postmark.Tests
             {
                 To = _to,
                 From = _from, // This must be a verified sender signature
-                Subject = _subject,
-                TextBody = _textBody,
+                Subject = Subject,
+                TextBody = TextBody,
             };
 
             email.AddAttachment("logo.png", "image/png");
@@ -216,8 +162,8 @@ namespace Postmark.Tests
                             {
                                 To = "earth",
                                 From = _from,
-                                Subject = _subject,
-                                TextBody = _textBody
+                                Subject = Subject,
+                                TextBody = TextBody
                             };
 
             postmark.SendMessage(email);
@@ -230,10 +176,10 @@ namespace Postmark.Tests
 
             var email = new PostmarkMessage
                             {
-                                To = _invalidRecipient,
-                                From = _invalidRecipient, // This must not be a verified sender signature
-                                Subject = _subject,
-                                TextBody = _textBody
+                                To = InvalidRecipient,
+                                From = InvalidRecipient, // This must not be a verified sender signature
+                                Subject = Subject,
+                                TextBody = TextBody
                             };
 
             var response = postmark.SendMessage(email);
@@ -252,10 +198,10 @@ namespace Postmark.Tests
 
             var email = new PostmarkMessage
                             {
-                                To = _invalidRecipient,
-                                From = _invalidRecipient,
-                                Subject = _subject,
-                                TextBody = _textBody
+                                To = InvalidRecipient,
+                                From = InvalidRecipient,
+                                Subject = Subject,
+                                TextBody = TextBody
                             };
 
             var response = postmark.SendMessage(email);
@@ -274,12 +220,12 @@ namespace Postmark.Tests
 
             var email = new PostmarkMessage
                             {
-                                To = _invalidRecipient,
+                                To = InvalidRecipient,
                                 Cc = "test-cc@example.com",
                                 Bcc = "test-bcc@example.com",
-                                From = _invalidRecipient,
-                                Subject = _subject,
-                                TextBody = _textBody
+                                From = InvalidRecipient,
+                                Subject = Subject,
+                                TextBody = TextBody
                             };
 
             var response = postmark.SendMessage(email);

@@ -79,11 +79,11 @@ namespace PostmarkDotNet
         static PostmarkClient()
         {
             _settings = new JsonSerializerSettings
-                            {
-                                MissingMemberHandling = MissingMemberHandling.Ignore,
-                                NullValueHandling = NullValueHandling.Include,
-                                DefaultValueHandling = DefaultValueHandling.Include
-                            };
+            {
+                MissingMemberHandling = MissingMemberHandling.Ignore,
+                NullValueHandling = NullValueHandling.Include,
+                DefaultValueHandling = DefaultValueHandling.Include
+            };
 
             _settings.Converters.Add(new UnicodeJsonStringConverter());
             _settings.Converters.Add(new NameValueCollectionConverter());
@@ -100,9 +100,9 @@ namespace PostmarkDotNet
         {
             ServerToken = serverToken;
             _client = new RestClient
-                          {
-                              Authority = "http://api.postmarkapp.com"
-                          };
+            {
+                Authority = "http://api.postmarkapp.com"
+            };
         }
 
         ///<summary>
@@ -398,7 +398,7 @@ namespace PostmarkDotNet
             {
                 throw new ValidationException("You must specify a valid 'To' email address.");
             }
-            var recipients = message.To.Split(new[] {','}, StringSplitOptions.RemoveEmptyEntries);
+            var recipients = message.To.Split(new[] { ',' }, StringSplitOptions.RemoveEmptyEntries);
             foreach (var recipient in recipients.Where(email => !specification.IsSatisfiedBy(email)))
             {
                 throw new ValidationException(
@@ -413,7 +413,7 @@ namespace PostmarkDotNet
 
             if (!string.IsNullOrEmpty(message.Cc))
             {
-                var ccs = message.Cc.Split(new[] {','}, StringSplitOptions.RemoveEmptyEntries);
+                var ccs = message.Cc.Split(new[] { ',' }, StringSplitOptions.RemoveEmptyEntries);
                 foreach (var cc in ccs.Where(email => !specification.IsSatisfiedBy(email)))
                 {
                     throw new ValidationException(
@@ -424,7 +424,7 @@ namespace PostmarkDotNet
 
             if (!string.IsNullOrEmpty(message.Bcc))
             {
-                var bccs = message.Bcc.Split(new[] {','}, StringSplitOptions.RemoveEmptyEntries);
+                var bccs = message.Bcc.Split(new[] { ',' }, StringSplitOptions.RemoveEmptyEntries);
                 foreach (var bcc in bccs.Where(email => !specification.IsSatisfiedBy(email)))
                 {
                     throw new ValidationException(
@@ -438,40 +438,53 @@ namespace PostmarkDotNet
         {
             var response = _client.Request(request);
 
-            PostmarkResponse result;
-            switch ((int) response.StatusCode)
+            var result = TryGetPostmarkResponse(response) ?? new PostmarkResponse
+                                                                 {
+                                                                     Status = PostmarkStatus.Unknown,
+                                                                     Message = response.StatusDescription
+                                                                 };
+
+            switch ((int)response.StatusCode)
             {
                 case 200:
-                    result = JsonConvert.DeserializeObject<PostmarkResponse>(response.Content, _settings);
                     result.Status = PostmarkStatus.Success;
                     break;
                 case 401:
                 case 422:
-                    result = JsonConvert.DeserializeObject<PostmarkResponse>(response.Content, _settings);
                     result.Status = PostmarkStatus.UserError;
                     break;
                 case 500:
-                    result = JsonConvert.DeserializeObject<PostmarkResponse>(response.Content, _settings);
                     result.Status = PostmarkStatus.ServerError;
-                    break;
-                default:
-                    result = new PostmarkResponse
-                                 {
-                                     Status = PostmarkStatus.Unknown,
-                                     Message = response.StatusDescription
-                                 };
                     break;
             }
 
             return result;
         }
 
+        private static PostmarkResponse TryGetPostmarkResponse(RestResponseBase response)
+        {
+            PostmarkResponse result = null;
+            var statusCode = (int)response.StatusCode;
+            if (statusCode == 200 || statusCode == 401 || statusCode == 422 || statusCode == 500)
+            {
+                try
+                {
+                    result = JsonConvert.DeserializeObject<PostmarkResponse>(response.Content, _settings);
+                }
+                catch (JsonReaderException)
+                {
+                    result = null;
+                }
+            }
+            return result;
+        }
+
         private RestRequest NewBouncesRequest()
         {
             var request = new RestRequest
-                              {
-                                  Serializer = _serializer
-                              };
+            {
+                Serializer = _serializer
+            };
 
             SetPostmarkMeta(request);
 
@@ -481,11 +494,11 @@ namespace PostmarkDotNet
         private RestRequest NewEmailRequest()
         {
             var request = new RestRequest
-                              {
-                                  Path = "email",
-                                  Method = WebMethod.Post,
-                                  Serializer = _serializer
-                              };
+            {
+                Path = "email",
+                Method = WebMethod.Post,
+                Serializer = _serializer
+            };
 
             SetPostmarkMeta(request);
 

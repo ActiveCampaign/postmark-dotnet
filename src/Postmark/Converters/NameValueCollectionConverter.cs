@@ -79,7 +79,7 @@ namespace PostmarkDotNet.Converters
             writer.WriteRawValue(serialized);
         }
 
-        public override object ReadJson(JsonReader reader, Type objectType, JsonSerializer serializer)
+        public override object ReadJson(JsonReader reader, Type objectType, object existingValue, JsonSerializer serializer)
         {
             return reader.Value;
         }

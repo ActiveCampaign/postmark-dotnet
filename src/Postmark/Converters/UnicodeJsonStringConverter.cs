@@ -104,7 +104,7 @@ namespace PostmarkDotNet.Converters
             writer.WriteRawValue(buffer.ToString());
         }
 
-        public override object ReadJson(JsonReader reader, Type objectType, JsonSerializer serializer)
+        public override object ReadJson(JsonReader reader, Type objectType, object existingValue, JsonSerializer serializer)
         {
             // Automatic conversion to string from other types
             if (reader.ValueType != objectType && objectType == typeof(string))

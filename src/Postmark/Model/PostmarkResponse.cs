@@ -8,6 +8,11 @@ namespace PostmarkDotNet
     public class PostmarkResponse
     {
         /// <summary>
+        ///   The Message ID returned from Postmark.
+        /// </summary>
+        public Guid MessageID { get; set; }
+
+        /// <summary>
         ///   The status outcome of the response.
         /// </summary>
         public PostmarkStatus Status { get; set; }

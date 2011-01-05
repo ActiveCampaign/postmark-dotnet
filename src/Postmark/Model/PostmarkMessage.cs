@@ -4,6 +4,8 @@ using System.Collections.Specialized;
 using System.IO;
 using System.Linq;
 using System.Net.Mail;
+using System.Net.Mime;
+using System.Text;
 using System.Web;
 using PostmarkDotNet.Validation;
 
@@ -67,6 +69,7 @@ namespace PostmarkDotNet
         public PostmarkMessage(string from, string to, string subject, string body)
             : this(from, to, subject, body, null)
         {
+
         }
 
         /// <summary>
@@ -99,26 +102,31 @@ namespace PostmarkDotNet
         /// <param name = "message">The existing message.</param>
         public PostmarkMessage(MailMessage message)
         {
-            if (message.From != null) {
-                if (!string.IsNullOrEmpty (message.From.DisplayName))
-                    From = string.Format ("{0} <{1}>", message.From.DisplayName, message.From.Address);
-                else
-                    From = message.From.Address;
-            }
-            To = message.To.Count > 0 ? message.To[0].Address : null;
+            From = !string.IsNullOrEmpty(message.From.DisplayName)
+                       ? string.Format("{0} <{1}>", message.From.DisplayName, message.From.Address)
+                       : message.From.Address;
+            
+            GetMailMessageRecipients(message);
+            
             Subject = message.Subject;
             HtmlBody = message.IsBodyHtml ? message.Body : null;
             TextBody = message.IsBodyHtml ? null : message.Body;
-            if (message.ReplyTo != null) {
-                if (!string.IsNullOrEmpty (message.ReplyTo.DisplayName))
-                    ReplyTo = string.Format ("{0} <{1}>", message.ReplyTo.DisplayName, message.ReplyTo.Address);
-                else
-                    ReplyTo = message.ReplyTo.Address;
+
+            GetHtmlBodyFromAlternateViews(message);
+            
+            if (message.ReplyTo != null)
+            {
+                ReplyTo = !string.IsNullOrEmpty(message.ReplyTo.DisplayName)
+                              ? string.Format("{0} <{1}>", message.ReplyTo.DisplayName, message.ReplyTo.Address)
+                              : message.ReplyTo.Address;
             }
+            
             var header = message.Headers.Get ("X-PostmarkTag");
-            if (header != null) {
-                Tag = (string) header;
+            if (header != null)
+            {
+                Tag = header;
             }
+
             Headers = message.Headers;
             Attachments = new List<PostmarkMessageAttachment>(0);
 
@@ -134,6 +142,91 @@ namespace PostmarkDotNet
             {
                 Attachments.Add(item);
             }
+        }
+
+        private void GetMailMessageRecipients(MailMessage message)
+        {
+            GetMailMessageTo(message);
+            GetMailMessageCc(message);
+            GetMailMessageBcc(message);
+        }
+
+        private void GetMailMessageCc(MailMessage message)
+        {
+            var sb = new StringBuilder(0);
+            
+            if (message.CC.Count > 0)
+            {
+                foreach (var cc in message.CC)
+                {
+                    sb.AppendFormat("{0},", cc.Address);
+                }
+                Cc = Cc.Remove(Cc.Length - 1, 1);
+            }
+
+            Cc = sb.ToString();
+        }
+
+        private void GetMailMessageBcc(MailMessage message)
+        {
+            var sb = new StringBuilder(0);
+            
+            if (message.Bcc.Count > 0)
+            {
+                foreach (var bcc in message.Bcc)
+                {
+                    sb.AppendFormat("{0},", bcc.Address);
+                }
+                Bcc = Bcc.Remove(Bcc.Length - 1, 1);
+            }
+
+            Bcc = sb.ToString();
+        }
+
+        private void GetMailMessageTo(MailMessage message)
+        {
+            var sb = new StringBuilder(0);
+            foreach (var to in message.To)
+            {
+                if (!string.IsNullOrEmpty(to.DisplayName))
+                {
+                    sb.AppendFormat("{0} <{1}>,", to.DisplayName, to.Address);
+                }
+                else
+                {
+                    sb.AppendFormat("{0},", to.Address);
+                }
+            }
+            To = To.Remove(To.Length - 1, 1);
+            To = sb.ToString();
+        }
+
+        // http://msdn.microsoft.com/en-us/library/system.net.mail.mailmessage.alternateviews.aspx
+        private void GetHtmlBodyFromAlternateViews(MailMessage message)
+        {
+            if (message.AlternateViews.Count <= 0)
+            {
+                return;
+            }
+
+            var plainTextView = message.AlternateViews.Where(v => v.ContentType.MediaType.Equals(MediaTypeNames.Text.Plain)).FirstOrDefault();
+            if (plainTextView != null)
+            {
+                TextBody = GetStringFromView(plainTextView);
+            }
+
+            var htmlView = message.AlternateViews.Where(v => v.ContentType.MediaType.Equals(MediaTypeNames.Text.Html)).FirstOrDefault();
+            if (htmlView != null)
+            {
+                HtmlBody = GetStringFromView(htmlView);
+            }
+        }
+
+        private static string GetStringFromView(AttachmentBase view)
+        {
+            var data = new byte[view.ContentStream.Length];
+            view.ContentStream.Read(data, 0, data.Length);
+            return Encoding.ASCII.GetString(data);
         }
 
         /// <summary>

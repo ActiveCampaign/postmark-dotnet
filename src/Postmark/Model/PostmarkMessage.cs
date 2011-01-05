@@ -25,7 +25,6 @@ namespace PostmarkDotNet
                                                                          "avi",
                                                                          "mpg",
                                                                          "mp3",
-                                                                         "mp3",
                                                                          "rm",
                                                                          "mov",
                                                                          "psd",
@@ -41,11 +40,12 @@ namespace PostmarkDotNet
                                                                          "docx",
                                                                          "ppt",
                                                                          "pptx",
+                                                                         "xls",
+                                                                         "xlsx",
                                                                          "ps",
                                                                          "eps",
                                                                          "log",
-                                                                         "xls",
-                                                                         "xlsx"
+                                                                         "csv"
                                                                      };
 
         /// <summary>

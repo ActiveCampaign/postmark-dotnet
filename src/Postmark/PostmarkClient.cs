@@ -70,7 +70,7 @@ namespace PostmarkDotNet
     ///   Use this client in place of an <see cref = "SmtpClient" /> to send messages
     ///   through this service.
     /// </summary>
-    public partial class PostmarkClient
+    public partial class PostmarkClient : IPostmarkClient
     {
         private static readonly JsonSerializerSettings _settings;
         private static readonly PostmarkSerializer _serializer;

@@ -74,6 +74,7 @@
   <ItemGroup>
     <Compile Include="Converters\NameValueCollectionConverter.cs" />
     <Compile Include="Converters\UnicodeJsonStringConverter.cs" />
+    <Compile Include="IPostmarkClient.cs" />
     <Compile Include="Model\PostmarkBounce.cs" />
     <Compile Include="Model\PostmarkBounceActivation.cs" />
     <Compile Include="Model\PostmarkBounceDump.cs" />

@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<package>
+	<metadata>
+		<id>Postmark</id>
+		<version>1.0.0</version>
+		<authors>Daniel Crenna</authors>
+		<owners>Wildbit</owners>
+		<description>Leave email delivery to the experts with this plugin to bring Postmark email services to your web application. Requires a Postmark account.</description>
+		<summary>Leave email delivery to the experts with this plugin to bring Postmark email services to your web application.</summary>
+		<language>en-US</language>
+		<projectUrl>http://developer.postmarkapp.com</projectUrl>
+		<licenseUrl>https://github.com/danielcrenna/postmark-dotnet/raw/master/src/LICENSE.txt</licenseUrl>
+		<tags>postmark email web api client http rest services wrapper json</tags>   
+	</metadata>
+</package>

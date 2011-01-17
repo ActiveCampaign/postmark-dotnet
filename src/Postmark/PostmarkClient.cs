@@ -383,7 +383,10 @@ namespace PostmarkDotNet
         private static void CleanPostmarkMessage(PostmarkMessage message)
         {
             message.From = message.From.Trim();
-            message.To = message.To.Trim();
+            if(!string.IsNullOrEmpty(message.To))
+            {
+                message.To = message.To.Trim();    
+            }
             message.Subject = message.Subject != null ? message.Subject.Trim() : "";
         }
 
@@ -394,16 +397,15 @@ namespace PostmarkDotNet
             {
                 throw new ValidationException("You must specify a valid 'From' email address.");
             }
-            if (string.IsNullOrEmpty(message.To))
+            if (!string.IsNullOrEmpty(message.To))
             {
-                throw new ValidationException("You must specify a valid 'To' email address.");
-            }
-            var recipients = message.To.Split(new[] { ',' }, StringSplitOptions.RemoveEmptyEntries);
-            foreach (var recipient in recipients.Where(email => !specification.IsSatisfiedBy(email)))
-            {
-                throw new ValidationException(
-                    string.Format("The provided recipient address '{0}' is not valid", recipient)
-                    );
+                var recipients = message.To.Split(new[] { ',' }, StringSplitOptions.RemoveEmptyEntries);
+                foreach (var recipient in recipients.Where(email => !specification.IsSatisfiedBy(email)))
+                {
+                    throw new ValidationException(
+                        string.Format("The provided recipient address '{0}' is not valid", recipient)
+                        );
+                }
             }
 
             if (!string.IsNullOrEmpty(message.ReplyTo) && !specification.IsSatisfiedBy(message.ReplyTo))

@@ -33,3 +33,4 @@ publish.xml
 TestResults
 /src/Postmark.Tests/App.config
 App.config
+src/Postmark.Tests/App.config

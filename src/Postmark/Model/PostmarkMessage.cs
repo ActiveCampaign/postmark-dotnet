@@ -121,7 +121,7 @@ namespace PostmarkDotNet
                               : message.ReplyTo.Address;
             }
             
-            var header = message.Headers.Get ("X-PostmarkTag");
+            var header = message.Headers.Get("X-PostmarkTag");
             if (header != null)
             {
                 Tag = header;
@@ -202,6 +202,7 @@ namespace PostmarkDotNet
         }
 
         // http://msdn.microsoft.com/en-us/library/system.net.mail.mailmessage.alternateviews.aspx
+
         private void GetHtmlBodyFromAlternateViews(MailMessage message)
         {
             if (message.AlternateViews.Count <= 0)

@@ -9,7 +9,7 @@
 		<summary>Leave email delivery to the experts with this plugin to bring Postmark email services to your web application.</summary>
 		<language>en-US</language>
 		<projectUrl>http://developer.postmarkapp.com</projectUrl>
-		<licenseUrl>https://github.com/danielcrenna/postmark-dotnet/raw/master/src/LICENSE.txt</licenseUrl>
+		<licenseUrl>https://github.com/danielcrenna/postmark-dotnet/blob/master/LICENSE</licenseUrl>
 		<tags>postmark email web api client http rest services wrapper json</tags>   
 	</metadata>
 </package>

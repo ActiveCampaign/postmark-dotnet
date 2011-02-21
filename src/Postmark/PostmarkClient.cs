@@ -101,7 +101,7 @@ namespace PostmarkDotNet
             ServerToken = serverToken;
             _client = new RestClient
             {
-                Authority = "http://api.postmarkapp.com"
+                Authority = "https://api.postmarkapp.com"
             };
         }
 
@@ -179,6 +179,49 @@ namespace PostmarkDotNet
             request.Entity = message;
 
             return GetPostmarkResponse(request);
+        }
+
+        /// <summary>
+        ///   Sends a batch of messages through the Postmark API.
+        ///   All email addresses must be valid, and the sender must be
+        ///   a valid sender signature according to Postmark. To obtain a valid
+        ///   sender signature, log in to Postmark and navigate to:
+        ///   http://postmarkapp.com/signatures.
+        /// </summary>
+        /// <param name="messages">A prepared message batch.</param>
+        /// <returns></returns>
+        public IEnumerable<PostmarkResponse> SendMessages(params PostmarkMessage[] messages)
+        {
+            if(messages.Count() > 500)
+            {
+                throw new ValidationException("You may only send up to 500 messages in a batched call");
+            }
+            return SendMessages(messages.ToList());
+        }
+
+        /// <summary>
+        ///   Sends a batch of messages through the Postmark API.
+        ///   All email addresses must be valid, and the sender must be
+        ///   a valid sender signature according to Postmark. To obtain a valid
+        ///   sender signature, log in to Postmark and navigate to:
+        ///   http://postmarkapp.com/signatures.
+        /// </summary>
+        /// <param name="messages">A prepared message batch.</param>
+        /// <returns></returns>
+        public IEnumerable<PostmarkResponse> SendMessages(IEnumerable<PostmarkMessage> messages)
+        {
+            var request = NewBatchedEmailRequest();
+            var batch = new List<PostmarkMessage>(messages.Count());
+
+            foreach (var message in messages)
+            {
+                ValidatePostmarkMessage(message);
+                CleanPostmarkMessage(message);
+                batch.Add(message);
+            }
+
+            request.Entity = messages;
+            return GetPostmarkResponses(request);
         }
 
         #endregion
@@ -443,6 +486,44 @@ namespace PostmarkDotNet
             return GetPostmarkResponseImpl(response);
         }
 
+        private IEnumerable<PostmarkResponse> GetPostmarkResponses(RestRequest request)
+        {
+            var response = _client.Request(request);
+
+            return GetPostmarkResponsesImpl(response);
+        }
+
+        private static IEnumerable<PostmarkResponse> GetPostmarkResponsesImpl(RestResponseBase response)
+        {
+            var results = TryGetPostmarkResponses(response) ?? new List<PostmarkResponse>
+                        {
+                            new PostmarkResponse
+                                {
+                                    Status = PostmarkStatus.Unknown,
+                                    Message = response.StatusDescription
+                                }
+                        };
+
+            foreach(var result in results)
+            {
+                switch ((int)response.StatusCode)
+                {
+                    case 200:
+                        result.Status = PostmarkStatus.Success;
+                        break;
+                    case 401:
+                    case 422:
+                        result.Status = PostmarkStatus.UserError;
+                        break;
+                    case 500:
+                        result.Status = PostmarkStatus.ServerError;
+                        break;
+                }
+            }
+            
+            return results;
+        }
+
         private static PostmarkResponse GetPostmarkResponseImpl(RestResponseBase response)
         {
             var result = TryGetPostmarkResponse(response) ?? new PostmarkResponse
@@ -486,6 +567,24 @@ namespace PostmarkDotNet
             return result;
         }
 
+        private static IEnumerable<PostmarkResponse> TryGetPostmarkResponses(RestResponseBase response)
+        {
+            IEnumerable<PostmarkResponse> result = null;
+            var statusCode = (int)response.StatusCode;
+            if (statusCode == 200 || statusCode == 401 || statusCode == 422 || statusCode == 500)
+            {
+                try
+                {
+                    result = JsonConvert.DeserializeObject<IEnumerable<PostmarkResponse>>(response.Content, _settings);
+                }
+                catch (JsonReaderException)
+                {
+                    result = null;
+                }
+            }
+            return result;
+        }
+
         private RestRequest NewBouncesRequest()
         {
             var request = new RestRequest
@@ -503,6 +602,20 @@ namespace PostmarkDotNet
             var request = new RestRequest
             {
                 Path = "email",
+                Method = WebMethod.Post,
+                Serializer = _serializer
+            };
+
+            SetPostmarkMeta(request);
+
+            return request;
+        }
+
+        private RestRequest NewBatchedEmailRequest()
+        {
+            var request = new RestRequest
+            {
+                Path = "email/batch",
                 Method = WebMethod.Post,
                 Serializer = _serializer
             };

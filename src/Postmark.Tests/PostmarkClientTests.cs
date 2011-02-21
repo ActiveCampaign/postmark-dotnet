@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Configuration;
+using System.Linq;
 using System.Net.Mail;
 using NUnit.Framework;
 using PostmarkDotNet;
@@ -214,7 +215,7 @@ namespace Postmark.Tests
         }
 
         [Test]
-        public void Can_send_message_with_CC_and_BCC()
+        public void Can_send_message_with_cc_and_bcc()
         {
             var postmark = new PostmarkClient("POSTMARK_API_TEST");
 
@@ -238,17 +239,52 @@ namespace Postmark.Tests
         }
 
         [Test]
-        public void Can_generate_postmarkmessage_from_mailmessage ()
+        public void Can_generate_postmarkmessage_from_mailmessage()
         {
-            var mm = new MailMessage ();
-            mm.Subject = "test";
-            mm.Body = "test";
+            var mm = new MailMessage
+                         {
+                             Subject = "test",
+                             Body = "test"
+                         };
             mm.Headers.Add ("X-PostmarkTag", "mytag");
 
             var pm = new PostmarkMessage (mm);
             Assert.AreEqual (mm.Subject, pm.Subject);
             Assert.AreEqual (mm.Body, pm.TextBody);
             Assert.AreEqual ("mytag", pm.Tag);
+        }
+
+        [Test]
+        [Ignore("This test sends two real emails.")]
+        public void Can_send_batched_messages()
+        {
+            var postmark = new PostmarkClient(_serverToken);
+
+            var first = new PostmarkMessage
+            {
+                To = _to,
+                From = _from, // This must be a verified sender signature
+                Subject = Subject,
+                TextBody = TextBody + " one"
+            };
+            var second = new PostmarkMessage
+            {
+                To = _to,
+                From = _from, // This must be a verified sender signature
+                Subject = Subject,
+                TextBody = TextBody + " two"
+            };
+
+            var responses = postmark.SendMessages(first, second);
+            Assert.AreEqual(2, responses.Count());
+
+            foreach (var response in responses)
+            {
+                Assert.IsNotNull(response);
+                Assert.IsNotNullOrEmpty(response.Message);
+                Assert.IsTrue(response.Status == PostmarkStatus.Success);
+                Console.WriteLine("Postmark -> " + response.Message);
+            }
         }
     }
 }

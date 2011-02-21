@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Collections.Specialized;
+using System.Linq;
 using Hammock;
 using Hammock.Web;
 using Newtonsoft.Json;
@@ -79,6 +80,54 @@ namespace PostmarkDotNet
             return EndGetPostmarkResponse(asyncResult);
         }
 
+        /// <summary>
+        ///   Sends a batch of up to messages through the Postmark API.
+        ///   All email addresses must be valid, and the sender must be
+        ///   a valid sender signature according to Postmark. To obtain a valid
+        ///   sender signature, log in to Postmark and navigate to:
+        ///   http://postmarkapp.com/signatures.
+        /// </summary>
+        /// <param name="messages">A prepared message batch.</param>
+        /// <returns></returns>
+        public IAsyncResult BeginSendMessages(IEnumerable<PostmarkMessage> messages)
+        {
+            var request = NewBatchedEmailRequest();
+            var batch = new List<PostmarkMessage>(messages.Count());
+
+            foreach (var message in messages)
+            {
+                ValidatePostmarkMessage(message);
+                CleanPostmarkMessage(message);
+                batch.Add(message);
+            }
+
+            return BeginGetPostmarkResponses(request);
+        }
+
+        /// <summary>
+        ///   Sends a batch of up to messages through the Postmark API.
+        ///   All email addresses must be valid, and the sender must be
+        ///   a valid sender signature according to Postmark. To obtain a valid
+        ///   sender signature, log in to Postmark and navigate to:
+        ///   http://postmarkapp.com/signatures.
+        /// </summary>
+        /// <param name="messages">A prepared message batch.</param>
+        /// <returns></returns>
+        public IAsyncResult BeginSendMessages(params PostmarkMessage[] messages)
+        {
+            return BeginSendMessages(messages.ToList());
+        }
+
+        ///<summary>
+        /// Completes an asynchronous request to send a message batch.
+        ///</summary>
+        ///<param name="asyncResult">An <see cref="IAsyncResult" /> for the desired response</param>
+        ///<returns></returns>
+        public IEnumerable<PostmarkResponse> EndSendMessages(IAsyncResult asyncResult)
+        {
+            return EndGetPostmarkResponses(asyncResult);
+        }
+
         private IAsyncResult BeginGetPostmarkResponse(RestRequest request)
         {
             var response = _client.BeginRequest(request);
@@ -90,6 +139,19 @@ namespace PostmarkDotNet
             var response = _client.EndRequest(asyncResult);
 
             return GetPostmarkResponseImpl(response);
+        }
+
+        private IAsyncResult BeginGetPostmarkResponses(RestRequest request)
+        {
+            var response = _client.BeginRequest(request);
+            return response;
+        }
+
+        private IEnumerable<PostmarkResponse> EndGetPostmarkResponses(IAsyncResult asyncResult)
+        {
+            var response = _client.EndRequest(asyncResult);
+
+            return GetPostmarkResponsesImpl(response);
         }
 
         #endregion
@@ -337,5 +399,7 @@ namespace PostmarkDotNet
         }
 
         #endregion
+
+
     }
 }

@@ -66,8 +66,7 @@ namespace PostmarkDotNet
         /// <param name = "to">An email address for a recipient.</param>
         /// <param name = "subject">The message subject line.</param>
         /// <param name = "body">The message body.</param>
-        public PostmarkMessage(string from, string to, string subject, string body)
-            : this(from, to, subject, body, null)
+        public PostmarkMessage(string from, string to, string subject, string body) : this(from, to, subject, body, null)
         {
 
         }
@@ -347,9 +346,9 @@ namespace PostmarkDotNet
                 throw new ValidationException("File path provided has no length.");
             }
 
-            //Image files: gif, jpg, jpeg, png, swf, flv, avi, mpg, mp3, rm, mov, psd, ai, tif, tiff
-            //Documents: txt, rtf, htm, html, pdf, doc, docx, ppt, pptx, xls, xlsx, ps, eps
-            //Miscellaneous: log
+            // Image files: gif, jpg, jpeg, png, swf, flv, avi, mpg, mp3, rm, mov, psd, ai, tif, tiff
+            // Documents: txt, rtf, htm, html, pdf, doc, docx, ppt, pptx, xls, xlsx, ps, eps
+            // Miscellaneous: log
 
             var extension = fileInfo.Extension.ToLowerInvariant().Substring(1);
             if (!_whitelist.Contains(extension))

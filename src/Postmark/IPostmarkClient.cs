@@ -47,8 +47,7 @@ namespace PostmarkDotNet
         /// <param name = "body">The message body.</param>
         /// <param name = "headers">A collection of additional mail headers to send with the message.</param>
         /// <returns>A <see cref = "PostmarkResponse" /> with details about the transaction.</returns>
-        PostmarkResponse SendMessage(string from, string to, string subject, string body,
-                                                     NameValueCollection headers);
+        PostmarkResponse SendMessage(string from, string to, string subject, string body, NameValueCollection headers);
 
         /// <summary>
         ///   Sends a message through the Postmark API.
@@ -60,6 +59,28 @@ namespace PostmarkDotNet
         /// <param name = "message">A prepared message instance.</param>
         /// <returns></returns>
         PostmarkResponse SendMessage(PostmarkMessage message);
+
+        /// <summary>
+        ///   Sends a batch of up to 500 messages through the Postmark API.
+        ///   All email addresses must be valid, and the sender must be
+        ///   a valid sender signature according to Postmark. To obtain a valid
+        ///   sender signature, log in to Postmark and navigate to:
+        ///   http://postmarkapp.com/signatures.
+        /// </summary>
+        /// <param name="messages">A prepared message batch.</param>
+        /// <returns></returns>
+        IEnumerable<PostmarkResponse> SendMessages(params PostmarkMessage[] messages);
+
+        /// <summary>
+        ///   Sends a batch of up to messages through the Postmark API.
+        ///   All email addresses must be valid, and the sender must be
+        ///   a valid sender signature according to Postmark. To obtain a valid
+        ///   sender signature, log in to Postmark and navigate to:
+        ///   http://postmarkapp.com/signatures.
+        /// </summary>
+        /// <param name="messages">A prepared message batch.</param>
+        /// <returns></returns>
+        IEnumerable<PostmarkResponse> SendMessages(IEnumerable<PostmarkMessage> messages);
 
         /// <summary>
         ///   Retrieves the bounce-related <see cref = "PostmarkDeliveryStats" /> results for the
@@ -80,8 +101,7 @@ namespace PostmarkDotNet
         /// <param name = "count">The number of results to return by the page offset; mandatory.</param>
         /// <returns></returns>
         /// <seealso href = "http://developer.postmarkapp.com/bounces" />
-        PostmarkBounces GetBounces(PostmarkBounceType type, bool? inactive, string emailFilter, string tag,
-                                                   int offset, int count);
+        PostmarkBounces GetBounces(PostmarkBounceType type, bool? inactive, string emailFilter, string tag, int offset, int count);
 
         /// <summary>
         ///   Retrieves a collection of <see cref = "PostmarkBounce" /> instances along
@@ -216,6 +236,35 @@ namespace PostmarkDotNet
         /// <param name = "message">A prepared message instance</param>
         /// <returns></returns>
         IAsyncResult BeginSendMessage(PostmarkMessage message);
+
+        /// <summary>
+        ///   Sends a batch of up to messages through the Postmark API.
+        ///   All email addresses must be valid, and the sender must be
+        ///   a valid sender signature according to Postmark. To obtain a valid
+        ///   sender signature, log in to Postmark and navigate to:
+        ///   http://postmarkapp.com/signatures.
+        /// </summary>
+        /// <param name="messages">A prepared message batch.</param>
+        /// <returns></returns>
+        IAsyncResult BeginSendMessages(IEnumerable<PostmarkMessage> messages);
+
+        /// <summary>
+        ///   Sends a batch of up to messages through the Postmark API.
+        ///   All email addresses must be valid, and the sender must be
+        ///   a valid sender signature according to Postmark. To obtain a valid
+        ///   sender signature, log in to Postmark and navigate to:
+        ///   http://postmarkapp.com/signatures.
+        /// </summary>
+        /// <param name="messages">A prepared message batch.</param>
+        /// <returns></returns>
+        IAsyncResult BeginSendMessages(params PostmarkMessage[] messages);
+
+        ///<summary>
+        /// Completes an asynchronous request to send a message batch.
+        ///</summary>
+        ///<param name="asyncResult">An <see cref="IAsyncResult" /> for the desired response</param>
+        ///<returns></returns>
+        IEnumerable<PostmarkResponse> EndSendMessages(IAsyncResult asyncResult);
 
         ///<summary>
         /// Completes an asynchronous request to send a message.

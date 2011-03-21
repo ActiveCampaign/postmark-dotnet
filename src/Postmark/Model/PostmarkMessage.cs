@@ -101,9 +101,10 @@ namespace PostmarkDotNet
         /// <param name = "message">The existing message.</param>
         public PostmarkMessage(MailMessage message)
         {
-            From = !string.IsNullOrEmpty(message.From.DisplayName)
-                       ? string.Format("{0} <{1}>", message.From.DisplayName, message.From.Address)
-                       : message.From.Address;
+            if (message.From != null)
+                From = !string.IsNullOrEmpty(message.From.DisplayName)
+                           ? string.Format("{0} <{1}>", message.From.DisplayName, message.From.Address)
+                           : message.From.Address;
             
             GetMailMessageRecipients(message);
             
@@ -160,7 +161,6 @@ namespace PostmarkDotNet
                 {
                     sb.AppendFormat("{0},", cc.Address);
                 }
-                Cc = Cc.Remove(Cc.Length - 1, 1);
             }
 
             Cc = sb.ToString();
@@ -176,7 +176,6 @@ namespace PostmarkDotNet
                 {
                     sb.AppendFormat("{0},", bcc.Address);
                 }
-                Bcc = Bcc.Remove(Bcc.Length - 1, 1);
             }
 
             Bcc = sb.ToString();
@@ -196,7 +195,6 @@ namespace PostmarkDotNet
                     sb.AppendFormat("{0},", to.Address);
                 }
             }
-            To = To.Remove(To.Length - 1, 1);
             To = sb.ToString();
         }
 

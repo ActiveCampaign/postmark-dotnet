@@ -246,6 +246,9 @@ namespace Postmark.Tests
                              Subject = "test",
                              Body = "test"
                          };
+            mm.To.Add ("me@me.com");
+            mm.Bcc.Add ("me@me.com");
+            mm.CC.Add ("me@me.com");
             mm.Headers.Add ("X-PostmarkTag", "mytag");
 
             var pm = new PostmarkMessage (mm);

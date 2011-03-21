@@ -57,5 +57,13 @@ namespace PostmarkDotNet
         ///   <c>true</c> if this instance can be activated; otherwise, <c>false</c>
         /// </value>
         public bool CanActivate { get; set; }
+
+        /// <summary>
+        ///   The MessageID of the email that caused the bounce, can be Empty.
+        /// </summary>
+        /// <value>
+        ///   The original email message ID
+        /// </value>
+        public Guid MessageID { get; set; }
     }
 }

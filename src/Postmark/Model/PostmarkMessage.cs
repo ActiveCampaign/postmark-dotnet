@@ -1,13 +1,19 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Collections.Specialized;
 using System.IO;
+using System.Web;
+using PostmarkDotNet.Validation;
+
+#if !WINDOWS_PHONE
+using System.Collections.Specialized;
+using System.Compat.Web;
 using System.Linq;
 using System.Net.Mail;
 using System.Net.Mime;
 using System.Text;
-using System.Web;
-using PostmarkDotNet.Validation;
+#else
+using Hammock.Silverlight.Compat;
+#endif
 
 namespace PostmarkDotNet
 {
@@ -91,6 +97,8 @@ namespace PostmarkDotNet
             Headers = headers ?? new NameValueCollection(0);
         }
 
+
+#if !WINDOWS_PHONE
         /// <summary>
         ///   Initializes a new instance of the <see cref = "PostmarkMessage" /> class
         ///   based on an existing <see cref = "MailMessage" /> instance. 
@@ -226,6 +234,7 @@ namespace PostmarkDotNet
             view.ContentStream.Read(data, 0, data.Length);
             return Encoding.ASCII.GetString(data);
         }
+#endif
 
         /// <summary>
         ///   The sender's email address.

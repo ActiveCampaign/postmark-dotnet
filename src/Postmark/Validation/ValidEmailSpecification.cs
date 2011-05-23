@@ -1,5 +1,5 @@
 ﻿using System.Text.RegularExpressions;
-using PostmarkDotNet.Specifications;
+using Specifications;
 
 namespace PostmarkDotNet.Validation
 {

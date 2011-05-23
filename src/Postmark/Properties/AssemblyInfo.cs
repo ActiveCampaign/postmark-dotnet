@@ -53,12 +53,12 @@ using System.Security;
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
 
-[assembly: AssemblyTitle("Postmark.NET")]
-[assembly: AssemblyDescription("A .NET library for the Postmark application")]
+[assembly: AssemblyTitle("Postmark")]
+[assembly: AssemblyDescription("Leave transactional email delivery to the experts")]
 [assembly: AssemblyConfiguration("")]
-[assembly: AssemblyCompany("Lunarbits")]
-[assembly: AssemblyProduct("Postmark.NET")]
-[assembly: AssemblyCopyright("Copyright © Lunarbits 2010")]
+[assembly: AssemblyCompany("Wildbit")]
+[assembly: AssemblyProduct("Postmark")]
+[assembly: AssemblyCopyright("Copyright © Wildbit 2011")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 [assembly: AllowPartiallyTrustedCallers]

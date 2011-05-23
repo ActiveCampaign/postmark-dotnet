@@ -63,6 +63,7 @@ namespace PostmarkDotNet
             var request = NewEmailRequest();
 
             ValidatePostmarkMessage(message);
+
             CleanPostmarkMessage(message);
 
             request.Entity = message;

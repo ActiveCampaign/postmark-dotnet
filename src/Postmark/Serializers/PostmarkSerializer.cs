@@ -1,8 +1,12 @@
 ﻿using System;
+#if NET40
+using System.Dynamic;
+#endif
 using System.IO;
 using System.Text;
-using Hammock.Serialization;
 using Newtonsoft.Json;
+using Hammock;
+using Hammock.Serialization;
 
 namespace PostmarkDotNet.Serializers
 {
@@ -28,9 +32,9 @@ namespace PostmarkDotNet.Serializers
             }
         }
 
-        public virtual object Deserialize(string content, Type type)
+        public virtual object Deserialize(RestResponse response, Type type)
         {
-            using (var stringReader = new StringReader(content))
+            using (var stringReader = new StringReader(response.Content))
             {
                 using (var jsonTextReader = new JsonTextReader(stringReader))
                 {
@@ -39,9 +43,9 @@ namespace PostmarkDotNet.Serializers
             }
         }
 
-        public virtual T Deserialize<T>(string content)
+        public virtual T Deserialize<T>(RestResponse<T> response)
         {
-            using (var stringReader = new StringReader(content))
+            using (var stringReader = new StringReader(response.Content))
             {
                 using (var jsonTextReader = new JsonTextReader(stringReader))
                 {
@@ -49,6 +53,13 @@ namespace PostmarkDotNet.Serializers
                 }
             }
         }
+
+#if NET40
+        public dynamic DeserializeDynamic<T>(RestResponse<T> response) where T : DynamicObject
+        {
+            throw new NotImplementedException();
+        }
+#endif
 
         public virtual string Serialize(object instance, Type type)
         {

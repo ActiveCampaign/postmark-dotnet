@@ -1,0 +1,135 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProductVersion>8.0.30703</ProductVersion>
+    <SchemaVersion>2.0</SchemaVersion>
+    <ProjectGuid>{11AEADBD-E73D-46AC-BB6E-85C71DF0E6D9}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>PostmarkDotNet</RootNamespace>
+    <AssemblyName>Postmark.Net35</AssemblyName>
+    <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+    <TargetFrameworkProfile>Client</TargetFrameworkProfile>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>..\..\bin\lib\35\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>..\..\bin\lib\35\</OutputPath>
+    <DefineConstants>TRACE;NET35</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <DocumentationFile>..\..\bin\lib\35\Postmark.Net35.xml</DocumentationFile>
+  </PropertyGroup>
+  <PropertyGroup>
+    <SignAssembly>true</SignAssembly>
+  </PropertyGroup>
+  <PropertyGroup>
+    <AssemblyOriginatorKeyFile>key.snk</AssemblyOriginatorKeyFile>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="System" />
+    <Reference Include="System.Core">
+    </Reference>
+    <Reference Include="System.Xml.Linq">
+    </Reference>
+    <Reference Include="System.Data.DataSetExtensions">
+    </Reference>
+    <Reference Include="System.Data" />
+    <Reference Include="System.Xml" />
+    <Reference Include="Hammock.ClientProfile, Version=1.0.0.0, Culture=neutral, PublicKeyToken=c148cfba29ed1a4d">
+      <HintPath>..\packages\Hammock.1.2.3\lib\net35-client\Hammock.ClientProfile.dll</HintPath>
+    </Reference>
+    <Reference Include="Newtonsoft.Json.Net35, Version=4.0.2.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\packages\Newtonsoft.Json.4.0.2\lib\net35\Newtonsoft.Json.Net35.dll</HintPath>
+    </Reference>
+    <Reference Include="Specifications.Net35, Version=1.0.0.0, Culture=neutral, PublicKeyToken=d764143a80b7cabb">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\packages\Specifications.1.0.4\lib\net35\Specifications.Net35.dll</HintPath>
+    </Reference>
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="..\Postmark\Converters\NameValueCollectionConverter.cs">
+      <Link>Converters\NameValueCollectionConverter.cs</Link>
+    </Compile>
+    <Compile Include="..\Postmark\Converters\UnicodeJsonStringConverter.cs">
+      <Link>Converters\UnicodeJsonStringConverter.cs</Link>
+    </Compile>
+    <Compile Include="..\Postmark\IPostmarkClient.cs">
+      <Link>IPostmarkClient.cs</Link>
+    </Compile>
+    <Compile Include="..\Postmark\Model\PostmarkBounce.cs">
+      <Link>Model\PostmarkBounce.cs</Link>
+    </Compile>
+    <Compile Include="..\Postmark\Model\PostmarkBounceActivation.cs">
+      <Link>Model\PostmarkBounceActivation.cs</Link>
+    </Compile>
+    <Compile Include="..\Postmark\Model\PostmarkBounceDump.cs">
+      <Link>Model\PostmarkBounceDump.cs</Link>
+    </Compile>
+    <Compile Include="..\Postmark\Model\PostmarkBounces.cs">
+      <Link>Model\PostmarkBounces.cs</Link>
+    </Compile>
+    <Compile Include="..\Postmark\Model\PostmarkBounceSummary.cs">
+      <Link>Model\PostmarkBounceSummary.cs</Link>
+    </Compile>
+    <Compile Include="..\Postmark\Model\PostmarkBounceType.cs">
+      <Link>Model\PostmarkBounceType.cs</Link>
+    </Compile>
+    <Compile Include="..\Postmark\Model\PostmarkDeliveryStats.cs">
+      <Link>Model\PostmarkDeliveryStats.cs</Link>
+    </Compile>
+    <Compile Include="..\Postmark\Model\PostmarkMessage.cs">
+      <Link>Model\PostmarkMessage.cs</Link>
+    </Compile>
+    <Compile Include="..\Postmark\Model\PostmarkMessageAttachment.cs">
+      <Link>Model\PostmarkMessageAttachment.cs</Link>
+    </Compile>
+    <Compile Include="..\Postmark\Model\PostmarkResponse.cs">
+      <Link>Model\PostmarkResponse.cs</Link>
+    </Compile>
+    <Compile Include="..\Postmark\Model\PostmarkStatus.cs">
+      <Link>Model\PostmarkStatus.cs</Link>
+    </Compile>
+    <Compile Include="..\Postmark\PostmarkClient.Async.cs">
+      <Link>PostmarkClient.Async.cs</Link>
+    </Compile>
+    <Compile Include="..\Postmark\PostmarkClient.cs">
+      <Link>PostmarkClient.cs</Link>
+    </Compile>
+    <Compile Include="..\Postmark\Serializers\PostmarkSerializer.cs">
+      <Link>Serializers\PostmarkSerializer.cs</Link>
+    </Compile>
+    <Compile Include="..\Postmark\Validation\ValidationException.cs">
+      <Link>Validation\ValidationException.cs</Link>
+    </Compile>
+    <Compile Include="..\Postmark\Validation\ValidEmailSpecification.cs">
+      <Link>Validation\ValidEmailSpecification.cs</Link>
+    </Compile>
+    <Compile Include="Properties\AssemblyInfo.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="key.snk" />
+  </ItemGroup>
+  <ItemGroup />
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>

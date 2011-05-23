@@ -2,7 +2,7 @@
 <package>
 	<metadata>
 		<id>Postmark</id>
-		<version>1.0.1</version>
+		<version>1.0.2</version>
 		<authors>Daniel Crenna</authors>
 		<owners>Wildbit</owners>
 		<description>Leave email delivery to the experts with this plugin to bring Postmark email services to your web application. Requires a Postmark account.</description>
@@ -11,6 +11,11 @@
 		<projectUrl>http://developer.postmarkapp.com</projectUrl>
 		<licenseUrl>https://github.com/danielcrenna/postmark-dotnet/blob/master/LICENSE</licenseUrl>
     <iconUrl>http://apitize.com.s3.amazonaws.com/logo_postmark.png</iconUrl>
-		<tags>postmark email web api client http rest services wrapper json</tags>   
+		<tags>postmark email web api client http rest services wrapper json</tags>
+    <dependencies>
+      <dependency id="Hammock" version="1.2.3" />
+      <dependency id="Newtonsoft.Json" version="4.0.2" />
+      <dependency id="Specifications" version="1.0.4" />
+    </dependencies>
 	</metadata>
 </package>

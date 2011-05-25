@@ -53,6 +53,7 @@ using System.Security;
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
 
+[assembly: SecurityRules(SecurityRuleSet.Level1)]
 [assembly: AssemblyTitle("Postmark")]
 [assembly: AssemblyDescription("Leave transactional email delivery to the experts")]
 [assembly: AssemblyConfiguration("")]

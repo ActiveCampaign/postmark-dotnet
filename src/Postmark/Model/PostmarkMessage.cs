@@ -327,18 +327,19 @@ namespace PostmarkDotNet
         {
             ValidateAttachment(path);
 
-            var stream = File.OpenRead(path);
+            using(var stream = File.OpenRead(path))
+            {
+                var content = ReadStream(stream, 8067);
 
-            var content = ReadStream(stream, 8067);
+                var attachment = new PostmarkMessageAttachment
+                {
+                    Name = new FileInfo(path).Name,
+                    ContentType = contentType,
+                    Content = Convert.ToBase64String(content)
+                };
 
-            var attachment = new PostmarkMessageAttachment
-                                 {
-                                     Name = new FileInfo(path).Name,
-                                     ContentType = contentType,
-                                     Content = Convert.ToBase64String(content)
-                                 };
-
-            Attachments.Add(attachment);
+                Attachments.Add(attachment);
+            }
         }
 
         private static void ValidateAttachment(string path)

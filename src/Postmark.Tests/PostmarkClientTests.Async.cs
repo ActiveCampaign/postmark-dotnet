@@ -17,8 +17,9 @@ namespace Postmark.Tests
                 To = _to,
                 From = _from, // This must be a verified sender signature
                 Subject = Subject,
-                TextBody = TextBody
+                TextBody = TextBody,
             };
+            email.Headers.Add("MIME-Version", "babbaboey!");
             
             var result = postmark.BeginSendMessage(email);
             var response = postmark.EndSendMessage(result);

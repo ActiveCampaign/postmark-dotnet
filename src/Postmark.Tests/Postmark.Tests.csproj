@@ -53,6 +53,9 @@
     <CodeAnalysisRuleSet>AllRules.ruleset</CodeAnalysisRuleSet>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="Hammock">
+      <HintPath>..\..\bin\lib\20\Hammock.dll</HintPath>
+    </Reference>
     <Reference Include="Newtonsoft.Json">
       <HintPath>..\packages\Newtonsoft.Json.4.0.2\lib\net40\Newtonsoft.Json.dll</HintPath>
     </Reference>
@@ -90,10 +93,13 @@
     <Compile Include="PostmarkClientTests.Async.cs" />
     <Compile Include="PostmarkClientTests.Bounces.cs" />
     <Compile Include="PostmarkClientTests.cs" />
+    <Compile Include="PostmarkClientTests.Work.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="app.config" />
+    <None Include="app.config">
+      <SubType>Designer</SubType>
+    </None>
     <None Include="app.config.example" />
     <None Include="key.snk" />
     <None Include="packages.config" />

@@ -64,6 +64,9 @@
     <Compile Include="..\postmark\converters\UnicodeJsonStringConverter.cs">
       <Link>Converters\UnicodeJsonStringConverter.cs</Link>
     </Compile>
+    <Compile Include="..\Postmark\IPostmarkClient.Async.cs">
+      <Link>IPostmarkClient.Async.cs</Link>
+    </Compile>
     <Compile Include="..\Postmark\IPostmarkClient.cs">
       <Link>IPostmarkClient.cs</Link>
     </Compile>

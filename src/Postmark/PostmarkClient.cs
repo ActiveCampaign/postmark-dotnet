@@ -198,6 +198,22 @@ namespace PostmarkDotNet
         }
 
         /// <summary>
+        /// Retrieves a collection of <see cref = "PostmarkBounce" /> instances along
+        /// with a sum total of bounces recorded by the server, based on filter parameters.
+        /// </summary>
+        /// <param name="inactive">Whether to return only inactive or active bounces; use null to return all bounces</param>
+        /// <param name="emailFilter">Filters based on whether the filter value is contained in the bounce source's email</param>
+        /// <param name="tag">Filters on the bounce tag</param>
+        /// <param name="offset">The page offset for the returned results; mandatory</param>
+        /// <param name="count">The number of results to return by the page offset; mandatory.</param>
+        /// <returns></returns>
+        /// <seealso href = "http://developer.postmarkapp.com/bounces" />
+        public PostmarkBounces GetBounces(bool? inactive, string emailFilter, string tag, int offset, int count)
+        {
+            return GetBouncesImpl(null, inactive, emailFilter, tag, offset, count);
+        }
+
+        /// <summary>
         ///   Retrieves a collection of <see cref = "PostmarkBounce" /> instances along
         ///   with a sum total of bounces recorded by the server, based on filter parameters.
         /// </summary>
@@ -209,21 +225,9 @@ namespace PostmarkDotNet
         /// <param name = "count">The number of results to return by the page offset; mandatory.</param>
         /// <returns></returns>
         /// <seealso href = "http://developer.postmarkapp.com/bounces" />
-        public PostmarkBounces GetBounces(PostmarkBounceType type, bool? inactive, string emailFilter, string tag,
-                                          int offset, int count)
+        public PostmarkBounces GetBounces(PostmarkBounceType type, bool? inactive, string emailFilter, string tag, int offset, int count)
         {
-            var request = NewBouncesRequest();
-            request.Path = "bounces";
-            if (inactive.HasValue) request.AddParameter("inactive", inactive.Value.ToString().ToLowerInvariant());
-            if (!string.IsNullOrEmpty(emailFilter)) request.AddParameter("emailFilter", emailFilter);
-            if (!string.IsNullOrEmpty(tag)) request.AddParameter("tag", tag);
-            request.AddParameter("type", type.ToString());
-            request.AddParameter("offset", offset.ToString());
-            request.AddParameter("count", count.ToString());
-
-            var response = _client.Request(request);
-
-            return JsonConvert.DeserializeObject<PostmarkBounces>(response.Content, _settings);
+            return GetBouncesImpl(type, inactive, emailFilter, tag, offset, count);
         }
 
         /// <summary>
@@ -237,7 +241,20 @@ namespace PostmarkDotNet
         /// <seealso href = "http://developer.postmarkapp.com/bounces" />
         public PostmarkBounces GetBounces(PostmarkBounceType type, int offset, int count)
         {
-            return GetBounces(type, null, null, null, offset, count);
+            return GetBouncesImpl(type, null, null, null, offset, count);
+        }
+
+        /// <summary>
+        /// Retrieves a collection of <see cref = "PostmarkBounce" /> instances along
+        /// with a sum total of bounces recorded by the server, based on filter parameters.
+        /// </summary>
+        /// <param name="offset">The page offset for the returned results; mandatory</param>
+        /// <param name="count">The number of results to return by the page offset; mandatory.</param>
+        /// <returns></returns>
+        /// <seealso href = "http://developer.postmarkapp.com/bounces" />
+        public PostmarkBounces GetBounces(int offset, int count)
+        {
+            return GetBouncesImpl(null, null, null, null, offset, count);
         }
 
         /// <summary>
@@ -252,7 +269,21 @@ namespace PostmarkDotNet
         /// <seealso href = "http://developer.postmarkapp.com/bounces" />
         public PostmarkBounces GetBounces(PostmarkBounceType type, bool? inactive, int offset, int count)
         {
-            return GetBounces(type, inactive, null, null, offset, count);
+            return GetBouncesImpl(type, inactive, null, null, offset, count);
+        }
+
+        /// <summary>
+        /// Retrieves a collection of <see cref = "PostmarkBounce" /> instances along
+        /// with a sum total of bounces recorded by the server, based on filter parameters.
+        /// </summary>
+        /// <param name="inactive">Whether to return only inactive or active bounces; use null to return all bounces</param>
+        /// <param name="offset">The page offset for the returned results; mandatory</param>
+        /// <param name="count">The number of results to return by the page offset; mandatory.</param>
+        /// <returns></returns>
+        /// <seealso href = "http://developer.postmarkapp.com/bounces" />
+        public PostmarkBounces GetBounces(bool? inactive, int offset, int count)
+        {
+            return GetBouncesImpl(null, inactive, null, null, offset, count);
         }
 
         /// <summary>
@@ -267,7 +298,21 @@ namespace PostmarkDotNet
         /// <seealso href = "http://developer.postmarkapp.com/bounces" />
         public PostmarkBounces GetBounces(PostmarkBounceType type, string emailFilter, int offset, int count)
         {
-            return GetBounces(type, null, emailFilter, null, offset, count);
+            return GetBouncesImpl(type, null, emailFilter, null, offset, count);
+        }
+
+        /// <summary>
+        /// Retrieves a collection of <see cref = "PostmarkBounce" /> instances along
+        /// with a sum total of bounces recorded by the server, based on filter parameters.
+        /// </summary>
+        /// <param name="emailFilter">Filters based on whether the filter value is contained in the bounce source's email</param>
+        /// <param name="offset">The page offset for the returned results; mandatory</param>
+        /// <param name="count">The number of results to return by the page offset; mandatory.</param>
+        /// <returns></returns>
+        /// <seealso href = "http://developer.postmarkapp.com/bounces" />
+        public PostmarkBounces GetBounces(string emailFilter, int offset, int count)
+        {
+            return GetBouncesImpl(null, null, emailFilter, null, offset, count);
         }
 
         /// <summary>
@@ -283,7 +328,22 @@ namespace PostmarkDotNet
         /// <seealso href = "http://developer.postmarkapp.com/bounces" />
         public PostmarkBounces GetBounces(PostmarkBounceType type, string emailFilter, string tag, int offset, int count)
         {
-            return GetBounces(type, null, emailFilter, tag, offset, count);
+            return GetBouncesImpl(type, null, emailFilter, tag, offset, count);
+        }
+
+        /// <summary>
+        /// Retrieves a collection of <see cref = "PostmarkBounce" /> instances along
+        /// with a sum total of bounces recorded by the server, based on filter parameters.
+        /// </summary>
+        /// <param name="emailFilter">Filters based on whether the filter value is contained in the bounce source's email</param>
+        /// <param name="tag">Filters on the bounce tag</param>
+        /// <param name="offset">The page offset for the returned results; mandatory</param>
+        /// <param name="count">The number of results to return by the page offset; mandatory.</param>
+        /// <returns></returns>
+        /// <seealso href = "http://developer.postmarkapp.com/bounces" />
+        public PostmarkBounces GetBounces(string emailFilter, string tag, int offset, int count)
+        {
+            return GetBouncesImpl(null, null, emailFilter, tag, offset, count);
         }
 
         /// <summary>
@@ -299,7 +359,40 @@ namespace PostmarkDotNet
         /// <seealso href = "http://developer.postmarkapp.com/bounces" />
         public PostmarkBounces GetBounces(PostmarkBounceType type, bool? inactive, string emailFilter, int offset, int count)
         {
-            return GetBounces(type, inactive, emailFilter, null, offset, count);
+            return GetBouncesImpl(type, inactive, emailFilter, null, offset, count);
+        }
+
+        /// <summary>
+        /// Retrieves a collection of <see cref = "PostmarkBounce" /> instances along
+        /// with a sum total of bounces recorded by the server, based on filter parameters.
+        /// </summary>
+        /// <param name="inactive">Whether to return only inactive or active bounces; use null to return all bounces</param>
+        /// <param name="emailFilter">Filters based on whether the filter value is contained in the bounce source's email</param>
+        /// <param name="offset">The page offset for the returned results; mandatory</param>
+        /// <param name="count">The number of results to return by the page offset; mandatory.</param>
+        /// <returns></returns>
+        /// <seealso href = "http://developer.postmarkapp.com/bounces" />
+        public PostmarkBounces GetBounces(bool? inactive, string emailFilter, int offset, int count)
+        {
+            return GetBouncesImpl(null, inactive, emailFilter, null, offset, count);
+        }
+
+        private PostmarkBounces GetBouncesImpl(PostmarkBounceType? type, bool? inactive, string emailFilter, string tag, int offset, int count)
+        {
+            var request = NewBouncesRequest();
+            request.Path = "bounces";
+            if (inactive.HasValue) request.AddParameter("inactive", inactive.Value.ToString().ToLowerInvariant());
+            if (!string.IsNullOrEmpty(emailFilter)) request.AddParameter("emailFilter", emailFilter);
+            if (!string.IsNullOrEmpty(tag)) request.AddParameter("tag", tag);
+            if (type.HasValue)
+            {
+                request.AddParameter("type", type.ToString());
+            }
+            request.AddParameter("offset", offset.ToString());
+            request.AddParameter("count", count.ToString());
+
+            var response = _client.Request(request);
+            return JsonConvert.DeserializeObject<PostmarkBounces>(response.Content, _settings);
         }
 
         /// <summary>

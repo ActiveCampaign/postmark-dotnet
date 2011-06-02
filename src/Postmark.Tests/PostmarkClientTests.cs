@@ -25,7 +25,8 @@ namespace Postmark.Tests
             _to = settings["To"];
         }
 
-        private const string Subject = "A test from Postmark.NET";
+        private const string Subject = "Postmark test";
+        private const string HtmlBody = "<html><body><strong>Hello</strong> dear Postmark user.</body></html>";
         private const string TextBody = "This is a test message!";
         private const string InvalidRecipient = "test@mctesterton.com";
 
@@ -67,7 +68,7 @@ namespace Postmark.Tests
                                 To = _to,
                                 From = _from, // This must be a verified sender signature
                                 Subject = Subject,
-                                TextBody = TextBody
+                                HtmlBody = HtmlBody
                             };
 
             var response = postmark.SendMessage(email);

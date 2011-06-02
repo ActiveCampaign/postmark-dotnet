@@ -217,6 +217,7 @@ namespace PostmarkDotNet
             if (inactive.HasValue) request.AddParameter("inactive", inactive.Value.ToString().ToLowerInvariant());
             if (!string.IsNullOrEmpty(emailFilter)) request.AddParameter("emailFilter", emailFilter);
             if (!string.IsNullOrEmpty(tag)) request.AddParameter("tag", tag);
+            request.AddParameter("type", type.ToString());
             request.AddParameter("offset", offset.ToString());
             request.AddParameter("count", count.ToString());
 
@@ -296,8 +297,7 @@ namespace PostmarkDotNet
         /// <param name = "count">The number of results to return by the page offset; mandatory.</param>
         /// <returns></returns>
         /// <seealso href = "http://developer.postmarkapp.com/bounces" />
-        public PostmarkBounces GetBounces(PostmarkBounceType type, bool? inactive, string emailFilter, int offset,
-                                          int count)
+        public PostmarkBounces GetBounces(PostmarkBounceType type, bool? inactive, string emailFilter, int offset, int count)
         {
             return GetBounces(type, inactive, emailFilter, null, offset, count);
         }
@@ -361,7 +361,7 @@ namespace PostmarkDotNet
             var request = NewBouncesRequest();
             request.Method = WebMethod.Put;
             request.Path = string.Format("bounces/{0}/activate", bounceId.Trim());
-
+            
             var response = _client.Request(request);
 
             return JsonConvert.DeserializeObject<PostmarkBounceActivation>(response.Content, _settings);

@@ -27,7 +27,7 @@ namespace Postmark.Tests
 
         private const string Subject = "Postmark test";
         private const string HtmlBody = "<html><body><strong>Hello</strong> dear Postmark user.</body></html>";
-        private const string TextBody = "This is a test message!";
+        private const string TextBody = "Hello dear Postmark user.";
         private const string InvalidRecipient = "test@mctesterton.com";
 
         private static string _serverToken;
@@ -64,12 +64,13 @@ namespace Postmark.Tests
             var postmark = new PostmarkClient(_serverToken);
 
             var email = new PostmarkMessage
-                            {
-                                To = _to,
-                                From = _from, // This must be a verified sender signature
-                                Subject = Subject,
-                                HtmlBody = HtmlBody
-                            };
+            {
+                To = _to,
+                From = _from, // This must be a verified sender signature
+                Subject = Subject,
+                TextBody = TextBody,
+                HtmlBody = HtmlBody
+            };
 
             var response = postmark.SendMessage(email);
 
@@ -77,7 +78,7 @@ namespace Postmark.Tests
             Assert.IsNotNullOrEmpty(response.Message);
             Assert.IsTrue(response.Status == PostmarkStatus.Success);
 
-            Console.WriteLine("Postmark -> " + response.Message);
+            Console.WriteLine("Postmark -> {0}", response.Message);
         }
 
         [Test]
@@ -91,7 +92,8 @@ namespace Postmark.Tests
                 To = _to,
                 From = string.Format("The Team <{0}>", _from), // This must be a verified sender signature
                 Subject = Subject,
-                TextBody = TextBody
+                TextBody = TextBody,
+                HtmlBody = HtmlBody
             };
 
             var response = postmark.SendMessage(email);
@@ -115,6 +117,7 @@ namespace Postmark.Tests
                 From = _from, // This must be a verified sender signature
                 Subject = Subject,
                 TextBody = TextBody,
+                HtmlBody = HtmlBody
             };
 
             email.Headers.Add("X-Header-Test-1", "This is a header value");
@@ -127,7 +130,7 @@ namespace Postmark.Tests
             Assert.IsTrue(response.Status == PostmarkStatus.Success);
             Assert.AreNotEqual(default(DateTime), response.SubmittedAt, "Missing submitted time value.");
 
-            Console.WriteLine("Postmark -> " + response.Message);
+            Console.WriteLine("Postmark -> {0}", response.Message);
         }
 
         [Test]
@@ -142,6 +145,7 @@ namespace Postmark.Tests
                 From = _from, // This must be a verified sender signature
                 Subject = Subject,
                 TextBody = TextBody,
+                HtmlBody = HtmlBody
             };
 
             email.AddAttachment("logo.png", "image/png");
@@ -151,7 +155,7 @@ namespace Postmark.Tests
             Assert.IsNotNull(response);
             Assert.IsNotNullOrEmpty(response.Message);
             Assert.IsTrue(response.Status == PostmarkStatus.Success);
-            Console.WriteLine("Postmark -> " + response.Message);
+            Console.WriteLine("Postmark -> {0}", response.Message);
         }
 
         [Test]
@@ -161,12 +165,13 @@ namespace Postmark.Tests
             var postmark = new PostmarkClient(_serverToken);
 
             var email = new PostmarkMessage
-                            {
-                                To = "earth",
-                                From = _from,
-                                Subject = Subject,
-                                TextBody = TextBody
-                            };
+            {
+                To = "earth",
+                From = _from,
+                Subject = Subject,
+                TextBody = TextBody,
+                HtmlBody = HtmlBody
+            };
 
             postmark.SendMessage(email);
         }
@@ -190,7 +195,7 @@ namespace Postmark.Tests
             Assert.IsNotNullOrEmpty(response.Message);
             Assert.IsTrue(response.Status == PostmarkStatus.UserError);
 
-            Console.WriteLine("Postmark -> " + response.Message);
+            Console.WriteLine("Postmark -> {0}", response.Message);
         }
 
         [Test]
@@ -212,7 +217,7 @@ namespace Postmark.Tests
             Assert.IsNotNullOrEmpty(response.Message);
             Assert.IsTrue(response.Status == PostmarkStatus.UserError);
 
-            Console.WriteLine("Postmark -> " + response.Message);
+            Console.WriteLine("Postmark -> {0}", response.Message);
         }
 
         [Test]
@@ -227,7 +232,8 @@ namespace Postmark.Tests
                                 Bcc = "test-bcc@example.com",
                                 From = InvalidRecipient,
                                 Subject = Subject,
-                                TextBody = TextBody
+                                TextBody = TextBody,
+                                HtmlBody = HtmlBody
                             };
 
             var response = postmark.SendMessage(email);
@@ -236,7 +242,7 @@ namespace Postmark.Tests
             Assert.IsNotNullOrEmpty(response.Message);
             Assert.IsTrue(response.Status == PostmarkStatus.Success);
 
-            Console.WriteLine("Postmark -> " + response.Message);
+            Console.WriteLine("Postmark -> {0}", response.Message);
         }
 
         [Test]
@@ -269,14 +275,16 @@ namespace Postmark.Tests
                 To = _to,
                 From = _from, // This must be a verified sender signature
                 Subject = Subject,
-                TextBody = TextBody + " one"
+                TextBody = TextBody,
+                HtmlBody = HtmlBody
             };
             var second = new PostmarkMessage
             {
                 To = _to,
                 From = _from, // This must be a verified sender signature
                 Subject = Subject,
-                TextBody = TextBody + " two"
+                TextBody = TextBody,
+                HtmlBody = HtmlBody
             };
 
             var responses = postmark.SendMessages(first, second);
@@ -287,7 +295,7 @@ namespace Postmark.Tests
                 Assert.IsNotNull(response);
                 Assert.IsNotNullOrEmpty(response.Message);
                 Assert.IsTrue(response.Status == PostmarkStatus.Success);
-                Console.WriteLine("Postmark -> " + response.Message);
+                Console.WriteLine("Postmark -> {0}", response.Message);
             }
         }
     }

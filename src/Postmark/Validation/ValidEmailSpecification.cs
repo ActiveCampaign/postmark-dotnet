@@ -3,7 +3,7 @@ using Specifications;
 
 namespace PostmarkDotNet.Validation
 {
-    internal class ValidEmailSpecification : SpecificationBase<string>
+    public class ValidEmailSpecification : SpecificationBase<string>
     {
         // Accepts names, i.e. John Smith <john@johnsmith.com>
         private static readonly Regex _names =
@@ -15,7 +15,7 @@ namespace PostmarkDotNet.Validation
         // Just an email address
         private static readonly Regex _explicit =
             new Regex(
-                @"^[-_a-z0-9'+*$^&%=~!?{}]+(?:\.[-_a-z0-9'+*$^&%=~!?{}]+)*@(?:(?![-.])[-a-z0-9.]+(?<![-.])\.[a-z]{2,6}|\d{1,3}(?:\.\d{1,3}){3})(?::\d+)?$"
+                @"^[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*@(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?$"
                 , RegexOptions.Compiled | RegexOptions.IgnoreCase
                 );
 

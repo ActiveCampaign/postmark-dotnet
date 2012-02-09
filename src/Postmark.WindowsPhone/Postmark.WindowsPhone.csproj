@@ -43,7 +43,7 @@
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="Hammock.WindowsPhone">
-      <HintPath>..\packages\Hammock.1.2.3\lib\sl4-wp\Hammock.WindowsPhone.dll</HintPath>
+      <HintPath>..\packages\Hammock.1.2.4\lib\sl4-wp\Hammock.WindowsPhone.dll</HintPath>
     </Reference>
     <Reference Include="Newtonsoft.Json.WindowsPhone">
       <HintPath>..\packages\Newtonsoft.Json.4.0.2\lib\sl3-wp\Newtonsoft.Json.WindowsPhone.dll</HintPath>

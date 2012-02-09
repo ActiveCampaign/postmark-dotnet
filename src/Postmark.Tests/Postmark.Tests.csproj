@@ -54,7 +54,7 @@
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="Hammock">
-      <HintPath>..\..\lib\Hammock.dll</HintPath>
+      <HintPath>..\packages\Hammock.1.2.4\lib\net40\Hammock.dll</HintPath>
     </Reference>
     <Reference Include="Newtonsoft.Json">
       <HintPath>..\packages\Newtonsoft.Json.4.0.2\lib\net40\Newtonsoft.Json.dll</HintPath>

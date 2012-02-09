@@ -366,13 +366,13 @@ namespace PostmarkDotNet
             // Documents: txt, rtf, htm, html, pdf, doc, docx, ppt, pptx, xls, xlsx, ps, eps
             // Miscellaneous: log
 
-            var extension = fileInfo.Extension.ToLowerInvariant().Substring(1);
-            if (!_whitelist.Contains(extension))
-            {
-                throw new ValidationException(
-                    "Attachments must have a whitelisted extension. The whitelist is available at: " +
-                    "http://developer.postmarkapp.com/developer-build.html#attachments");
-            }
+            //var extension = fileInfo.Extension.ToLowerInvariant().Substring(1);
+            //if (!_whitelist.Contains(extension))
+            //{
+            //    throw new ValidationException(
+            //        "Attachments must have a whitelisted extension. The whitelist is available at: " +
+            //        "http://developer.postmarkapp.com/developer-build.html#attachments");
+            //}
         }
     }
 }

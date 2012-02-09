@@ -107,6 +107,9 @@
     <None Include="app.config.example" />
     <None Include="key.snk" />
     <None Include="packages.config" />
+    <None Include="zipfile.zip">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
   </ItemGroup>
   <ItemGroup>
     <BootstrapperPackage Include="Microsoft.Net.Client.3.5">

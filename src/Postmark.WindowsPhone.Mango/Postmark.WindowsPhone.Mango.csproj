@@ -1,0 +1,137 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProductVersion>10.0.20506</ProductVersion>
+    <SchemaVersion>2.0</SchemaVersion>
+    <ProjectGuid>{821A919D-DAAF-4A2D-AE32-B882128BA6D6}</ProjectGuid>
+    <ProjectTypeGuids>{C089C8C0-30E0-4E22-80C0-CE093F111A43};{fae04ec0-301f-11d3-bf4b-00c04f79efbc}</ProjectTypeGuids>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>Postmark.WindowsPhone.Mango</RootNamespace>
+    <AssemblyName>Postmark.WindowsPhone.Mango</AssemblyName>
+    <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
+    <SilverlightVersion>$(TargetFrameworkVersion)</SilverlightVersion>
+    <TargetFrameworkProfile>WindowsPhone71</TargetFrameworkProfile>
+    <TargetFrameworkIdentifier>Silverlight</TargetFrameworkIdentifier>
+    <SilverlightApplication>false</SilverlightApplication>
+    <ValidateXaml>true</ValidateXaml>
+    <ThrowErrorsInValidation>true</ThrowErrorsInValidation>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>..\..\bin\lib\sl4-wp71\</OutputPath>
+    <DefineConstants>DEBUG;TRACE;SILVERLIGHT;WINDOWS_PHONE</DefineConstants>
+    <NoStdLib>true</NoStdLib>
+    <NoConfig>true</NoConfig>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>..\..\bin\lib\sl4-wp71\</OutputPath>
+    <DefineConstants>TRACE;SILVERLIGHT;WINDOWS_PHONE</DefineConstants>
+    <NoStdLib>true</NoStdLib>
+    <NoConfig>true</NoConfig>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="Hammock.WindowsPhone.Mango">
+      <HintPath>..\packages\Hammock.1.3.0\lib\sl4-wp71\Hammock.WindowsPhone.Mango.dll</HintPath>
+    </Reference>
+    <Reference Include="ICSharpCode.SharpZipLib.WindowsPhone">
+      <HintPath>..\packages\Hammock.1.3.0\lib\sl4-wp71\ICSharpCode.SharpZipLib.WindowsPhone.dll</HintPath>
+    </Reference>
+    <Reference Include="Newtonsoft.Json">
+      <HintPath>..\packages\Newtonsoft.Json.4.5.2\lib\sl4-windowsphone71\Newtonsoft.Json.dll</HintPath>
+    </Reference>
+    <Reference Include="Specifications.WindowsPhone">
+      <HintPath>..\packages\Specifications.1.0.4\lib\sl4-wp\Specifications.WindowsPhone.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Windows" />
+    <Reference Include="system" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Xml" />
+    <Reference Include="System.Net" />
+    <Reference Include="mscorlib.extensions" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="..\postmark\converters\NameValueCollectionConverter.cs">
+      <Link>Converters\NameValueCollectionConverter.cs</Link>
+    </Compile>
+    <Compile Include="..\postmark\converters\UnicodeJsonStringConverter.cs">
+      <Link>Converters\UnicodeJsonStringConverter.cs</Link>
+    </Compile>
+    <Compile Include="..\Postmark\IPostmarkClient.Async.cs">
+      <Link>IPostmarkClient.Async.cs</Link>
+    </Compile>
+    <Compile Include="..\Postmark\IPostmarkClient.cs">
+      <Link>IPostmarkClient.cs</Link>
+    </Compile>
+    <Compile Include="..\postmark\model\PostmarkBounce.cs">
+      <Link>Model\PostmarkBounce.cs</Link>
+    </Compile>
+    <Compile Include="..\postmark\model\PostmarkBounceActivation.cs">
+      <Link>Model\PostmarkBounceActivation.cs</Link>
+    </Compile>
+    <Compile Include="..\postmark\model\PostmarkBounceDump.cs">
+      <Link>Model\PostmarkBounceDump.cs</Link>
+    </Compile>
+    <Compile Include="..\postmark\model\PostmarkBounces.cs">
+      <Link>Model\PostmarkBounces.cs</Link>
+    </Compile>
+    <Compile Include="..\postmark\model\PostmarkBounceSummary.cs">
+      <Link>Model\PostmarkBounceSummary.cs</Link>
+    </Compile>
+    <Compile Include="..\postmark\model\PostmarkBounceType.cs">
+      <Link>Model\PostmarkBounceType.cs</Link>
+    </Compile>
+    <Compile Include="..\postmark\model\PostmarkDeliveryStats.cs">
+      <Link>Model\PostmarkDeliveryStats.cs</Link>
+    </Compile>
+    <Compile Include="..\postmark\model\PostmarkMessage.cs">
+      <Link>Model\PostmarkMessage.cs</Link>
+    </Compile>
+    <Compile Include="..\postmark\model\PostmarkMessageAttachment.cs">
+      <Link>Model\PostmarkMessageAttachment.cs</Link>
+    </Compile>
+    <Compile Include="..\postmark\model\PostmarkResponse.cs">
+      <Link>Model\PostmarkResponse.cs</Link>
+    </Compile>
+    <Compile Include="..\postmark\model\PostmarkStatus.cs">
+      <Link>Model\PostmarkStatus.cs</Link>
+    </Compile>
+    <Compile Include="..\Postmark\PostmarkClient.cs">
+      <Link>PostmarkClient.cs</Link>
+    </Compile>
+    <Compile Include="..\postmark\serializers\PostmarkSerializer.cs">
+      <Link>Serializers\PostmarkSerializer.cs</Link>
+    </Compile>
+    <Compile Include="..\postmark\validation\ValidationException.cs">
+      <Link>Validation\ValidationException.cs</Link>
+    </Compile>
+    <Compile Include="..\postmark\validation\ValidEmailSpecification.cs">
+      <Link>Validation\ValidEmailSpecification.cs</Link>
+    </Compile>
+    <Compile Include="PostmarkClient.WindowsPhone.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="packages.config" />
+  </ItemGroup>
+  <Import Project="$(MSBuildExtensionsPath)\Microsoft\Silverlight for Phone\$(TargetFrameworkVersion)\Microsoft.Silverlight.$(TargetFrameworkProfile).Overrides.targets" />
+  <Import Project="$(MSBuildExtensionsPath)\Microsoft\Silverlight for Phone\$(TargetFrameworkVersion)\Microsoft.Silverlight.CSharp.targets" />
+  <ProjectExtensions />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>

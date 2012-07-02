@@ -47,8 +47,8 @@
     <Reference Include="ICSharpCode.SharpZipLib.WindowsPhone">
       <HintPath>..\packages\Hammock.1.3.0\lib\sl4-wp71\ICSharpCode.SharpZipLib.WindowsPhone.dll</HintPath>
     </Reference>
-    <Reference Include="Newtonsoft.Json">
-      <HintPath>..\packages\Newtonsoft.Json.4.5.2\lib\sl4-windowsphone71\Newtonsoft.Json.dll</HintPath>
+    <Reference Include="Newtonsoft.Json, Version=4.5.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\Newtonsoft.Json.4.5.7\lib\sl4-windowsphone71\Newtonsoft.Json.dll</HintPath>
     </Reference>
     <Reference Include="Specifications.WindowsPhone">
       <HintPath>..\packages\Specifications.1.0.4\lib\sl4-wp\Specifications.WindowsPhone.dll</HintPath>

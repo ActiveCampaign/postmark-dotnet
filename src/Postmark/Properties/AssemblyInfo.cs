@@ -59,7 +59,7 @@ using System.Security;
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("Wildbit")]
 [assembly: AssemblyProduct("Postmark")]
-[assembly: AssemblyCopyright("Copyright © Wildbit 2011")]
+[assembly: AssemblyCopyright("Copyright © Wildbit 2012")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 [assembly: AllowPartiallyTrustedCallers]
@@ -85,5 +85,5 @@ using System.Security;
 // by using the '*' as shown below:
 // [assembly: AssemblyVersion("1.0.*")]
 
-[assembly: AssemblyVersion("1.0.8.0")]
-[assembly: AssemblyFileVersion("1.0.8.0")]
+[assembly: AssemblyVersion("1.0.14.0")]
+[assembly: AssemblyFileVersion("1.0.14.0")]

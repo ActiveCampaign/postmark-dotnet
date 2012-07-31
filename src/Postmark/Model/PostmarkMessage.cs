@@ -333,11 +333,13 @@ namespace PostmarkDotNet
         /// <param name = "contentType">The content type.</param>
         public void AddAttachment(string path, string contentType)
         {
-            ValidateAttachment(path);
+            ValidateAttachmentPath(path);
 
             using(var stream = File.OpenRead(path))
             {
                 var content = ReadStream(stream, 8067);
+
+                ValidateAttachmentLength(Convert.ToBase64String(content));
 
                 var attachment = new PostmarkMessageAttachment
                 {
@@ -350,29 +352,49 @@ namespace PostmarkDotNet
             }
         }
 
-        private static void ValidateAttachment(string path)
+        /// <summary>
+        ///   Adds a file attachment using a byte[] array
+        /// </summary>
+        /// <param name = "path">The full path to the file to attach</param>
+        /// <param name = "contentType">The content type.</param>
+        public void AddAttachment(byte[] content, string contentType, string attachmentName)
+        {
+            ValidateAttachmentLength(Convert.ToBase64String(content));
+
+            var attachment = new PostmarkMessageAttachment
+            {
+                Name = attachmentName,
+                ContentType = contentType,
+                Content = Convert.ToBase64String(content)
+            };
+
+            Attachments.Add(attachment);   
+        }
+
+        /// <summary>
+        /// Be sure the path to the attachment actually exists
+        /// </summary>
+        /// <param name="path"></param>
+        private static void ValidateAttachmentPath(string path)
         {
             var fileInfo = new FileInfo(path);
-            if (fileInfo.Length > 10485760)
-            {
-                throw new ValidationException("Attachments must be less than 10MB in length.");
-            }
+            
             if (fileInfo.Length == 0)
             {
                 throw new ValidationException("File path provided has no length.");
             }
+        }
 
-            // Image files: gif, jpg, jpeg, png, swf, flv, avi, mpg, mp3, rm, mov, psd, ai, tif, tiff
-            // Documents: txt, rtf, htm, html, pdf, doc, docx, ppt, pptx, xls, xlsx, ps, eps
-            // Miscellaneous: log
-
-            //var extension = fileInfo.Extension.ToLowerInvariant().Substring(1);
-            //if (!_whitelist.Contains(extension))
-            //{
-            //    throw new ValidationException(
-            //        "Attachments must have a whitelisted extension. The whitelist is available at: " +
-            //        "http://developer.postmarkapp.com/developer-build.html#attachments");
-            //}
+        /// <summary>
+        /// Restrict attacments to 10 mb. The API will do this anyway but this is faster
+        /// </summary>
+        /// <param name="content"></param>
+        private static void ValidateAttachmentLength(string content)
+        {
+            if (content.Length > 10485760)
+            {
+                throw new ValidationException("Attachments must be less than 10MB in length.");
+            }
         }
     }
 }

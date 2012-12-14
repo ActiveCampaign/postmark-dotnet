@@ -42,4 +42,4 @@ The Postmark.NET NuGet package makes it easier to use the Postmark API from your
 Please leave all comments, bugs, requests, and issues on the Issues page. We'll respond to your request ASAP!
 
 ### License
-The Postmark .NET Library is licensed under the [MIT]((http://www.opensource.org/licenses/mit-license.php "Read more about the MIT license form") license. Refere to the [LICENSE](https://github.com/jptoto/postmark-dotnet/blob/master/LICENSE) file for more information.
+The Postmark .NET Library is licensed under the [MIT](http://www.opensource.org/licenses/mit-license.php "Read more about the MIT license form") license. Refere to the [LICENSE](https://github.com/jptoto/postmark-dotnet/blob/master/LICENSE) file for more information.

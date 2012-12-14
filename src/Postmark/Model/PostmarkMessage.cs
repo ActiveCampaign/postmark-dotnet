@@ -238,9 +238,25 @@ namespace PostmarkDotNet
 
         private static string GetStringFromView(AttachmentBase view)
         {
-            var data = new byte[view.ContentStream.Length];
-            view.ContentStream.Read(data, 0, data.Length);
-            return Encoding.ASCII.GetString(data);
+
+          Encoding encoding = resolveViewEncoding(view, Encoding.ASCII);
+
+          var data = new byte[view.ContentStream.Length];
+          view.ContentStream.Read(data, 0, data.Length);
+          return encoding.GetString(data);
+        }
+
+        private static Encoding resolveViewEncoding(AttachmentBase view, Encoding fallbackEncoding)
+        {
+          String charSet = view.ContentType.CharSet;
+          try
+          {
+            return Encoding.GetEncoding(charSet);
+          }
+          catch
+          {
+            return fallbackEncoding;
+          }
         }
 #endif
 

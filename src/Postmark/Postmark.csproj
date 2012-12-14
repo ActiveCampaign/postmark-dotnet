@@ -73,6 +73,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="AssemblyVersionInfo.cs" />
     <Compile Include="Converters\NameValueCollectionConverter.cs" />
     <Compile Include="Converters\UnicodeJsonStringConverter.cs" />
     <Compile Include="IPostmarkClient.Async.cs" />

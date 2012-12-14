@@ -60,6 +60,9 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="..\Postmark\AssemblyVersionInfo.cs">
+      <Link>AssemblyVersionInfo.cs</Link>
+    </Compile>
     <Compile Include="..\Postmark\Converters\NameValueCollectionConverter.cs">
       <Link>Converters\NameValueCollectionConverter.cs</Link>
     </Compile>

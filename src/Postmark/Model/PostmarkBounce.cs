@@ -65,5 +65,12 @@ namespace PostmarkDotNet
         ///   The original email message ID
         /// </value>
         public Guid MessageID { get; set; }
+
+        /// <summary>
+        ///   The detailed information about the cause of the bounce 
+        /// </summary>
+        /// <value>The description of the bounce</value>
+        public string Description { get; set; }
+
     }
 }

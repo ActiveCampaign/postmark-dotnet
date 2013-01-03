@@ -37,7 +37,7 @@ namespace PostmarkDotNet
                 DefaultValueHandling = DefaultValueHandling.Include
             };
 
-            _settings.Converters.Add(new UnicodeJsonStringConverter());
+            _settings.Converters.Add(new UnicodeJsonStringConverter());                                                                              
             _settings.Converters.Add(new NameValueCollectionConverter());
             _serializer = new PostmarkSerializer(_settings);
         }
@@ -55,6 +55,22 @@ namespace PostmarkDotNet
             {
                 Authority = "https://api.postmarkapp.com"
             };
+        }
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref = "PostmarkClient" /> class.
+        /// If you do not have a server token you can request one by signing up to
+        /// use Postmark: http://postmarkapp.com.
+        /// Extra signature to override https
+        /// </summary>
+        /// <param name="serverToken">You can get a server token by signing up at http://www.postmarkapp.com</param>
+        /// <param name="noSSL">Skip https usage</param>
+        public PostmarkClient(string serverToken, bool noSSL)
+        {
+            ServerToken = serverToken;
+            _client = new RestClient();
+
+            _client.Authority = noSSL ? "http://api.postmarkapp.com" : "https://api.postmarkapp.com";
         }
 
         ///<summary>

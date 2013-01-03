@@ -76,6 +76,10 @@
         /// <summary>
         ///   Blocked
         /// </summary>
-        Blocked
+        Blocked,
+        ///
+        ///  SMTPApiError
+        /// 
+        SMTPApiError
     }
 }

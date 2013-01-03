@@ -39,6 +39,12 @@
     <AssemblyOriginatorKeyFile>key.snk</AssemblyOriginatorKeyFile>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="Hammock.ClientProfile">
+      <HintPath>..\packages\Hammock.1.3.0\lib\net35-client\Hammock.ClientProfile.dll</HintPath>
+    </Reference>
+    <Reference Include="Newtonsoft.Json, Version=4.5.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
+      <HintPath>..\packages\Newtonsoft.Json.4.5.7\lib\net35\Newtonsoft.Json.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core">
     </Reference>
@@ -48,19 +54,15 @@
     </Reference>
     <Reference Include="System.Data" />
     <Reference Include="System.Xml" />
-    <Reference Include="Hammock.ClientProfile, Version=1.0.0.0, Culture=neutral, PublicKeyToken=c148cfba29ed1a4d">
-      <HintPath>..\packages\Hammock.1.2.3\lib\net35-client\Hammock.ClientProfile.dll</HintPath>
-    </Reference>
-    <Reference Include="Newtonsoft.Json.Net35, Version=4.0.2.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\packages\Newtonsoft.Json.4.0.2\lib\net35\Newtonsoft.Json.Net35.dll</HintPath>
-    </Reference>
     <Reference Include="Specifications.Net35, Version=1.0.0.0, Culture=neutral, PublicKeyToken=d764143a80b7cabb">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\packages\Specifications.1.0.4\lib\net35\Specifications.Net35.dll</HintPath>
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="..\Postmark\AssemblyVersionInfo.cs">
+      <Link>AssemblyVersionInfo.cs</Link>
+    </Compile>
     <Compile Include="..\Postmark\Converters\NameValueCollectionConverter.cs">
       <Link>Converters\NameValueCollectionConverter.cs</Link>
     </Compile>
@@ -125,6 +127,7 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="key.snk" />
+    <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

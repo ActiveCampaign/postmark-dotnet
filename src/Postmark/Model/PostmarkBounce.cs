@@ -72,5 +72,16 @@ namespace PostmarkDotNet
         /// <value>The description of the bounce</value>
         public string Description { get; set; }
 
+        /// <summary>
+        /// The tags users add to emails
+        /// </summary>
+        /// <value>The specific tag string</value>
+        public string Tag { get; set; }
+
+        /// <summary>
+        /// Subject of the message sent
+        /// </summary>
+        /// <value>Subject text of the original message</value>
+        public string Subject { get; set; }
     }
 }

@@ -37,7 +37,10 @@ The Postmark.NET NuGet package makes it easier to use the Postmark API from your
 	{
 	    Console.WriteLine("Response was: " + response.Message);
 	}
-	
+
+### Additional Usage
+Please see the [wiki](https://github.com/jptoto/postmark-dotnet/wiki) for additional instruction about using the bounce api and additional sending options.
+
 ### Issues &amp; Comments
 Please leave all comments, bugs, requests, and issues on the Issues page. We'll respond to your request ASAP!
 

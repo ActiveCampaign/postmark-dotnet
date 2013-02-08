@@ -58,6 +58,27 @@ namespace PostmarkDotNet
         }
 
         /// <summary>
+        ///   Initializes a new instance of the <see cref = "PostmarkClient" /> class.
+        ///   If you do not have a server token you can request one by signing up to
+        ///   use Postmark: http://postmarkapp.com.
+        /// </summary>
+        /// <param name = "serverToken">The server token.</param>
+        /// <param name = "timeout">Time to wait for the API in seconds.</param>
+        public PostmarkClient(string serverToken, int timeout)
+        {
+            ServerToken = serverToken;
+
+            // Configure timespam from number of seconds the user wants to set the timeout for
+            TimeSpan timeoutInSeconds = DateTime.Now.AddSeconds(timeout).Subtract(DateTime.Now);
+
+            _client = new RestClient
+            {
+                Authority = "https://api.postmarkapp.com",
+                Timeout = timeoutInSeconds
+            };
+        }
+
+        /// <summary>
         /// Initializes a new instance of the <see cref = "PostmarkClient" /> class.
         /// If you do not have a server token you can request one by signing up to
         /// use Postmark: http://postmarkapp.com.

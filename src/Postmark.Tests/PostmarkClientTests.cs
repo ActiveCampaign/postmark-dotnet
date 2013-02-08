@@ -135,6 +135,34 @@ namespace Postmark.Tests
 
         [Test]
         [Ignore("This test sends a real email.")]
+        public void Can_send_message_with_token_and_signature_and_headers_and_timeout()
+        {
+            var postmark = new PostmarkClient(_serverToken, 10);
+
+            var email = new PostmarkMessage
+            {
+                To = _to,
+                From = _from, // This must be a verified sender signature
+                Subject = Subject,
+                TextBody = TextBody,
+                HtmlBody = HtmlBody
+            };
+
+            email.Headers.Add("X-Header-Test-1", "This is a header value");
+            email.Headers.Add("X-Header-Test-2", "This is another header value");
+
+            var response = postmark.SendMessage(email);
+
+            Assert.IsNotNull(response);
+            Assert.IsNotNullOrEmpty(response.Message);
+            Assert.IsTrue(response.Status == PostmarkStatus.Success);
+            Assert.AreNotEqual(default(DateTime), response.SubmittedAt, "Missing submitted time value.");
+
+            Console.WriteLine("Postmark -> {0}", response.Message);
+        }
+
+        [Test]
+        [Ignore("This test sends a real email.")]
         public void Can_send_message_with_file_attachment()
         {
             var postmark = new PostmarkClient(_serverToken);

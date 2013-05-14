@@ -22,48 +22,6 @@ namespace PostmarkDotNet
     /// </summary>
     public class PostmarkMessage
     {
-        private static readonly ICollection<string> _whitelist = new List<string>
-                                                                     {
-                                                                        "ai",
-                                                                        "avi",
-                                                                        "csv",
-                                                                        "doc",
-                                                                        "docx",
-                                                                        "eps",
-                                                                        "epub",
-                                                                        "flv",
-                                                                        "gif",
-                                                                        "htm",
-                                                                        "html",
-                                                                        "ics",
-                                                                        "iif",
-                                                                        "jpeg",
-                                                                        "jpg",
-                                                                        "log",
-                                                                        "mobi",
-                                                                        "mov",
-                                                                        "mp3",
-                                                                        "mp4",
-                                                                        "mpg",
-                                                                        "ogv",
-                                                                        "pdf",
-                                                                        "png",
-                                                                        "ppt",
-                                                                        "pptx",
-                                                                        "ps",
-                                                                        "psd",
-                                                                        "rm",
-                                                                        "rtf",
-                                                                        "swf",
-                                                                        "tif",
-                                                                        "tiff",
-                                                                        "txt",
-                                                                        "wav",
-                                                                        "xls",
-                                                                        "xlsx",
-                                                                        "xml"
-                                                                     };
-
         /// <summary>
         ///   Initializes a new instance of the <see cref = "PostmarkMessage" /> class.
         /// </summary>

@@ -1,10 +1,6 @@
 ﻿
-Microsoft Visual Studio Solution File, Format Version 11.00
-# Visual Studio 2010
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Postmark", "Postmark\Postmark.csproj", "{53A0C8D4-DF26-4082-B815-0CAE3E2B402F}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Postmark.Tests", "Postmark.Tests\Postmark.Tests.csproj", "{A9DFDACE-1288-4120-B618-695E4FAAF3FD}"
-EndProject
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 2012
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{66CC7207-833B-4759-940E-1CECE646D7D5}"
 	ProjectSection(SolutionItems) = preProject
 		..\LICENSE = ..\LICENSE
@@ -12,6 +8,10 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 		..\postmark.nuspec = ..\postmark.nuspec
 		..\README.markdown = ..\README.markdown
 	EndProjectSection
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Postmark", "Postmark\Postmark.csproj", "{53A0C8D4-DF26-4082-B815-0CAE3E2B402F}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Postmark.Tests", "Postmark.Tests\Postmark.Tests.csproj", "{A9DFDACE-1288-4120-B618-695E4FAAF3FD}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Postmark.Net35", "Postmark.Net35\Postmark.Net35.csproj", "{11AEADBD-E73D-46AC-BB6E-85C71DF0E6D9}"
 EndProject

@@ -19,5 +19,10 @@
         ///   The content type for this attachment.
         /// </summary>
         public string ContentType { get; set; }
+
+        /// <summary>
+        /// The ContentID (CID) for inline image attachments
+        /// </summary>
+        public string ContentId { get; set; }
     }
 }

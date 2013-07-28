@@ -327,10 +327,38 @@ namespace PostmarkDotNet
         }
 
         /// <summary>
-        ///   Adds a file attachment using a byte[] array
+        ///   Adds a file attachment with an inline image.
         /// </summary>
         /// <param name = "path">The full path to the file to attach</param>
         /// <param name = "contentType">The content type.</param>
+        /// <param name = "contentId">ContentID for inline images</param>
+        public void AddAttachment(string path, string contentType, string contentId)
+        {
+            ValidateAttachmentPath(path);
+
+            using (var stream = File.OpenRead(path))
+            {
+                var content = ReadStream(stream, 8067);
+
+                ValidateAttachmentLength(Convert.ToBase64String(content));
+
+                var attachment = new PostmarkMessageAttachment
+                {
+                    Name = new FileInfo(path).Name,
+                    ContentType = contentType,
+                    Content = Convert.ToBase64String(content),
+                    ContentId = contentId
+                };
+
+                Attachments.Add(attachment);
+            }
+        }
+
+        /// <summary>
+        ///   Adds a file attachment using a byte[] array
+        /// </summary>
+        /// <param name = "path">The full path to the file to attach</param>
+        /// <param name = "contentType">ContentID for inline images.</param>
         public void AddAttachment(byte[] content, string contentType, string attachmentName)
         {
             ValidateAttachmentLength(Convert.ToBase64String(content));
@@ -345,6 +373,26 @@ namespace PostmarkDotNet
             Attachments.Add(attachment);   
         }
 
+        /// <summary>
+        ///   Adds a file attachment using a byte[] array with inline support
+        /// </summary>
+        /// <param name = "path">The full path to the file to attach</param>
+        /// <param name = "contentType">The content type.</param>
+        /// <param name = "contentId">The ContentId for inline images.</param>
+        public void AddAttachment(byte[] content, string contentType, string attachmentName, string contentId)
+        {
+            ValidateAttachmentLength(Convert.ToBase64String(content));
+
+            var attachment = new PostmarkMessageAttachment
+            {
+                Name = attachmentName,
+                ContentType = contentType,
+                Content = Convert.ToBase64String(content),
+                ContentId = contentId
+            };
+
+            Attachments.Add(attachment);
+        }
         /// <summary>
         /// Be sure the path to the attachment actually exists
         /// </summary>

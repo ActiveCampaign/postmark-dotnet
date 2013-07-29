@@ -62,8 +62,6 @@ namespace PostmarkDotNet
         {
             var request = NewEmailRequest();
 
-            ValidatePostmarkMessage(message);
-
             CleanPostmarkMessage(message);
 
             request.Entity = message;
@@ -97,7 +95,6 @@ namespace PostmarkDotNet
 
             foreach (var message in messages)
             {
-                ValidatePostmarkMessage(message);
                 CleanPostmarkMessage(message);
                 batch.Add(message);
             }

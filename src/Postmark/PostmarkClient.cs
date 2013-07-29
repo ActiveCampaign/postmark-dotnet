@@ -163,8 +163,6 @@ namespace PostmarkDotNet
         {
             var request = NewEmailRequest();
 
-            ValidatePostmarkMessage(message);
-
             CleanPostmarkMessage(message);
 
             request.Entity = message;
@@ -206,7 +204,6 @@ namespace PostmarkDotNet
 
             foreach (var message in messages)
             {
-                ValidatePostmarkMessage(message);
                 CleanPostmarkMessage(message);
                 batch.Add(message);
             }
@@ -516,52 +513,6 @@ namespace PostmarkDotNet
                 message.To = message.To.Trim();    
             }
             message.Subject = message.Subject != null ? message.Subject.Trim() : "";
-        }
-
-        private static void ValidatePostmarkMessage(PostmarkMessage message)
-        {
-            var specification = new ValidEmailSpecification();
-            if (string.IsNullOrEmpty(message.From) || !specification.IsSatisfiedBy(message.From))
-            {
-                throw new ValidationException("You must specify a valid 'From' email address.");
-            }
-            if (!string.IsNullOrEmpty(message.To))
-            {
-                var recipients = message.To.Split(new[] { ',' }, StringSplitOptions.RemoveEmptyEntries);
-                foreach (var recipient in recipients.Where(email => !specification.IsSatisfiedBy(email)))
-                {
-                    throw new ValidationException(
-                        string.Format("The provided recipient address '{0}' is not valid", recipient)
-                        );
-                }
-            }
-
-            if (!string.IsNullOrEmpty(message.ReplyTo) && !specification.IsSatisfiedBy(message.ReplyTo))
-            {
-                throw new ValidationException("If a 'ReplyTo' email address is included, it must be valid.");
-            }
-
-            if (!string.IsNullOrEmpty(message.Cc))
-            {
-                var ccs = message.Cc.Split(new[] { ',' }, StringSplitOptions.RemoveEmptyEntries);
-                foreach (var cc in ccs.Where(email => !specification.IsSatisfiedBy(email)))
-                {
-                    throw new ValidationException(
-                        string.Format("The provided CC address '{0}' is not valid", cc)
-                        );
-                }
-            }
-
-            if (!string.IsNullOrEmpty(message.Bcc))
-            {
-                var bccs = message.Bcc.Split(new[] { ',' }, StringSplitOptions.RemoveEmptyEntries);
-                foreach (var bcc in bccs.Where(email => !specification.IsSatisfiedBy(email)))
-                {
-                    throw new ValidationException(
-                        string.Format("The provided BCC address '{0}' is not valid", bcc)
-                        );
-                }
-            }
         }
 
 #if !WINDOWS_PHONE

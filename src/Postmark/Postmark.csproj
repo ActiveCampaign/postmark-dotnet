@@ -94,7 +94,6 @@
     <Compile Include="Model\PostmarkStatus.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Validation\ValidationException.cs" />
-    <Compile Include="Validation\ValidEmailSpecification.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="key.snk" />

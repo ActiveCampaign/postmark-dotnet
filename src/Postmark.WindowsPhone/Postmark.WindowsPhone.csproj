@@ -123,9 +123,6 @@
     <Compile Include="..\postmark\validation\ValidationException.cs">
       <Link>Validation\ValidationException.cs</Link>
     </Compile>
-    <Compile Include="..\postmark\validation\ValidEmailSpecification.cs">
-      <Link>Validation\ValidEmailSpecification.cs</Link>
-    </Compile>
     <Compile Include="PostmarkClient.WindowsPhone.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>

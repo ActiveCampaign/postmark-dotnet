@@ -120,9 +120,6 @@
     <Compile Include="..\Postmark\Validation\ValidationException.cs">
       <Link>Validation\ValidationException.cs</Link>
     </Compile>
-    <Compile Include="..\Postmark\Validation\ValidEmailSpecification.cs">
-      <Link>Validation\ValidEmailSpecification.cs</Link>
-    </Compile>
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>

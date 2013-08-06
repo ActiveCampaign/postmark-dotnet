@@ -1,6 +1,5 @@
 using System;
 using System.Collections.Generic;
-using System.Collections.Specialized;
 #if !WINDOWS_PHONE
 using System.Collections.Specialized;
 #else

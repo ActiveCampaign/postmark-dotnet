@@ -2,7 +2,7 @@
 <package>
     <metadata>
         <id>Postmark</id>
-        <version>1.1.0</version>
+        <version>1.2.0-alpha</version>
         <authors>Daniel Crenna, JP Toto</authors>
         <owners>Wildbit</owners>
         <description>Leave email delivery to the experts with this plugin to bring Postmark email services to your web application. Requires a Postmark account.</description>
@@ -19,4 +19,8 @@
           <dependency id="Specifications" version="[1.0.4]" />
         </dependencies>        
     </metadata>
+    <files>
+        <file src="lib\**\Postmark*.dll" target="lib"/>
+        <file src="lib\**\LinqBridge*.dll" target="lib"/>
+    </files>
 </package>

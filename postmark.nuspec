@@ -2,12 +2,12 @@
 <package>
     <metadata>
         <id>Postmark</id>
-        <version>1.2.0</version>
+        <version>1.2.1</version>
         <authors>Daniel Crenna, JP Toto</authors>
         <owners>Wildbit</owners>
         <description>Leave email delivery to the experts with this plugin to bring Postmark email services to your web application. Requires a Postmark account.</description>
         <summary>Leave email delivery to the experts with this plugin to bring Postmark email services to your web application.</summary>
-        <releaseNotes>Removed client email validation. All validation should occur at the API level.</releaseNotes>
+        <releaseNotes>Removed client email validation. All validation should occur at the API level. Updated attachment functions to add proper line breaks.</releaseNotes>
         <language>en-US</language>
         <projectUrl>http://developer.postmarkapp.com</projectUrl>
         <licenseUrl>https://github.com/jptoto/postmark-dotnet/blob/master/LICENSE</licenseUrl>

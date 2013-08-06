@@ -35,3 +35,4 @@ TestResults
 App.config
 src/Postmark.Tests/App.config
 src/Postmark.Tests/PostmarkClientTests.Work.cs
+*.nupkg

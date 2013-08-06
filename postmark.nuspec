@@ -2,7 +2,7 @@
 <package>
     <metadata>
         <id>Postmark</id>
-        <version>1.2.0-beta</version>
+        <version>1.2.0</version>
         <authors>Daniel Crenna, JP Toto</authors>
         <owners>Wildbit</owners>
         <description>Leave email delivery to the experts with this plugin to bring Postmark email services to your web application. Requires a Postmark account.</description>

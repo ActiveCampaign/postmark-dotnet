@@ -313,7 +313,7 @@ namespace PostmarkDotNet
             {
                 var content = ReadStream(stream, 8067);
 
-                ValidateAttachmentLength(Convert.ToBase64String(content));
+                ValidateAttachmentLength(Convert.ToBase64String(content, Base64FormattingOptions.InsertLineBreaks));
 
                 var attachment = new PostmarkMessageAttachment
                 {
@@ -340,7 +340,7 @@ namespace PostmarkDotNet
             {
                 var content = ReadStream(stream, 8067);
 
-                ValidateAttachmentLength(Convert.ToBase64String(content));
+                ValidateAttachmentLength(Convert.ToBase64String(content, Base64FormattingOptions.InsertLineBreaks));
 
                 var attachment = new PostmarkMessageAttachment
                 {
@@ -361,7 +361,7 @@ namespace PostmarkDotNet
         /// <param name = "contentType">ContentID for inline images.</param>
         public void AddAttachment(byte[] content, string contentType, string attachmentName)
         {
-            ValidateAttachmentLength(Convert.ToBase64String(content));
+            ValidateAttachmentLength(Convert.ToBase64String(content, Base64FormattingOptions.InsertLineBreaks));
 
             var attachment = new PostmarkMessageAttachment
             {
@@ -381,7 +381,7 @@ namespace PostmarkDotNet
         /// <param name = "contentId">The ContentId for inline images.</param>
         public void AddAttachment(byte[] content, string contentType, string attachmentName, string contentId)
         {
-            ValidateAttachmentLength(Convert.ToBase64String(content));
+            ValidateAttachmentLength(Convert.ToBase64String(content, Base64FormattingOptions.InsertLineBreaks));
 
             var attachment = new PostmarkMessageAttachment
             {

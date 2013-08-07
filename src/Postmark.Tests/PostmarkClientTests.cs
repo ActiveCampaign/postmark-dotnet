@@ -187,24 +187,6 @@ namespace Postmark.Tests
         }
 
         [Test]
-        [ExpectedException(typeof (ValidationException))]
-        public void Can_send_message_with_token_and_signature_and_invalid_recipient_and_throw_validation_exception()
-        {
-            var postmark = new PostmarkClient(_serverToken);
-
-            var email = new PostmarkMessage
-            {
-                To = "earth",
-                From = _from,
-                Subject = Subject,
-                TextBody = TextBody,
-                HtmlBody = HtmlBody
-            };
-
-            postmark.SendMessage(email);
-        }
-
-        [Test]
         public void Can_send_message_without_signature_and_receive_422()
         {
             var postmark = new PostmarkClient(_serverToken);

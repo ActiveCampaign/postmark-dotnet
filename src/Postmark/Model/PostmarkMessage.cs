@@ -313,13 +313,17 @@ namespace PostmarkDotNet
             {
                 var content = ReadStream(stream, 8067);
 
-                ValidateAttachmentLength(Convert.ToBase64String(content, Base64FormattingOptions.InsertLineBreaks));
+                ValidateAttachmentLength(Convert.ToBase64String(content));
 
                 var attachment = new PostmarkMessageAttachment
                 {
                     Name = new FileInfo(path).Name,
                     ContentType = contentType,
+#if !WINDOWS_PHONE
+                    Content = Convert.ToBase64String(content, Base64FormattingOptions.InsertLineBreaks)
+#else
                     Content = Convert.ToBase64String(content)
+#endif
                 };
 
                 Attachments.Add(attachment);
@@ -340,13 +344,17 @@ namespace PostmarkDotNet
             {
                 var content = ReadStream(stream, 8067);
 
-                ValidateAttachmentLength(Convert.ToBase64String(content, Base64FormattingOptions.InsertLineBreaks));
+                ValidateAttachmentLength(Convert.ToBase64String(content));
 
                 var attachment = new PostmarkMessageAttachment
                 {
                     Name = new FileInfo(path).Name,
                     ContentType = contentType,
+#if !WINDOWS_PHONE
+                    Content = Convert.ToBase64String(content, Base64FormattingOptions.InsertLineBreaks),
+#else
                     Content = Convert.ToBase64String(content),
+#endif
                     ContentId = contentId
                 };
 
@@ -361,13 +369,17 @@ namespace PostmarkDotNet
         /// <param name = "contentType">ContentID for inline images.</param>
         public void AddAttachment(byte[] content, string contentType, string attachmentName)
         {
-            ValidateAttachmentLength(Convert.ToBase64String(content, Base64FormattingOptions.InsertLineBreaks));
+            ValidateAttachmentLength(Convert.ToBase64String(content));
 
             var attachment = new PostmarkMessageAttachment
             {
                 Name = attachmentName,
                 ContentType = contentType,
-                Content = Convert.ToBase64String(content)
+#if !WINDOWS_PHONE
+                    Content = Convert.ToBase64String(content, Base64FormattingOptions.InsertLineBreaks)
+#else
+                    Content = Convert.ToBase64String(content)
+#endif
             };
 
             Attachments.Add(attachment);   
@@ -381,13 +393,17 @@ namespace PostmarkDotNet
         /// <param name = "contentId">The ContentId for inline images.</param>
         public void AddAttachment(byte[] content, string contentType, string attachmentName, string contentId)
         {
-            ValidateAttachmentLength(Convert.ToBase64String(content, Base64FormattingOptions.InsertLineBreaks));
+            ValidateAttachmentLength(Convert.ToBase64String(content));
 
             var attachment = new PostmarkMessageAttachment
             {
                 Name = attachmentName,
                 ContentType = contentType,
-                Content = Convert.ToBase64String(content),
+#if !WINDOWS_PHONE
+                    Content = Convert.ToBase64String(content, Base64FormattingOptions.InsertLineBreaks),
+#else
+                    Content = Convert.ToBase64String(content),
+#endif
                 ContentId = contentId
             };
 

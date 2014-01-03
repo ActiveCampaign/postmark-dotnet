@@ -1,0 +1,20 @@
+<?xml version="1.0"?>
+<package xmlns="http://schemas.microsoft.com/packaging/2011/08/nuspec.xsd">
+  <metadata>
+    <id>Specifications</id>
+    <version>1.0.4</version>
+    <title>Specifications</title>
+    <authors>Daniel Crenna</authors>
+    <owners>Daniel Crenna</owners>
+    <licenseUrl>https://github.com/danielcrenna/specifications/blob/master/LICENSE</licenseUrl>
+    <projectUrl>http://github.com/danielcrenna/specifications</projectUrl>
+    <iconUrl>http://apitize.com.s3.amazonaws.com/logo_specifications.png</iconUrl>
+    <requireLicenseAcceptance>false</requireLicenseAcceptance>
+    <description>The specification pattern for composable business logic, in C#.</description>
+    <summary>The specification pattern for composable business logic, in C#..</summary>
+    <releaseNotes />
+    <copyright>(c) 2011 Daniel Crenna</copyright>
+    <language />
+    <tags>specifications specification patterns pattern</tags>
+  </metadata>
+</package>

@@ -33,7 +33,8 @@
     <IsWebBootstrapper>false</IsWebBootstrapper>
     <UseApplicationTrust>false</UseApplicationTrust>
     <BootstrapperEnabled>true</BootstrapperEnabled>
-    <TargetFrameworkProfile>Client</TargetFrameworkProfile>
+    <TargetFrameworkProfile>
+    </TargetFrameworkProfile>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -59,15 +60,11 @@
     <Reference Include="Hammock">
       <HintPath>..\packages\Hammock.1.3.1\lib\4.0\Hammock.dll</HintPath>
     </Reference>
-    <Reference Include="Hammock.ClientProfile, Version=1.0.0.0, Culture=neutral, PublicKeyToken=c148cfba29ed1a4d, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\packages\Hammock.1.3.1\lib\4.0\Hammock.ClientProfile.dll</HintPath>
-    </Reference>
     <Reference Include="Newtonsoft.Json, Version=4.5.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\packages\Newtonsoft.Json.5.0.6\lib\net40\Newtonsoft.Json.dll</HintPath>
+      <HintPath>..\packages\Newtonsoft.Json.5.0.8\lib\net40\Newtonsoft.Json.dll</HintPath>
     </Reference>
     <Reference Include="Specifications, Version=1.0.0.0, Culture=neutral, PublicKeyToken=d764143a80b7cabb, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
       <HintPath>..\packages\Specifications.1.0.4\lib\net40\Specifications.dll</HintPath>
     </Reference>
     <Reference Include="System" />
@@ -92,6 +89,7 @@
     <Compile Include="Model\PostmarkDeliveryStats.cs" />
     <Compile Include="Model\PostmarkInboundMessage.cs" />
     <Compile Include="Model\PostmarkMessageAttachment.cs" />
+    <Compile Include="Model\PostmarkOutboundMessagesListItem.cs" />
     <Compile Include="PostmarkClient.Async.cs" />
     <Compile Include="Serializers\PostmarkSerializer.cs" />
     <Compile Include="PostmarkClient.cs" />
@@ -103,9 +101,7 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="key.snk" />
-    <None Include="packages.config">
-      <SubType>Designer</SubType>
-    </None>
+    <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
     <BootstrapperPackage Include="Microsoft.Net.Client.3.5">

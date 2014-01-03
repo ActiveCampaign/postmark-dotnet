@@ -89,7 +89,7 @@
     <Compile Include="Model\PostmarkDeliveryStats.cs" />
     <Compile Include="Model\PostmarkInboundMessage.cs" />
     <Compile Include="Model\PostmarkMessageAttachment.cs" />
-    <Compile Include="Model\PostmarkOutboundMessagesListItem.cs" />
+    <Compile Include="Model\PostmarkOutboundMessagesList.cs" />
     <Compile Include="PostmarkClient.Async.cs" />
     <Compile Include="Serializers\PostmarkSerializer.cs" />
     <Compile Include="PostmarkClient.cs" />

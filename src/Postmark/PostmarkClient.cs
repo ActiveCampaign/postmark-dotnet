@@ -1,10 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Linq;
 using Hammock;
 using Hammock.Web;
 using Newtonsoft.Json;
 using PostmarkDotNet.Converters;
+using PostmarkDotNet.Model;
 using PostmarkDotNet.Serializers;
 using PostmarkDotNet.Validation;
 
@@ -495,6 +497,37 @@ namespace PostmarkDotNet
         }
 
         #endregion
+
+        #region Messages API
+
+        /// <summary>
+        /// Implementation called to do the actual messages call and return a <see cref="PostmarkOutboundMessageList"/>
+        /// </summary>
+        /// <param name="recipient"></param>
+        /// <param name="fromemail"></param>
+        /// <param name="tag"></param>
+        /// <param name="subject"></param>
+        /// <param name="count"></param>
+        /// <param name="offset"></param>
+        /// <returns></returns>
+        private PostmarkOutboundMessageList GetOutboundMessagesImpl(string recipient, string fromemail, string tag, string subject, int count, int offset)
+        {
+            var request = NewBouncesRequest();
+            request.Path = "messages/outbound";
+
+            if (!string.IsNullOrEmpty(recipient)) request.AddParameter("recipient", recipient);
+            if (!string.IsNullOrEmpty(fromemail)) request.AddParameter("fromemail", fromemail);
+            if (!string.IsNullOrEmpty(tag)) request.AddParameter("tag", tag);
+            if (!string.IsNullOrEmpty(subject)) request.AddParameter("subject", subject);
+               
+            request.AddParameter("count", count.ToString());
+            request.AddParameter("offset", offset.ToString());
+
+            var response = _client.Request(request);
+            return JsonConvert.DeserializeObject<PostmarkOutboundMessageList>(response.Content, _settings);
+        }
+
+        #endregion
 #endif
 
         private void SetPostmarkMeta(RestBase request)
@@ -655,6 +688,19 @@ namespace PostmarkDotNet
             {
                 Path = "email/batch",
                 Method = WebMethod.Post,
+                Serializer = _serializer
+            };
+
+            SetPostmarkMeta(request);
+
+            return request;
+        }
+
+        private RestRequest NewMessagesRequest()
+        {
+            var request = new RestRequest
+            {
+                Method = WebMethod.Get,
                 Serializer = _serializer
             };
 

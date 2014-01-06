@@ -504,11 +504,78 @@ namespace PostmarkDotNet
         /// Return a listing of Outbound sent messages using the filters supported by the API.
         /// </summary>
         /// <param name="count">Number of messages to return per call. (required)</param>
+        /// <param name="subject">Filter by message subject.</param>
+        /// <param name="offset">Number of messages to offset/page per call. (required)</param>
+        /// <returns></returns>
+        public PostmarkOutboundMessageList GetOutboundMessages(int count, string subject, int offset)
+        {
+            return GetOutboundMessagesImpl(null, null, null, subject, count, offset);
+        }
+
+
+        /// <summary>
+        /// Return a listing of Outbound sent messages using the filters supported by the API.
+        /// </summary>
+        /// <param name="count">Number of messages to return per call. (required)</param>
+        /// <param name="offset">Number of messages to offset/page per call. (required)</param>
+        /// <param name="recipient">Filter by the recipient(s) of the message.</param>
+        /// <returns></returns>
+        public PostmarkOutboundMessageList GetOutboundMessages(int count, int offset, string recipient)
+        {
+            return GetOutboundMessagesImpl(recipient, null, null, null, count, offset);
+        }
+
+
+        /// <summary>
+        /// Return a listing of Outbound sent messages using the filters supported by the API.
+        /// </summary>
+        /// <param name="count">Number of messages to return per call. (required)</param>
         /// <param name="offset">Number of messages to offset/page per call. (required)</param>
         /// <returns></returns>
         public PostmarkOutboundMessageList GetOutboundMessages(int count, int offset)
         {
             return GetOutboundMessagesImpl(null, null, null, null, count, offset);
+        }
+
+         /// <summary>
+        /// Return a listing of Outbound sent messages using the filters supported by the API.
+        /// </summary>
+        /// <param name="recipient">Filter by the recipient(s) of the message.</param>
+        /// <param name="fromemail">Filter by the email address the message is sent from.</param>
+        /// <param name="count">Number of messages to return per call. (required)</param>
+        /// <param name="offset">Number of messages to offset/page per call. (required)</param>
+        /// <returns></returns>
+        public PostmarkOutboundMessageList GetOutboundMessages(string recipient, string fromemail,
+            int count, int offset)
+        {
+            return GetOutboundMessagesImpl(recipient, fromemail, null, null, count, offset);
+        }
+
+        /// <summary>
+        /// Return a listing of Outbound sent messages using the filters supported by the API.
+        /// </summary>
+        /// <param name="subject">Filter by message subject.</param>
+        /// <param name="count">Number of messages to return per call. (required)</param>
+        /// <param name="offset">Number of messages to offset/page per call. (required)</param>
+        /// <returns></returns>
+        public PostmarkOutboundMessageList GetOutboundMessages(string subject, int count, int offset)
+        {
+            return GetOutboundMessagesImpl(null, null, null, subject, count, offset);
+        }
+
+       /// <summary>
+        /// Return a listing of Outbound sent messages using the filters supported by the API.
+        /// </summary>
+        /// <param name="fromemail">Filter by the email address the message is sent from.</param>
+        /// <param name="tag">Filter by a tag used for the message (messages sent directly through the API only)</param>
+        /// <param name="subject">Filter by message subject.</param>
+        /// <param name="count">Number of messages to return per call. (required)</param>
+        /// <param name="offset">Number of messages to offset/page per call. (required)</param>
+        /// <returns></returns>
+        public PostmarkOutboundMessageList GetOutboundMessages(string fromemail, string tag,
+            string subject, int count, int offset)
+        {
+            return GetOutboundMessagesImpl(null, fromemail, tag, subject, count, offset);
         }
 
         /// <summary>
@@ -530,17 +597,10 @@ namespace PostmarkDotNet
 
         /// <summary>
         /// Implementation called to do the actual messages call and return a <see cref="PostmarkOutboundMessageList"/>
-        /// </summary>
-        /// <param name="recipient"></param>
-        /// <param name="fromemail"></param>
-        /// <param name="tag"></param>
-        /// <param name="subject"></param>
-        /// <param name="count"></param>
-        /// <param name="offset"></param>
-        /// <returns></returns>
+        /// </summary>s
         private PostmarkOutboundMessageList GetOutboundMessagesImpl(string recipient, string fromemail, string tag, string subject, int count, int offset)
         {
-            var request = NewBouncesRequest();
+            var request = NewMessagesRequest();
             request.Path = "messages/outbound";
 
             if (!string.IsNullOrEmpty(recipient)) request.AddParameter("recipient", recipient);
@@ -553,6 +613,34 @@ namespace PostmarkDotNet
 
             var response = _client.Request(request);
             return JsonConvert.DeserializeObject<PostmarkOutboundMessageList>(response.Content, _settings);
+        }
+
+        /// <summary>
+        /// Get the full details of a sent message including all fields, raw body, attachment names, etc
+        /// </summary>
+        /// <param name="messageID">The MessageID of a message which can be optained either from the initial API send call or a GetOutboundMessages call.</param>
+        /// <returns></returns>
+        public MessageDetail GetMessageDetail(string messageID)
+        {
+            var request = NewMessagesRequest();
+            request.Path = string.Format("messages/outbound/{0}/details", messageID.Trim());
+            
+            var response = _client.Request(request);
+            return JsonConvert.DeserializeObject<MessageDetail>(response.Content, _settings);
+        }
+
+        /// <summary>
+        /// Get the original raw message dump of on outbound message including all SMTP headers and data.
+        /// </summary>
+        /// <param name="messageID">The MessageID of a message which can be optained either from the initial API send call or a GetOutboundMessages call.</param>
+        /// <returns></returns>
+        public MessageDump GetMessageDump(string messageID)
+        {
+            var request = NewMessagesRequest();
+            request.Path = string.Format("messages/outbound/{0}/dump", messageID.Trim());
+
+            var response = _client.Request(request);
+            return JsonConvert.DeserializeObject<MessageDump>(response.Content, _settings);
         }
 
         #endregion

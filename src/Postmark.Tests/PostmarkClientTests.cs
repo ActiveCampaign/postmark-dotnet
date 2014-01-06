@@ -334,6 +334,10 @@ namespace Postmark.Tests
             Console.WriteLine("Postmark -> {0}", response.Message);
         }
 
+
+        // Running the messages API tests require at least 3 messages having been sent for the
+        // API token that is used to run the live integration tests.
+
         [Test]
         public void Can_retrieve_messages_from_message_api()
         {
@@ -341,6 +345,17 @@ namespace Postmark.Tests
             var messages = postmark.GetOutboundMessages(3, 0);
 
             Assert.AreEqual(3, messages.Messages.Count);
+        }
+
+        [Test]
+        public void Can_get_message_details_by_message_id()
+        {
+            var postmark = new PostmarkClient(_serverToken);
+            var messages = postmark.GetOutboundMessages(1, 0);
+
+            var messagedetails = postmark.GetMessageDetail(messages.Messages.FirstOrDefault().MessageID);
+            
+            Assert.IsNotNull(messagedetails.Body);
         }
     }
 }

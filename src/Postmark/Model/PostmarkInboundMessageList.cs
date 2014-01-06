@@ -1,0 +1,54 @@
+﻿using System.Collections.Generic;
+
+namespace PostmarkDotNet.Model
+{
+    public class FromFull
+    {
+        public string Email { get; set; }
+        public string Name { get; set; }
+    }
+
+    public class ToFull
+    {
+        public string Email { get; set; }
+        public string Name { get; set; }
+    }
+
+    public class CcFull
+    {
+        public string Email { get; set; }
+        public string Name { get; set; }
+    }
+
+    public class InboundMessage
+    {
+        public string From { get; set; }
+        public string FromName { get; set; }
+        public FromFull FromFull { get; set; }
+        public string To { get; set; }
+        public List<ToFull> ToFull { get; set; }
+        public List<CcFull> CcFull { get; set; }
+        public string Cc { get; set; }
+        public string ReplyTo { get; set; }
+        public string Subject { get; set; }
+        public string Date { get; set; }
+        public string MailboxHash { get; set; }
+        public string Tag { get; set; }
+        public List<Attachment> Attachments { get; set; }
+        public string MessageID { get; set; }
+    }
+
+    public class Attachment
+    {
+        public string Name { get; set; }
+        public string ContentType { get; set; }
+        public string ContentID { get; set; }
+        public string ContentLength { get; set; }
+    }
+
+    public class PostmarkInboundMessageList
+    {
+        public int TotalCount { get; set; }
+        public List<InboundMessage> InboundMessages { get; set; }
+    }
+}

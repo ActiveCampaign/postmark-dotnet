@@ -177,7 +177,7 @@ namespace Postmark.Tests
             };
 
             email.AddAttachment("logo.png", "image/png");
-            
+
             var response = postmark.SendMessage(email);
 
             Assert.IsNotNull(response);
@@ -192,12 +192,12 @@ namespace Postmark.Tests
             var postmark = new PostmarkClient(_serverToken);
 
             var email = new PostmarkMessage
-                            {
-                                To = InvalidRecipient,
-                                From = InvalidRecipient, // This must not be a verified sender signature
-                                Subject = Subject,
-                                TextBody = TextBody
-                            };
+            {
+                To = InvalidRecipient,
+                From = InvalidRecipient, // This must not be a verified sender signature
+                Subject = Subject,
+                TextBody = TextBody
+            };
 
             var response = postmark.SendMessage(email);
 
@@ -214,12 +214,12 @@ namespace Postmark.Tests
             var postmark = new PostmarkClient("");
 
             var email = new PostmarkMessage
-                            {
-                                To = InvalidRecipient,
-                                From = InvalidRecipient,
-                                Subject = Subject,
-                                TextBody = TextBody
-                            };
+            {
+                To = InvalidRecipient,
+                From = InvalidRecipient,
+                Subject = Subject,
+                TextBody = TextBody
+            };
 
             var response = postmark.SendMessage(email);
 
@@ -236,15 +236,15 @@ namespace Postmark.Tests
             var postmark = new PostmarkClient("POSTMARK_API_TEST");
 
             var email = new PostmarkMessage
-                            {
-                                To = InvalidRecipient,
-                                Cc = "test-cc@example.com",
-                                Bcc = "test-bcc@example.com",
-                                From = InvalidRecipient,
-                                Subject = Subject,
-                                TextBody = TextBody,
-                                HtmlBody = HtmlBody
-                            };
+            {
+                To = InvalidRecipient,
+                Cc = "test-cc@example.com",
+                Bcc = "test-bcc@example.com",
+                From = InvalidRecipient,
+                Subject = Subject,
+                TextBody = TextBody,
+                HtmlBody = HtmlBody
+            };
 
             var response = postmark.SendMessage(email);
 
@@ -259,19 +259,19 @@ namespace Postmark.Tests
         public void Can_generate_postmarkmessage_from_mailmessage()
         {
             var mm = new MailMessage
-                         {
-                             Subject = "test",
-                             Body = "test"
-                         };
-            mm.To.Add ("me@me.com");
-            mm.Bcc.Add ("me@me.com");
-            mm.CC.Add ("me@me.com");
-            mm.Headers.Add ("X-PostmarkTag", "mytag");
+            {
+                Subject = "test",
+                Body = "test"
+            };
+            mm.To.Add("me@me.com");
+            mm.Bcc.Add("me@me.com");
+            mm.CC.Add("me@me.com");
+            mm.Headers.Add("X-PostmarkTag", "mytag");
 
-            var pm = new PostmarkMessage (mm);
-            Assert.AreEqual (mm.Subject, pm.Subject);
-            Assert.AreEqual (mm.Body, pm.TextBody);
-            Assert.AreEqual ("mytag", pm.Tag);
+            var pm = new PostmarkMessage(mm);
+            Assert.AreEqual(mm.Subject, pm.Subject);
+            Assert.AreEqual(mm.Body, pm.TextBody);
+            Assert.AreEqual("mytag", pm.Tag);
         }
 
         [Test]
@@ -339,7 +339,7 @@ namespace Postmark.Tests
         // API token that is used to run the live integration tests.
 
         [Test]
-        public void Can_retrieve_messages_from_message_api()
+        public void Can_retrieve_outbound_messages_from_messages_api()
         {
             var postmark = new PostmarkClient(_serverToken);
             var messages = postmark.GetOutboundMessages(3, 0);
@@ -348,14 +348,36 @@ namespace Postmark.Tests
         }
 
         [Test]
-        public void Can_get_message_details_by_message_id()
+        public void Can_get_outbound_message_details_and_dump_by_messages_id()
         {
             var postmark = new PostmarkClient(_serverToken);
             var messages = postmark.GetOutboundMessages(1, 0);
 
-            var messagedetails = postmark.GetMessageDetail(messages.Messages.FirstOrDefault().MessageID);
-            
+            var messagedetails = postmark.GetOutboundMessageDetail(messages.Messages.FirstOrDefault().MessageID);
+
+            var messagedump = postmark.GetOutboundMessageDump(messages.Messages.FirstOrDefault().MessageID);
+
             Assert.IsNotNull(messagedetails.Body);
+            Assert.IsNotNull(messagedump.Body);
         }
+
+        [Test]
+        public void Can_get_inbound_messages_from_messages_api()
+        {
+            var postmark = new PostmarkClient(_serverToken);
+            var inboundmessages = postmark.GetInboundMessages(1, 0);
+
+            Assert.AreEqual(1, inboundmessages.InboundMessages.Count);
+        }
+
+        [Test]
+        public void test()
+        {
+            var postmark = new PostmarkClient(_serverToken);
+            var inboundmessages = postmark.GetInboundMessages("james.p.toto@gmail.com", 10, 0);
+
+            inboundmessages.GetType();
+        }
+
     }
 }

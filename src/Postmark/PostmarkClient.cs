@@ -506,7 +506,7 @@ namespace PostmarkDotNet
         /// <param name="count">Number of messages to return per call. (required)</param>
         /// <param name="subject">Filter by message subject.</param>
         /// <param name="offset">Number of messages to offset/page per call. (required)</param>
-        /// <returns></returns>
+        /// <returns>PostmarkOutboundMessageList</returns>
         public PostmarkOutboundMessageList GetOutboundMessages(int count, string subject, int offset)
         {
             return GetOutboundMessagesImpl(null, null, null, subject, count, offset);
@@ -519,7 +519,7 @@ namespace PostmarkDotNet
         /// <param name="count">Number of messages to return per call. (required)</param>
         /// <param name="offset">Number of messages to offset/page per call. (required)</param>
         /// <param name="recipient">Filter by the recipient(s) of the message.</param>
-        /// <returns></returns>
+        /// <returns>PostmarkOutboundMessageList</returns>
         public PostmarkOutboundMessageList GetOutboundMessages(int count, int offset, string recipient)
         {
             return GetOutboundMessagesImpl(recipient, null, null, null, count, offset);
@@ -531,7 +531,7 @@ namespace PostmarkDotNet
         /// </summary>
         /// <param name="count">Number of messages to return per call. (required)</param>
         /// <param name="offset">Number of messages to offset/page per call. (required)</param>
-        /// <returns></returns>
+        /// <returns>PostmarkOutboundMessageList</returns>
         public PostmarkOutboundMessageList GetOutboundMessages(int count, int offset)
         {
             return GetOutboundMessagesImpl(null, null, null, null, count, offset);
@@ -544,7 +544,7 @@ namespace PostmarkDotNet
         /// <param name="fromemail">Filter by the email address the message is sent from.</param>
         /// <param name="count">Number of messages to return per call. (required)</param>
         /// <param name="offset">Number of messages to offset/page per call. (required)</param>
-        /// <returns></returns>
+        /// <returns>PostmarkOutboundMessageList</returns>
         public PostmarkOutboundMessageList GetOutboundMessages(string recipient, string fromemail,
             int count, int offset)
         {
@@ -557,7 +557,7 @@ namespace PostmarkDotNet
         /// <param name="subject">Filter by message subject.</param>
         /// <param name="count">Number of messages to return per call. (required)</param>
         /// <param name="offset">Number of messages to offset/page per call. (required)</param>
-        /// <returns></returns>
+        /// <returns>PostmarkOutboundMessageList</returns>
         public PostmarkOutboundMessageList GetOutboundMessages(string subject, int count, int offset)
         {
             return GetOutboundMessagesImpl(null, null, null, subject, count, offset);
@@ -571,7 +571,7 @@ namespace PostmarkDotNet
         /// <param name="subject">Filter by message subject.</param>
         /// <param name="count">Number of messages to return per call. (required)</param>
         /// <param name="offset">Number of messages to offset/page per call. (required)</param>
-        /// <returns></returns>
+        /// <returns>PostmarkOutboundMessageList</returns>
         public PostmarkOutboundMessageList GetOutboundMessages(string fromemail, string tag,
             string subject, int count, int offset)
         {
@@ -587,7 +587,7 @@ namespace PostmarkDotNet
         /// <param name="subject">Filter by message subject.</param>
         /// <param name="count">Number of messages to return per call. (required)</param>
         /// <param name="offset">Number of messages to offset/page per call. (required)</param>
-        /// <returns></returns>
+        /// <returns>PostmarkOutboundMessageList</returns>
         public PostmarkOutboundMessageList GetOutboundMessages(string recipient, string fromemail, string tag,
             string subject, int count, int offset)
         {
@@ -620,7 +620,7 @@ namespace PostmarkDotNet
         /// </summary>
         /// <param name="messageID">The MessageID of a message which can be optained either from the initial API send call or a GetOutboundMessages call.</param>
         /// <returns></returns>
-        public MessageDetail GetMessageDetail(string messageID)
+        public MessageDetail GetOutboundMessageDetail(string messageID)
         {
             var request = NewMessagesRequest();
             request.Path = string.Format("messages/outbound/{0}/details", messageID.Trim());
@@ -634,7 +634,7 @@ namespace PostmarkDotNet
         /// </summary>
         /// <param name="messageID">The MessageID of a message which can be optained either from the initial API send call or a GetOutboundMessages call.</param>
         /// <returns></returns>
-        public MessageDump GetMessageDump(string messageID)
+        public MessageDump GetOutboundMessageDump(string messageID)
         {
             var request = NewMessagesRequest();
             request.Path = string.Format("messages/outbound/{0}/dump", messageID.Trim());
@@ -642,6 +642,95 @@ namespace PostmarkDotNet
             var response = _client.Request(request);
             return JsonConvert.DeserializeObject<MessageDump>(response.Content, _settings);
         }
+
+
+
+        /// <summary>
+        /// Return a listing of Inbound sent messages using the filters supported by the API.
+        /// </summary>
+        /// <param name="count">Number of messages to return per call. (required)</param>
+        /// <param name="offset">Number of messages to offset/page per call. (required)</param>
+        /// <returns>PostmarkInboundMessageList</returns>
+        public PostmarkInboundMessageList GetInboundMessages(int count, int offset)
+        {
+            return GetInboundMessagesImpl(null, null, null, null, count, offset);
+        }
+
+        /// <summary>
+        /// Return a listing of Inbound sent messages using the filters supported by the API.
+        /// </summary>
+        /// <param name="fromemail">Filter by the email address the message is sent from.</param>
+        /// <param name="count">Number of messages to return per call. (required)</param>
+        /// <param name="offset">Number of messages to offset/page per call. (required)</param>
+        /// <returns>PostmarkInboundMessageList</returns>
+        public PostmarkInboundMessageList GetInboundMessages(string fromemail, int count, int offset)
+        {
+            return GetInboundMessagesImpl(null, fromemail, null, null, count, offset);
+        }
+
+        /// <summary>
+        /// Return a listing of Inbound sent messages using the filters supported by the API.
+        /// </summary>
+        /// <param name="fromemail">Filter by the email address the message is sent from.</param>
+        /// <param name="subject">Filter by message subject.</param>
+        /// <param name="count">Number of messages to return per call. (required)</param>
+        /// <param name="offset">Number of messages to offset/page per call. (required)</param>
+        /// <returns>PostmarkInboundMessageList</returns>
+        public PostmarkInboundMessageList GetInboundMessages(string fromemail, string subject, int count, int offset)
+        {
+            return GetInboundMessagesImpl(null, fromemail, subject, null, count, offset);
+        }
+
+        /// <summary>
+        /// Return a listing of Inbound sent messages using the filters supported by the API.
+        /// </summary>
+        /// <param name="recipient">Filter by the recipient(s) of the message.</param>
+        /// <param name="fromemail">Filter by the email address the message is sent from.</param>
+        /// <param name="subject">Filter by message subject.</param>
+        /// <param name="count">Number of messages to return per call. (required)</param>
+        /// <param name="offset">Number of messages to offset/page per call. (required)</param>
+        /// <returns>PostmarkInboundMessageList</returns>
+        public PostmarkInboundMessageList GetInboundMessages(string recipient, string fromemail, string subject, int count, int offset)
+        {
+            return GetInboundMessagesImpl(recipient, fromemail, subject, null, count, offset);
+        }
+
+
+        /// <summary>
+        /// Return a listing of Inbound sent messages using the filters supported by the API.
+        /// </summary>
+        /// <param name="recipient">Filter by the recipient(s) of the message.</param>
+        /// <param name="fromemail">Filter by the email address the message is sent from.</param>
+        /// <param name="subject">Filter by message subject.</param>
+        /// <param name="mailboxhash">Filter by mailbox hash that was parsed from the inbound message.</param>
+        /// <param name="count">Number of messages to return per call. (required)</param>
+        /// <param name="offset">Number of messages to offset/page per call. (required)</param>
+        /// <returns>PostmarkInboundMessageList</returns>
+        public PostmarkInboundMessageList GetInboundMessages(string recipient, string fromemail, string subject, string mailboxhash, int count, int offset)
+        {
+            return GetInboundMessagesImpl(recipient, fromemail, subject, mailboxhash, count, offset);
+        }
+
+        /// <summary>
+        /// Implementation to get Inbound messages for the public search APIs
+        /// </summary>
+        private PostmarkInboundMessageList GetInboundMessagesImpl(string recipient, string fromemail, string subject, string mailboxhash, int count, int offset)
+        {
+            var request = NewMessagesRequest();
+            request.Path = "messages/inbound";
+
+            if (!string.IsNullOrEmpty(recipient)) request.AddParameter("recipient", recipient);
+            if (!string.IsNullOrEmpty(fromemail)) request.AddParameter("fromemail", fromemail);
+            if (!string.IsNullOrEmpty(subject)) request.AddParameter("subject", subject);
+            if (!string.IsNullOrEmpty(subject)) request.AddParameter("mailboxhash", mailboxhash);
+
+            request.AddParameter("count", count.ToString());
+            request.AddParameter("offset", offset.ToString());
+
+            var response = _client.Request(request);
+            return JsonConvert.DeserializeObject<PostmarkInboundMessageList>(response.Content, _settings);
+        }
+
 
         #endregion
 #endif

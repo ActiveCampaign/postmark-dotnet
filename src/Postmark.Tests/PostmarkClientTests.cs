@@ -333,5 +333,14 @@ namespace Postmark.Tests
             Assert.IsTrue(response.Status == PostmarkStatus.Success);
             Console.WriteLine("Postmark -> {0}", response.Message);
         }
+
+        [Test]
+        public void Can_retrieve_messages_from_message_api()
+        {
+            var postmark = new PostmarkClient(_serverToken);
+            var messages = postmark.GetOutboundMessages(3, 0);
+
+            Assert.AreEqual(3, messages.Messages.Count);
+        }
     }
 }

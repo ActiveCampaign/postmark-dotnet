@@ -501,6 +501,34 @@ namespace PostmarkDotNet
         #region Messages API
 
         /// <summary>
+        /// Return a listing of Outbound sent messages using the filters supported by the API.
+        /// </summary>
+        /// <param name="count">Number of messages to return per call. (required)</param>
+        /// <param name="offset">Number of messages to offset/page per call. (required)</param>
+        /// <returns></returns>
+        public PostmarkOutboundMessageList GetOutboundMessages(int count, int offset)
+        {
+            return GetOutboundMessagesImpl(null, null, null, null, count, offset);
+        }
+
+        /// <summary>
+        /// Return a listing of Outbound sent messages using the filters supported by the API.
+        /// </summary>
+        /// <param name="recipient">Filter by the recipient(s) of the message.</param>
+        /// <param name="fromemail">Filter by the email address the message is sent from.</param>
+        /// <param name="tag">Filter by a tag used for the message (messages sent directly through the API only)</param>
+        /// <param name="subject">Filter by message subject.</param>
+        /// <param name="count">Number of messages to return per call. (required)</param>
+        /// <param name="offset">Number of messages to offset/page per call. (required)</param>
+        /// <returns></returns>
+        public PostmarkOutboundMessageList GetOutboundMessages(string recipient, string fromemail, string tag,
+            string subject, int count, int offset)
+        {
+            return GetOutboundMessagesImpl(recipient, fromemail, tag, subject, count, offset);
+        }
+
+
+        /// <summary>
         /// Implementation called to do the actual messages call and return a <see cref="PostmarkOutboundMessageList"/>
         /// </summary>
         /// <param name="recipient"></param>

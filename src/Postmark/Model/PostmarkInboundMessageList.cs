@@ -38,12 +38,25 @@ namespace PostmarkDotNet.Model
         public string MessageID { get; set; }
     }
 
+    public class InboundMessageDetail : InboundMessage
+    {
+        public List<Header> Headers { get; set; }
+        public string TextBody { get; set; }
+        public string HtmlBody { get; set; }
+    }
+
     public class Attachment
     {
         public string Name { get; set; }
         public string ContentType { get; set; }
         public string ContentID { get; set; }
         public string ContentLength { get; set; }
+    }
+
+    public class Header
+    {
+        public string Name { get; set; }
+        public string Value { get; set; }
     }
 
     public class PostmarkInboundMessageList

@@ -371,12 +371,15 @@ namespace Postmark.Tests
         }
 
         [Test]
-        public void test()
+        public void Can_get_inbound_message_detail_from_api()
         {
             var postmark = new PostmarkClient(_serverToken);
             var inboundmessages = postmark.GetInboundMessages("james.p.toto@gmail.com", 10, 0);
 
-            inboundmessages.GetType();
+            var inboundMessage =
+                postmark.GetInboundMessageDetail(inboundmessages.InboundMessages.FirstOrDefault().MessageID);
+
+            Assert.IsNotNull(inboundMessage);
         }
 
     }

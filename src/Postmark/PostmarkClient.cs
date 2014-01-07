@@ -619,21 +619,21 @@ namespace PostmarkDotNet
         /// Get the full details of a sent message including all fields, raw body, attachment names, etc
         /// </summary>
         /// <param name="messageID">The MessageID of a message which can be optained either from the initial API send call or a GetOutboundMessages call.</param>
-        /// <returns></returns>
-        public MessageDetail GetOutboundMessageDetail(string messageID)
+        /// <returns>OutboundMessageDetail</returns>
+        public OutboundMessageDetail GetOutboundMessageDetail(string messageID)
         {
             var request = NewMessagesRequest();
             request.Path = string.Format("messages/outbound/{0}/details", messageID.Trim());
             
             var response = _client.Request(request);
-            return JsonConvert.DeserializeObject<MessageDetail>(response.Content, _settings);
+            return JsonConvert.DeserializeObject<OutboundMessageDetail>(response.Content, _settings);
         }
 
         /// <summary>
         /// Get the original raw message dump of on outbound message including all SMTP headers and data.
         /// </summary>
         /// <param name="messageID">The MessageID of a message which can be optained either from the initial API send call or a GetOutboundMessages call.</param>
-        /// <returns></returns>
+        /// <returns>MessageDump</returns>
         public MessageDump GetOutboundMessageDump(string messageID)
         {
             var request = NewMessagesRequest();
@@ -731,6 +731,19 @@ namespace PostmarkDotNet
             return JsonConvert.DeserializeObject<PostmarkInboundMessageList>(response.Content, _settings);
         }
 
+        /// <summary>
+        /// Get the full details of a processed inbound message including all fields, attachment names, etc.
+        /// </summary>
+        /// <param name="messageID">The MessageID of a message which can be optained either from the initial API send call or a GetInboundMessages call.</param>
+        /// <returns>InboundMessageDetail</returns>
+        public InboundMessageDetail GetInboundMessageDetail(string messageID)
+        {
+            var request = NewMessagesRequest();
+            request.Path = string.Format("messages/inbound/{0}/details", messageID.Trim());
+
+            var response = _client.Request(request);
+            return JsonConvert.DeserializeObject<InboundMessageDetail>(response.Content, _settings);
+        }
 
         #endregion
 #endif

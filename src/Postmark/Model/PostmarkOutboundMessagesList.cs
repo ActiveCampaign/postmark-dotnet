@@ -34,7 +34,7 @@ namespace PostmarkDotNet.Model
         public List<string> Attachments { get; set; }
     }
 
-    public class MessageDetail : Message
+    public class OutboundMessageDetail : Message
     {
         public string TextBody { get; set; }
         public string HtmlBody { get; set; }

@@ -5,6 +5,7 @@ using System.Linq;
 using Hammock;
 using Hammock.Web;
 using Newtonsoft.Json;
+using PostmarkDotNet.Model;
 
 namespace PostmarkDotNet
 {
@@ -483,5 +484,331 @@ namespace PostmarkDotNet
         }
 
         #endregion
+
+        #region Messages API
+
+        /// <summary>
+        /// Return a listing of Outbound sent messages using the filters supported by the API.
+        /// </summary>
+        /// <param name="count">Number of messages to return per call. (required)</param>
+        /// <param name="subject">Filter by message subject.</param>
+        /// <param name="offset">Number of messages to offset/page per call. (required)</param>
+        /// <returns>IAsyncResult</returns>
+        /// <seealso href = "http://developer.postmarkapp.com/developer-messages.html" />
+        public IAsyncResult BeginGetOutboundMessages(int count, string subject, int offset)
+        {
+            return BeginGetOutboundMessagesImpl(null, null, null, subject, count, offset);
+        }
+
+
+        /// <summary>
+        /// Return a listing of Outbound sent messages using the filters supported by the API.
+        /// </summary>
+        /// <param name="count">Number of messages to return per call. (required)</param>
+        /// <param name="offset">Number of messages to offset/page per call. (required)</param>
+        /// <param name="recipient">Filter by the recipient(s) of the message.</param>
+        /// <returns>IAsyncResult</returns>
+        /// <seealso href = "http://developer.postmarkapp.com/developer-messages.html" />
+        public IAsyncResult BeginGetOutboundMessages(int count, int offset, string recipient)
+        {
+            return BeginGetOutboundMessagesImpl(recipient, null, null, null, count, offset);
+        }
+
+
+        /// <summary>
+        /// Return a listing of Outbound sent messages using the filters supported by the API.
+        /// </summary>
+        /// <param name="count">Number of messages to return per call. (required)</param>
+        /// <param name="offset">Number of messages to offset/page per call. (required)</param>
+        /// <returns>IAsyncResult</returns>
+        /// <seealso href = "http://developer.postmarkapp.com/developer-messages.html" />
+        public IAsyncResult BeginGetOutboundMessages(int count, int offset)
+        {
+            return BeginGetOutboundMessagesImpl(null, null, null, null, count, offset);
+        }
+
+        /// <summary>
+        /// Return a listing of Outbound sent messages using the filters supported by the API.
+        /// </summary>
+        /// <param name="recipient">Filter by the recipient(s) of the message.</param>
+        /// <param name="fromemail">Filter by the email address the message is sent from.</param>
+        /// <param name="count">Number of messages to return per call. (required)</param>
+        /// <param name="offset">Number of messages to offset/page per call. (required)</param>
+        /// <returns>IAsyncResult</returns>
+        /// <seealso href = "http://developer.postmarkapp.com/developer-messages.html" />
+        public IAsyncResult BeginGetOutboundMessages(string recipient, string fromemail,
+            int count, int offset)
+        {
+            return BeginGetOutboundMessagesImpl(recipient, fromemail, null, null, count, offset);
+        }
+
+        /// <summary>
+        /// Return a listing of Outbound sent messages using the filters supported by the API.
+        /// </summary>
+        /// <param name="subject">Filter by message subject.</param>
+        /// <param name="count">Number of messages to return per call. (required)</param>
+        /// <param name="offset">Number of messages to offset/page per call. (required)</param>
+        /// <returns>IAsyncResult</returns>
+        /// <seealso href = "http://developer.postmarkapp.com/developer-messages.html" />
+        public IAsyncResult BeginGetOutboundMessages(string subject, int count, int offset)
+        {
+            return BeginGetOutboundMessagesImpl(null, null, null, subject, count, offset);
+        }
+
+        /// <summary>
+        /// Return a listing of Outbound sent messages using the filters supported by the API.
+        /// </summary>
+        /// <param name="fromemail">Filter by the email address the message is sent from.</param>
+        /// <param name="tag">Filter by a tag used for the message (messages sent directly through the API only)</param>
+        /// <param name="subject">Filter by message subject.</param>
+        /// <param name="count">Number of messages to return per call. (required)</param>
+        /// <param name="offset">Number of messages to offset/page per call. (required)</param>
+        /// <returns>IAsyncResult</returns>
+        /// <seealso href = "http://developer.postmarkapp.com/developer-messages.html" />
+        public IAsyncResult BeginGetOutboundMessages(string fromemail, string tag,
+            string subject, int count, int offset)
+        {
+            return BeginGetOutboundMessagesImpl(null, fromemail, tag, subject, count, offset);
+        }
+
+        /// <summary>
+        /// Return a listing of Outbound sent messages using the filters supported by the API.
+        /// </summary>
+        /// <param name="recipient">Filter by the recipient(s) of the message.</param>
+        /// <param name="fromemail">Filter by the email address the message is sent from.</param>
+        /// <param name="tag">Filter by a tag used for the message (messages sent directly through the API only)</param>
+        /// <param name="subject">Filter by message subject.</param>
+        /// <param name="count">Number of messages to return per call. (required)</param>
+        /// <param name="offset">Number of messages to offset/page per call. (required)</param>
+        /// <returns>IAsyncResult</returns>
+        /// <seealso href = "http://developer.postmarkapp.com/developer-messages.html" />
+        public IAsyncResult BeginGetOutboundMessages(string recipient, string fromemail, string tag,
+            string subject, int count, int offset)
+        {
+            return BeginGetOutboundMessagesImpl(recipient, fromemail, tag, subject, count, offset);
+        }
+
+        /// <summary>
+        /// Implementation called to do the actual messages call and return a <see cref="PostmarkOutboundMessageList"/>
+        /// </summary>s
+        private IAsyncResult BeginGetOutboundMessagesImpl(string recipient, string fromemail, string tag, string subject, int count, int offset)
+        {
+            var request = NewMessagesRequest();
+            request.Path = "messages/outbound";
+
+            if (!string.IsNullOrEmpty(recipient)) request.AddParameter("recipient", recipient);
+            if (!string.IsNullOrEmpty(fromemail)) request.AddParameter("fromemail", fromemail);
+            if (!string.IsNullOrEmpty(tag)) request.AddParameter("tag", tag);
+            if (!string.IsNullOrEmpty(subject)) request.AddParameter("subject", subject);
+
+            request.AddParameter("count", count.ToString());
+            request.AddParameter("offset", offset.ToString());
+
+            return _client.BeginRequest(request);
+        }
+
+
+        /// <summary>
+        ///   Completes an asynchronous request for a <see cref = "PostmarkOutboundMessageList" /> instances along
+        ///   with a sum total of bounces recorded by the server, based on filter parameters.
+        /// </summary>
+        /// <param name="asyncResult">An <see cref="IAsyncResult" /> for the desired response</param>
+        /// <returns>PostmarkOutboundMessageList</returns>
+        /// <seealso href = "http://developer.postmarkapp.com/developer-messages.html" />
+        public PostmarkOutboundMessageList EndGetOutboundMessages(IAsyncResult asyncResult)
+        {
+            var response = _client.EndRequest(asyncResult);
+
+            return JsonConvert.DeserializeObject<PostmarkOutboundMessageList>(response.Content, _settings);
+        }
+
+
+        /// <summary>
+        /// Get the full details of a sent message including all fields, raw body, attachment names, etc
+        /// </summary>
+        /// <param name="messageID">The MessageID of a message which can be optained either from the initial API send call or a GetOutboundMessages call.</param>
+        /// <returns>IAsyncResult</returns>
+        /// <seealso href = "http://developer.postmarkapp.com/developer-messages.html" />
+        public IAsyncResult BeginGetOutboundMessageDetail(string messageID)
+        {
+            var request = NewMessagesRequest();
+            request.Path = string.Format("messages/outbound/{0}/details", messageID.Trim());
+
+            return _client.BeginRequest(request);
+        }
+
+        /// <summary>
+        ///   Completes an asynchronous request for a <see cref = "OutboundMessageDetail" /> instance.
+        /// </summary>
+        /// <param name="asyncResult">An <see cref="IAsyncResult" /> for the desired response</param>
+        /// <returns>OutboundMessageDetail</returns>
+        /// <seealso href = "http://developer.postmarkapp.com/developer-messages.html" />
+        public OutboundMessageDetail EndGetOutboundMessageDetail(IAsyncResult asyncResult)
+        {
+            var response = _client.EndRequest(asyncResult);
+            return JsonConvert.DeserializeObject<OutboundMessageDetail>(response.Content, _settings);
+        }
+
+
+        /// <summary>
+        /// Get the original raw message dump of on outbound message including all SMTP headers and data.
+        /// </summary>
+        /// <param name="messageID">The MessageID of a message which can be optained either from the initial API send call or a GetOutboundMessages call.</param>
+        /// <returns>IAsyncResult</returns>
+        /// <seealso href = "http://developer.postmarkapp.com/developer-messages.html" />
+        public IAsyncResult BeginGetOutboundMessageDump(string messageID)
+        {
+            var request = NewMessagesRequest();
+            request.Path = string.Format("messages/outbound/{0}/dump", messageID.Trim());
+
+            return _client.BeginRequest(request);
+        }
+
+        /// <summary>
+        ///   Completes an asynchronous request for a <see cref = "MessageDump" /> instance.
+        /// </summary>
+        /// <param name="asyncResult">An <see cref="IAsyncResult" /> for the desired response</param>
+        /// <returns>MessageDump</returns>
+        /// <seealso href = "http://developer.postmarkapp.com/developer-messages.html" />
+        public MessageDump EndGetOutboundMessageDump(IAsyncResult asyncResult)
+        {
+            var response = _client.EndRequest(asyncResult);
+            return JsonConvert.DeserializeObject<MessageDump>(response.Content, _settings);
+        }
+
+
+
+        /// <summary>
+        /// Return a listing of Inbound sent messages using the filters supported by the API.
+        /// </summary>
+        /// <param name="count">Number of messages to return per call. (required)</param>
+        /// <param name="offset">Number of messages to offset/page per call. (required)</param>
+        /// <returns>IAsyncResult</returns>
+        /// <seealso href = "http://developer.postmarkapp.com/developer-inbound-messages.html" />
+        public IAsyncResult BeginGetInboundMessages(int count, int offset)
+        {
+            return BeginGetInboundMessagesImpl(null, null, null, null, count, offset);
+        }
+
+        /// <summary>
+        /// Return a listing of Inbound sent messages using the filters supported by the API.
+        /// </summary>
+        /// <param name="fromemail">Filter by the email address the message is sent from.</param>
+        /// <param name="count">Number of messages to return per call. (required)</param>
+        /// <param name="offset">Number of messages to offset/page per call. (required)</param>
+        /// <returns>IAsyncResult</returns>
+        /// <seealso href = "http://developer.postmarkapp.com/developer-inbound-messages.html" />
+        public IAsyncResult BeginGetInboundMessages(string fromemail, int count, int offset)
+        {
+            return BeginGetInboundMessagesImpl(null, fromemail, null, null, count, offset);
+        }
+
+        /// <summary>
+        /// Return a listing of Inbound sent messages using the filters supported by the API.
+        /// </summary>
+        /// <param name="fromemail">Filter by the email address the message is sent from.</param>
+        /// <param name="subject">Filter by message subject.</param>
+        /// <param name="count">Number of messages to return per call. (required)</param>
+        /// <param name="offset">Number of messages to offset/page per call. (required)</param>
+        /// <returns>IAsyncResult</returns>
+        /// <seealso href = "http://developer.postmarkapp.com/developer-inbound-messages.html" />
+        public IAsyncResult BeginGetInboundMessages(string fromemail, string subject, int count, int offset)
+        {
+            return BeginGetInboundMessagesImpl(null, fromemail, subject, null, count, offset);
+        }
+
+        /// <summary>
+        /// Return a listing of Inbound sent messages using the filters supported by the API.
+        /// </summary>
+        /// <param name="recipient">Filter by the recipient(s) of the message.</param>
+        /// <param name="fromemail">Filter by the email address the message is sent from.</param>
+        /// <param name="subject">Filter by message subject.</param>
+        /// <param name="count">Number of messages to return per call. (required)</param>
+        /// <param name="offset">Number of messages to offset/page per call. (required)</param>
+        /// <returns>IAsyncResult</returns>
+        /// <seealso href = "http://developer.postmarkapp.com/developer-inbound-messages.html" />
+        public IAsyncResult BeginGetInboundMessages(string recipient, string fromemail, string subject, int count, int offset)
+        {
+            return BeginGetInboundMessagesImpl(recipient, fromemail, subject, null, count, offset);
+        }
+
+
+        /// <summary>
+        /// Return a listing of Inbound sent messages using the filters supported by the API.
+        /// </summary>
+        /// <param name="recipient">Filter by the recipient(s) of the message.</param>
+        /// <param name="fromemail">Filter by the email address the message is sent from.</param>
+        /// <param name="subject">Filter by message subject.</param>
+        /// <param name="mailboxhash">Filter by mailbox hash that was parsed from the inbound message.</param>
+        /// <param name="count">Number of messages to return per call. (required)</param>
+        /// <param name="offset">Number of messages to offset/page per call. (required)</param>
+        /// <returns>IAsyncResult</returns>
+        /// <seealso href = "http://developer.postmarkapp.com/developer-inbound-messages.html" />
+        public IAsyncResult BeginGetInboundMessages(string recipient, string fromemail, string subject, string mailboxhash, int count, int offset)
+        {
+            return BeginGetInboundMessagesImpl(recipient, fromemail, subject, mailboxhash, count, offset);
+        }
+
+
+        /// <summary>
+        /// Implementation to get Inbound messages for the public search APIs
+        /// </summary>
+        private IAsyncResult BeginGetInboundMessagesImpl(string recipient, string fromemail, string subject, string mailboxhash, int count, int offset)
+        {
+            var request = NewMessagesRequest();
+            request.Path = "messages/inbound";
+
+            if (!string.IsNullOrEmpty(recipient)) request.AddParameter("recipient", recipient);
+            if (!string.IsNullOrEmpty(fromemail)) request.AddParameter("fromemail", fromemail);
+            if (!string.IsNullOrEmpty(subject)) request.AddParameter("subject", subject);
+            if (!string.IsNullOrEmpty(subject)) request.AddParameter("mailboxhash", mailboxhash);
+
+            request.AddParameter("count", count.ToString());
+            request.AddParameter("offset", offset.ToString());
+
+            return _client.BeginRequest(request);
+        }
+
+        /// <summary>
+        ///   Completes an asynchronous request for a <see cref = "PostmarkOutboundMessageList" /> instances along
+        ///   with a sum total of bounces recorded by the server, based on filter parameters.
+        /// </summary>
+        /// <param name="asyncResult">An <see cref="IAsyncResult" /> for the desired response</param>
+        /// <returns>PostmarkInboundMessageList</returns>
+        /// <seealso href = "http://developer.postmarkapp.com/developer-inbound-messages.html" />
+        public PostmarkInboundMessageList EndGetInboundMessages(IAsyncResult asyncResult)
+        {
+            var response = _client.EndRequest(asyncResult);
+            return JsonConvert.DeserializeObject<PostmarkInboundMessageList>(response.Content, _settings);
+        }
+
+        /// <summary>
+        /// Get the full details of a processed inbound message including all fields, attachment names, etc.
+        /// </summary>
+        /// <param name="messageID">The MessageID of a message which can be optained either from the initial API send call or a GetInboundMessages call.</param>
+        /// <returns>IAsyncResult</returns>
+        /// <seealso href = "http://developer.postmarkapp.com/developer-inbound-messages.html" />
+        public IAsyncResult BeginGetInboundMessageDetail(string messageID)
+        {
+            var request = NewMessagesRequest();
+            request.Path = string.Format("messages/inbound/{0}/details", messageID.Trim());
+
+            return _client.BeginRequest(request);
+        }
+
+        /// <summary>
+        ///   Completes an asynchronous request for a <see cref = "InboundMessageDetail" /> instance.
+        /// </summary>
+        /// <param name="asyncResult">An <see cref="IAsyncResult" /> for the desired response</param>
+        /// <returns>InboundMessageDetail</returns>
+        /// <seealso href = "http://developer.postmarkapp.com/developer-inbound-messages.html" />
+        public InboundMessageDetail EndGetInboundMessageDetail(IAsyncResult asyncResult)
+        {
+            var response = _client.EndRequest(asyncResult);
+            return JsonConvert.DeserializeObject<InboundMessageDetail>(response.Content, _settings);
+        }
+
+        #endregion
+
     }
 }

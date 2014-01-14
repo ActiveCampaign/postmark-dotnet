@@ -339,6 +339,7 @@ namespace Postmark.Tests
         // API token that is used to run the live integration tests.
 
         [Test]
+        [Ignore("Must use a valid token with messages available to check for")]
         public void Can_retrieve_outbound_messages_from_messages_api()
         {
             var postmark = new PostmarkClient(_serverToken);
@@ -348,6 +349,7 @@ namespace Postmark.Tests
         }
 
         [Test]
+        [Ignore("Must use a valid token with messages available to check for")]
         public void Can_get_outbound_message_details_and_dump_by_messages_id()
         {
             var postmark = new PostmarkClient(_serverToken);
@@ -362,6 +364,7 @@ namespace Postmark.Tests
         }
 
         [Test]
+        [Ignore("Must use a valid token with messages available to check for")]
         public void Can_get_inbound_messages_from_messages_api()
         {
             var postmark = new PostmarkClient(_serverToken);
@@ -371,10 +374,11 @@ namespace Postmark.Tests
         }
 
         [Test]
+        [Ignore("Must use a valid token with messages available to check for")]
         public void Can_get_inbound_message_detail_from_api()
         {
             var postmark = new PostmarkClient(_serverToken);
-            var inboundmessages = postmark.GetInboundMessages("james.p.toto@gmail.com", 10, 0);
+            var inboundmessages = postmark.GetInboundMessages(10, 0);
 
             var inboundMessage =
                 postmark.GetInboundMessageDetail(inboundmessages.InboundMessages.FirstOrDefault().MessageID);

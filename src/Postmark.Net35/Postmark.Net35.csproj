@@ -97,11 +97,17 @@
     <Compile Include="..\Postmark\Model\PostmarkDeliveryStats.cs">
       <Link>Model\PostmarkDeliveryStats.cs</Link>
     </Compile>
+    <Compile Include="..\Postmark\Model\PostmarkInboundMessageList.cs">
+      <Link>Model\PostmarkInboundMessageList.cs</Link>
+    </Compile>
     <Compile Include="..\Postmark\Model\PostmarkMessage.cs">
       <Link>Model\PostmarkMessage.cs</Link>
     </Compile>
     <Compile Include="..\Postmark\Model\PostmarkMessageAttachment.cs">
       <Link>Model\PostmarkMessageAttachment.cs</Link>
+    </Compile>
+    <Compile Include="..\Postmark\Model\PostmarkOutboundMessagesList.cs">
+      <Link>Model\PostmarkOutboundMessagesList.cs</Link>
     </Compile>
     <Compile Include="..\Postmark\Model\PostmarkResponse.cs">
       <Link>Model\PostmarkResponse.cs</Link>

@@ -80,6 +80,10 @@
         ///
         ///  SMTPApiError
         /// 
-        SMTPApiError
+        SMTPApiError,
+        /// <summary>
+        /// AOL Spam Notification
+        /// </summary>
+        AOLSpamNotification
     }
 }

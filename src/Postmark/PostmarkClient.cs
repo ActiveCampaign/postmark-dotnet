@@ -600,6 +600,11 @@ namespace PostmarkDotNet
         /// </summary>s
         private PostmarkOutboundMessageList GetOutboundMessagesImpl(string recipient, string fromemail, string tag, string subject, int count, int offset)
         {
+            if (count > 500)
+            {
+                throw new ValidationException("You can only receive up to 500 messages per call.");
+            }
+
             var request = NewMessagesRequest();
             request.Path = "messages/outbound";
 
@@ -716,6 +721,11 @@ namespace PostmarkDotNet
         /// </summary>
         private PostmarkInboundMessageList GetInboundMessagesImpl(string recipient, string fromemail, string subject, string mailboxhash, int count, int offset)
         {
+            if (count > 500)
+            {
+                throw new ValidationException("You can only receive up to 500 messages per call.");
+            }
+
             var request = NewMessagesRequest();
             request.Path = "messages/inbound";
 

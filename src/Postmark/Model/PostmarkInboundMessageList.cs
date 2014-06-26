@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 
 namespace PostmarkDotNet.Model
 {
@@ -31,7 +32,7 @@ namespace PostmarkDotNet.Model
         public string Cc { get; set; }
         public string ReplyTo { get; set; }
         public string Subject { get; set; }
-        public string Date { get; set; }
+        public DateTime Date { get; set; }
         public string MailboxHash { get; set; }
         public string Tag { get; set; }
         public List<Attachment> Attachments { get; set; }

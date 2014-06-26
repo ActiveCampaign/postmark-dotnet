@@ -2,12 +2,12 @@
 <package>
     <metadata>
         <id>Postmark</id>
-        <version>1.5.1</version>
+        <version>1.6</version>
         <authors>Daniel Crenna, JP Toto</authors>
         <owners>Wildbit</owners>
         <description>Leave email delivery to the experts with this plugin to bring Postmark email services to your web application. Requires a Postmark account.</description>
         <summary>Leave email delivery to the experts with this plugin to bring Postmark email services to your web application.</summary>
-        <releaseNotes>Added support for AOLSpamNotification spam compalint type on GetBounces calls.</releaseNotes>
+        <releaseNotes>Open Tracking s upport.</releaseNotes>
         <language>en-US</language>
         <projectUrl>http://developer.postmarkapp.com</projectUrl>
         <licenseUrl>https://github.com/jptoto/postmark-dotnet/blob/master/LICENSE</licenseUrl>

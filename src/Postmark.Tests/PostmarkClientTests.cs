@@ -386,5 +386,29 @@ namespace Postmark.Tests
             Assert.IsNotNull(inboundMessage);
         }
 
+        [Test]
+        [Ignore("This test sends a real email.")]
+        public void Can_send_message_with_tracking_enabled()
+        {
+            var postmark = new PostmarkClient(_serverToken);
+
+            var email = new PostmarkMessage
+            {
+                To = _to,
+                From = _from, // This must be a verified sender signature
+                Subject = Subject,
+                TextBody = TextBody,
+                HtmlBody = HtmlBody,
+                TrackOpens = true
+            };
+
+            var response = postmark.SendMessage(email);
+
+            Assert.IsNotNull(response);
+            Assert.IsNotNullOrEmpty(response.Message);
+            Assert.IsTrue(response.Status == PostmarkStatus.Success);
+
+            Console.WriteLine("Postmark -> {0}", response.Message);
+        }
     }
 }

@@ -173,6 +173,8 @@ namespace PostmarkDotNet
         }
 
         // http://msdn.microsoft.com/en-us/library/system.net.mail.mailmessage.alternateviews.aspx
+        
+
 
         private void GetHtmlBodyFromAlternateViews(MailMessage message)
         {
@@ -249,7 +251,7 @@ namespace PostmarkDotNet
         public string Subject { get; set; }
 
         /// <summary>
-        ///   The message body, if the message contains HTML.
+        ///   The message body, if the message contains
         /// </summary>
         public string HtmlBody { get; set; }
 
@@ -265,6 +267,12 @@ namespace PostmarkDotNet
         ///   areas like "Invitation", or "BillingReminder".
         /// </summary>
         public string Tag { get; set; }
+
+        /// <summary>
+        /// Track this message using Postmark's OpenTracking feature. Message should be in html
+        /// to allow for tracking techniques
+        /// </summary>
+        public bool TrackOpens { get; set; }
 
         /// <summary>
         ///   A collection of optional message headers.

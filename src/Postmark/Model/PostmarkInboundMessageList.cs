@@ -7,18 +7,28 @@ namespace PostmarkDotNet.Model
     {
         public string Email { get; set; }
         public string Name { get; set; }
+        public string MailboxHash { get; set; }
     }
 
     public class ToFull
     {
         public string Email { get; set; }
         public string Name { get; set; }
+        public string MailboxHash { get; set; }
     }
 
     public class CcFull
     {
         public string Email { get; set; }
         public string Name { get; set; }
+        public string MailboxHash { get; set; }
+    }
+
+    public class BccFull
+    {
+        public string Email { get; set; }
+        public string Name { get; set; }
+        public string MailboxHash { get; set; }
     }
 
     public class InboundMessage
@@ -29,6 +39,7 @@ namespace PostmarkDotNet.Model
         public string To { get; set; }
         public List<ToFull> ToFull { get; set; }
         public List<CcFull> CcFull { get; set; }
+        public List<BccFull> BccFull { get; set; }
         public string Cc { get; set; }
         public string ReplyTo { get; set; }
         public string Subject { get; set; }
@@ -37,7 +48,6 @@ namespace PostmarkDotNet.Model
         public string Tag { get; set; }
         public List<Attachment> Attachments { get; set; }
         public string MessageID { get; set; }
-        public string StrippedTextReply { get; set; }
     }
 
     public class InboundMessageDetail : InboundMessage
@@ -45,6 +55,7 @@ namespace PostmarkDotNet.Model
         public List<Header> Headers { get; set; }
         public string TextBody { get; set; }
         public string HtmlBody { get; set; }
+        public string StrippedTextReply { get; set; }
     }
 
     public class Attachment

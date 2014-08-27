@@ -368,7 +368,7 @@ namespace Postmark.Tests
         public void Can_get_inbound_messages_from_messages_api()
         {
             var postmark = new PostmarkClient(_serverToken);
-            var inboundmessages = postmark.GetInboundMessages(1, 0);
+            var inboundmessages = postmark.GetInboundMessages(10, 0);
 
             Assert.AreEqual(1, inboundmessages.InboundMessages.Count);
         }
@@ -378,7 +378,7 @@ namespace Postmark.Tests
         public void Can_get_inbound_message_detail_from_api()
         {
             var postmark = new PostmarkClient(_serverToken);
-            var inboundmessages = postmark.GetInboundMessages(10, 0);
+            var inboundmessages = postmark.GetInboundMessages(10, 1);
 
             var inboundMessage =
                 postmark.GetInboundMessageDetail(inboundmessages.InboundMessages.FirstOrDefault().MessageID);

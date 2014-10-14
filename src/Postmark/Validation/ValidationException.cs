@@ -1,10 +1,10 @@
 ﻿using System;
-using Specifications;
+using Hammock.Specifications;
 
 namespace PostmarkDotNet.Validation
 {
     /// <summary>
-    ///   An exception thrown when request inputs fail an <see cref = "ISpecification" /> or other test.
+    ///   An exception thrown when request inputs fail an <see cref = "Hammock.Specifications.ISpecification" /> or other test.
     /// </summary>
     public class ValidationException : Exception
     {

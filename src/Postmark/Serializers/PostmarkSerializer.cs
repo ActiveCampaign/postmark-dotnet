@@ -49,7 +49,7 @@ namespace PostmarkDotNet.Serializers
                     return _serializer.Deserialize<T>(jsonTextReader);
                 }
             }
-        }
+        }        
 
 #if NET40
         public dynamic DeserializeDynamic(RestResponseBase response)

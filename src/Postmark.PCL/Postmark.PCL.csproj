@@ -1,0 +1,110 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="12.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <MinimumVisualStudioVersion>10.0</MinimumVisualStudioVersion>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{CDA75E85-78DE-416B-82A6-191663F0BD91}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>PostmarkDotNet</RootNamespace>
+    <AssemblyName>Postmark.PCL</AssemblyName>
+    <DefaultLanguage>en-US</DefaultLanguage>
+    <FileAlignment>512</FileAlignment>
+    <ProjectTypeGuids>{786C830F-07A1-408B-BD7F-6EE04809D6DB};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
+    <TargetFrameworkProfile>Profile111</TargetFrameworkProfile>
+    <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <DocumentationFile>
+    </DocumentationFile>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <DocumentationFile>bin\Release\Postmark.PCL.XML</DocumentationFile>
+  </PropertyGroup>
+  <ItemGroup>
+    <!-- A reference to the entire .NET Framework is automatically included -->
+    <None Include="key.snk" />
+    <None Include="packages.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="..\Postmark\Converters\UnicodeJsonStringConverter.cs">
+      <Link>Converters\UnicodeJsonStringConverter.cs</Link>
+    </Compile>
+    <Compile Include="..\Postmark\Model\PostmarkBounce.cs">
+      <Link>Model\PostmarkBounce.cs</Link>
+    </Compile>
+    <Compile Include="..\Postmark\Model\PostmarkBounceActivation.cs">
+      <Link>Model\PostmarkBounceActivation.cs</Link>
+    </Compile>
+    <Compile Include="..\Postmark\Model\PostmarkBounceDump.cs">
+      <Link>Model\PostmarkBounceDump.cs</Link>
+    </Compile>
+    <Compile Include="..\Postmark\Model\PostmarkBounces.cs">
+      <Link>Model\PostmarkBounces.cs</Link>
+    </Compile>
+    <Compile Include="..\Postmark\Model\PostmarkBounceSummary.cs">
+      <Link>Model\PostmarkBounceSummary.cs</Link>
+    </Compile>
+    <Compile Include="..\Postmark\Model\PostmarkBounceType.cs">
+      <Link>Model\PostmarkBounceType.cs</Link>
+    </Compile>
+    <Compile Include="..\Postmark\Model\PostmarkDeliveryStats.cs">
+      <Link>Model\PostmarkDeliveryStats.cs</Link>
+    </Compile>
+    <Compile Include="..\Postmark\Model\PostmarkInboundMessage.cs">
+      <Link>Model\PostmarkInboundMessage.cs</Link>
+    </Compile>
+    <Compile Include="..\Postmark\Model\PostmarkInboundMessageList.cs">
+      <Link>Model\PostmarkInboundMessageList.cs</Link>
+    </Compile>
+    <Compile Include="..\Postmark\Model\PostmarkMessageAttachment.cs">
+      <Link>Model\PostmarkMessageAttachment.cs</Link>
+    </Compile>
+    <Compile Include="..\Postmark\Model\PostmarkOutboundMessagesList.cs">
+      <Link>Model\PostmarkOutboundMessagesList.cs</Link>
+    </Compile>
+    <Compile Include="..\Postmark\Model\PostmarkResponse.cs">
+      <Link>Model\PostmarkResponse.cs</Link>
+    </Compile>
+    <Compile Include="..\Postmark\Model\PostmarkStatus.cs">
+      <Link>Model\PostmarkStatus.cs</Link>
+    </Compile>
+    <Compile Include="..\Postmark\Validation\ValidationException.cs">
+      <Link>Validation\ValidationException.cs</Link>
+    </Compile>
+    <Compile Include="Converters\DictionaryConverter.cs" />
+    <Compile Include="Model\HeaderCollection.cs" />
+    <Compile Include="Model\PostmarkMessage.cs" />
+    <Compile Include="PostmarkClient.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Utility\JsonContent.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <Reference Include="Newtonsoft.Json">
+      <HintPath>..\packages\Newtonsoft.Json.6.0.6\lib\portable-net45+wp80+win8+wpa81+aspnetcore50\Newtonsoft.Json.dll</HintPath>
+    </Reference>
+  </ItemGroup>
+  <Import Project="$(MSBuildExtensionsPath32)\Microsoft\Portable\$(TargetFrameworkVersion)\Microsoft.Portable.CSharp.targets" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>

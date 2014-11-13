@@ -55,7 +55,7 @@ using System.Security;
 
 [assembly: SecurityRules(SecurityRuleSet.Level1)]
 [assembly: AssemblyTitle("Postmark")]
-[assembly: AssemblyDescription("Leave transactional email delivery to the experts")]
+[assembly: AssemblyDescription("Leave transactional email delivery to the experts.")]
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("Wildbit")]
 [assembly: AssemblyProduct("Postmark")]

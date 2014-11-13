@@ -81,6 +81,9 @@
     <Compile Include="..\Postmark\Model\PostmarkResponse.cs">
       <Link>Model\PostmarkResponse.cs</Link>
     </Compile>
+    <Compile Include="..\Postmark\Model\PostmarkServer.cs">
+      <Link>Model\PostmarkServer.cs</Link>
+    </Compile>
     <Compile Include="..\Postmark\Model\PostmarkStatus.cs">
       <Link>Model\PostmarkStatus.cs</Link>
     </Compile>

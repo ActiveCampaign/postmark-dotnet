@@ -3,6 +3,7 @@ using PostmarkDotNet.Model;
 using PostmarkDotNet.Utility;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Net;
 using System.Net.Http;
 using System.Threading.Tasks;
@@ -294,5 +295,43 @@ namespace PostmarkDotNet
             return await ProcessNoBodyRequestAsync<InboundMessageDetail>("/messages/inbound/" + messageID + "/details");
         }
 
+
+        /// <summary>
+        /// Gets the server associated with this client based on 
+        /// the ServerToken supplied when the client was constructed.
+        /// </summary>
+        /// <returns></returns>
+        public async Task<PostmarkServer> GetServer()
+        {
+            return await this.ProcessNoBodyRequestAsync<PostmarkServer>("/server");
+        }
+
+        /// <summary>
+        /// Updates the server associated with this client. Only parameters that are passed into this method are modified. 
+        /// Any parameters that are left null will use the current value for the server.
+        /// </summary>
+        /// <returns></returns>
+        public async Task<PostmarkServer> EditServer(String name = null, ServerColors? color = null,
+            bool? rawEmailEnabled = null, bool? smtpApiActivated = null, string inboundHookUrl = null,
+            string bounceHookUrl = null, string openHookUrl = null, bool? postFirstOpenOnly = null,
+            bool? trackOpens = null, string inboundDomain = null, int? inboundSpamThreshold = null)
+        {
+            var body = new Dictionary<string, object>();
+            body["Name"] = name;
+            body["Color"] = color;
+            body["RawEmailEnabled"] = rawEmailEnabled;
+            body["SmtpApiActivated"] = smtpApiActivated;
+            body["InboundHookUrl"] = inboundHookUrl;
+            body["BounceHookUrl"] = bounceHookUrl;
+            body["OpenHookUrl"] = openHookUrl;
+            body["PostFirstOpenOnly"] = postFirstOpenOnly;
+            body["TrackOpens"] = trackOpens;
+            body["InboundDomain"] = inboundDomain;
+            body["InboundSpamThreshold"] = inboundSpamThreshold;
+
+            body = body.Where(kv => kv.Value != null).ToDictionary(k => k.Key, v => v.Value);
+
+            return await this.ProcessRequestAsync<Dictionary<string, object>, PostmarkServer>("/server", HttpMethod.Put, body);
+        }
     }
 }

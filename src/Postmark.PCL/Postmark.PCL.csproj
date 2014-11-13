@@ -91,6 +91,7 @@
     <Compile Include="Model\HeaderCollection.cs" />
     <Compile Include="Model\PostmarkMessage.cs" />
     <Compile Include="PostmarkClient.cs" />
+    <Compile Include="PostmarkClientExtensions.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Utility\JsonContent.cs" />
   </ItemGroup>

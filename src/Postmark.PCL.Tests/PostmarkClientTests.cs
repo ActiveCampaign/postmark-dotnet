@@ -1,9 +1,10 @@
-﻿
-using NUnit.Framework;
+﻿using NUnit.Framework;
 using PostmarkDotNet;
 using System;
 using System.Configuration;
+using System.Linq;
 using System.Threading.Tasks;
+
 
 namespace Postmark.PCL.Tests
 {
@@ -25,6 +26,22 @@ namespace Postmark.PCL.Tests
             // This should successfully send.
             Assert.AreEqual(0, response.ErrorCode);
             Assert.AreEqual("OK", response.Message);
+        }
+
+        [Test]
+        public async Task ClientProducesDeliveryStats()
+        {
+            var client = new PostmarkClient(TEST_SERVER_TOKEN);
+            var stats = await client.GetDeliveryStatsAsync();
+            Assert.True(stats.Bounces.Any());
+        }
+
+        [Test]
+        public async Task ClientCanRetrieveBounces()
+        {
+            var client = new PostmarkClient(TEST_SERVER_TOKEN);
+            var bounces = await client.GetBouncesAsync();
+            Assert.IsNotNull(bounces);
         }
     }
 }

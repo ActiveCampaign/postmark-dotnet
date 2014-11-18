@@ -6,7 +6,7 @@ using System.Net;
 using System.Net.Http;
 using System.Threading.Tasks;
 
-namespace PostmarkDotNet
+namespace PostmarkDotNet.PCL
 {
     public abstract class PostmarkClientBase
     {
@@ -14,7 +14,12 @@ namespace PostmarkDotNet
         private static readonly string _agent = "Postmark.NET 2.x (" +
               typeof(PostmarkClient).AssemblyQualifiedName + ")";
 
-        private static Uri API_BASE = new Uri("https://api.postmarkapp.com");
+        private Uri baseUri;
+
+        public PostmarkClientBase(string apiBaseUri = "https://api.postmarkapp.com")
+        {
+            baseUri = new Uri(apiBaseUri);
+        }
 
         protected abstract string AuthHeaderName { get; }
 
@@ -35,7 +40,7 @@ namespace PostmarkDotNet
 
             using (var client = new HttpClient())
             {
-                client.BaseAddress = API_BASE;
+                client.BaseAddress = baseUri;
 
                 var request = new HttpRequestMessage(verb, apiPath);
 

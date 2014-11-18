@@ -1,4 +1,5 @@
-﻿using PostmarkDotNet.Model;
+﻿using Newtonsoft.Json.Linq;
+using PostmarkDotNet.Model;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -10,7 +11,7 @@ namespace PostmarkDotNet
     /// <summary>
     /// The main entry point to Postmark.
     /// </summary>
-    public class PostmarkClient : PostmarkClientBase
+    public class PostmarkClient : PostmarkDotNet.PCL.PostmarkClientBase
     {
         protected override string AuthHeaderName
         {
@@ -21,11 +22,13 @@ namespace PostmarkDotNet
         /// Instantiate the client.
         /// </summary>
         /// <param name="serverToken"></param>
-        public PostmarkClient(string serverToken)
+        public PostmarkClient(string serverToken, string apiBaseUri = "https://api.postmarkapp.com")
+            : base(apiBaseUri)
         {
             _authToken = serverToken;
         }
 
+        #region Email Sending
         /// <summary>
         /// Sends a message through the Postmark API.
         /// All email addresses must be valid, and the sender must be
@@ -53,6 +56,9 @@ namespace PostmarkDotNet
         {
             return await ProcessRequestAsync<PostmarkMessage[], PostmarkResponse[]>("/email", HttpMethod.Post, messages);
         }
+        #endregion
+
+        #region Bounces
 
         /// <summary>
         /// Retrieves the bounce-related <see cref = "PostmarkDeliveryStats" /> results for the
@@ -135,7 +141,9 @@ namespace PostmarkDotNet
         {
             return await ProcessNoBodyRequestAsync<String[]>("/bounces/tags");
         }
+        #endregion
 
+        #region Outbound Message Retrieval
 
         /// <summary>
         /// Return a listing of Outbound sent messages using the filters supported by the API.
@@ -181,7 +189,9 @@ namespace PostmarkDotNet
             return await ProcessNoBodyRequestAsync<MessageDump>("/messages/outbound/" + messageID + "/dump");
         }
 
+        #endregion
 
+        #region Inbound Message Retrieval
         /// <summary>
         /// Return a listing of Inbound sent messages using the filters supported by the API.
         /// </summary>
@@ -216,6 +226,18 @@ namespace PostmarkDotNet
             return await ProcessNoBodyRequestAsync<InboundMessageDetail>("/messages/inbound/" + messageID + "/details");
         }
 
+        /// <summary>
+        /// Bypass rules for a blocked inbound message.
+        /// </summary>
+        /// <param name="messageid"></param>
+        /// <returns></returns>
+        public async Task<PostmarkResponse> BypassBlockedInboundMessage(string messageid)
+        {
+            return await this.ProcessNoBodyRequestAsync<PostmarkResponse>(String.Format("/messages/inbound/{0}/bypass", messageid), verb: HttpMethod.Put);
+        }
+        #endregion
+
+        #region Servers
 
         /// <summary>
         /// Gets the server associated with this client based on 
@@ -255,14 +277,23 @@ namespace PostmarkDotNet
             return await this.ProcessRequestAsync<Dictionary<string, object>, PostmarkServer>("/server", HttpMethod.Put, body);
         }
 
-        /// <summary>
-        /// Bypass rules for a blocked inbound message.
-        /// </summary>
-        /// <param name="messageid"></param>
-        /// <returns></returns>
-        public async Task<PostmarkResponse> BypassBlockedInboundMessage(string messageid)
+        #endregion
+
+        #region Stats
+        private IDictionary<string, object>
+           ConstructSentStatsFilter(string tag, DateTime? fromDate, DateTime? toDate)
         {
-            return await this.ProcessNoBodyRequestAsync<PostmarkResponse>(String.Format("/messages/inbound/{0}/bypass", messageid), verb: HttpMethod.Put);
+            var parameters = new Dictionary<string, object>();
+            parameters["tag"] = tag;
+            if (fromDate.HasValue)
+            {
+                parameters["fromdate"] = fromDate.Value.ToString(DATE_FORMAT);
+            }
+            if (toDate.HasValue)
+            {
+                parameters["todate"] = toDate.Value.ToString(DATE_FORMAT);
+            }
+            return parameters;
         }
 
         /// <summary>
@@ -329,23 +360,6 @@ namespace PostmarkDotNet
                 (String.Format("/messages/outbound/opens/{0}", messageId), parameters);
         }
 
-        private IDictionary<string, object>
-           ConstructSentStatsFilter(string tag, DateTime? fromDate, DateTime? toDate)
-        {
-            var parameters = new Dictionary<string, object>();
-            parameters["tag"] = tag;
-            if (fromDate.HasValue)
-            {
-                parameters["fromdate"] = fromDate.Value.ToString(DATE_FORMAT);
-            }
-            if (toDate.HasValue)
-            {
-                parameters["todate"] = toDate.Value.ToString(DATE_FORMAT);
-            }
-            return parameters;
-        }
-
-
         /// <summary>
         /// Get an overview of outbound statistics, optionally limiting by tag or time window.
         /// </summary>
@@ -405,6 +419,89 @@ namespace PostmarkDotNet
                 ("/stats/outbound/platforms", parameters);
         }
 
+        public async Task<PostmarkOutboundClientStats> GetOutboundClientUsageCountsAsync(string tag = null, DateTime? fromDate = null, DateTime? toDate = null)
+        {
+            var parameters = ConstructSentStatsFilter(tag, fromDate, toDate);
+            var result = await this.ProcessNoBodyRequestAsync<Dictionary<string, object>>("/stats/outbound/opens/emailclients", parameters);
+
+            var retval = new PostmarkOutboundClientStats();
+            var clientCounts = new Dictionary<string, int>();
+            foreach (var a in result)
+            {
+                if (a.Key != "Days")
+                {
+                    clientCounts[a.Key] = (int)(long)a.Value;
+                }
+            }
+            retval.ClientCounts = clientCounts;
+
+            var dayCount = (JArray)result["Days"];
+            var dayList = new List<PostmarkOutboundClientStats.DatedClientCount>();
+            foreach (var obj in dayCount)
+            {
+                var newCount = new PostmarkOutboundClientStats.DatedClientCount();
+                foreach (var i in (JObject)obj)
+                {
+                    if (i.Key == "Date")
+                    {
+                        newCount.Date = DateTime.Parse(i.Value.ToString());
+                    }
+                    else
+                    {
+                        newCount.ClientCounts[i.Key] = (int)(long)i.Value;
+                    }
+                }
+                dayList.Add(newCount);
+            }
+
+            retval.Days = dayList;
+
+            return retval;
+        }
+
+        public async Task<PostmarkOutboundReadStats> GetOutboundReadtimeStatsAsync(string tag = null, DateTime? fromDate = null, DateTime? toDate = null)
+        {
+            var parameters = ConstructSentStatsFilter(tag, fromDate, toDate);
+            var result = await this.ProcessNoBodyRequestAsync<Dictionary<string, object>>("/stats/outbound/opens/readtimes", parameters);
+
+            var retval = new PostmarkOutboundReadStats();
+            var clientCounts = new Dictionary<string, int>();
+            foreach (var a in result)
+            {
+                if (a.Key != "Days")
+                {
+                    clientCounts[a.Key] = (int)(long)a.Value;
+                }
+            }
+            retval.ReadCounts = clientCounts;
+
+            var dayCount = (JArray)result["Days"];
+            var dayList = new List<PostmarkOutboundReadStats.DatedReadCount>();
+            foreach (var obj in dayCount)
+            {
+                var newCount = new PostmarkOutboundReadStats.DatedReadCount();
+                foreach (var i in (JObject)obj)
+                {
+                    if (i.Key == "Date")
+                    {
+                        newCount.Date = DateTime.Parse(i.Value.ToString());
+                    }
+                    else
+                    {
+                        newCount.ReadCounts[i.Key] = (int)(long)i.Value;
+                    }
+                }
+                dayList.Add(newCount);
+            }
+
+            retval.Days = dayList;
+
+            return retval;
+        }
+        #endregion
+
+        #region Triggers
+
         public async Task<PostmarkTaggedTriggerInfo> CreateTagTriggerAsync(string matchName, bool trackOpens = true)
         {
             var parameters = new Dictionary<string, object>();
@@ -453,7 +550,6 @@ namespace PostmarkDotNet
             return await this.ProcessNoBodyRequestAsync<PostmarkTaggedTriggerList>("/triggers/tags/", parameters);
         }
 
-
         public async Task<PostmarkInboundRuleTriggerInfo> CreateInboundRuleTriggerAsync(string rule)
         {
             var parameters = new Dictionary<string, object>();
@@ -471,7 +567,6 @@ namespace PostmarkDotNet
             return result;
         }
 
-
         public async Task<PostmarkResponse> DeleteInboundRuleTrigger(int triggerId)
         {
             return await this
@@ -487,5 +582,7 @@ namespace PostmarkDotNet
 
             return await this.ProcessNoBodyRequestAsync<PostmarkInboundRuleTriggerList>("/triggers/inboundrules/", parameters);
         }
+
+        #endregion
     }
 }

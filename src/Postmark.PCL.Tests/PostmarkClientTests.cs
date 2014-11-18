@@ -21,7 +21,7 @@ namespace Postmark.PCL.Tests
             var client = new PostmarkClient(TEST_SERVER_TOKEN);
             var response = await client
                 .SendMessageAsync(TEST_SENDER_EMAIL_ADDRESS, TEST_SENDER_EMAIL_ADDRESS,
-                "Testing the postmark client: " + DateTime.Now, "This is only a test!");
+                "Testing the postmark client: " + DateTime.Now, "<b>This is only a test!</b>");
 
             // This should successfully send.
             Assert.AreEqual(0, response.ErrorCode);
@@ -67,6 +67,22 @@ namespace Postmark.PCL.Tests
             Assert.AreNotEqual(nonModifiedServer.Name, updatedServer.Name, "Updated server name should be different than current name");
             Assert.AreEqual(serverName, updatedServer.Name, "Updated server name returned from EditServer should be the same as the value passed in.");
             Assert.AreEqual(serverName, modifiedServer.Name, "Updated server name returned from subsequent call to GetServer should show new name.");
+        }
+
+        [Test]
+        public async Task ClientCanGetClientUsageStats()
+        {
+            var client = new PostmarkClient(TEST_SERVER_TOKEN);
+            var stats = await client.GetOutboundClientUsageCountsAsync();
+            Assert.NotNull(stats);
+        }
+
+        [Test]
+        public async Task ClientCanGetReadtimeStats()
+        {
+            var client = new PostmarkClient(TEST_SERVER_TOKEN);
+            var stats = await client.GetOutboundReadtimeStatsAsync();
+            Assert.NotNull(stats);
         }
     }
 }

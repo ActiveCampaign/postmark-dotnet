@@ -5,27 +5,32 @@ namespace PostmarkDotNet.Model
 {
     public class PostmarkOutboundReadStats
     {
+
+        public PostmarkOutboundReadStats()
+        {
+            this.ReadCounts = new Dictionary<string, int>();
+        }
+
         /// <summary>
         /// Outbound message counts, broken out by date.
         /// </summary>
-        public IEnumerable<DatedSendCount> Days { get; set; }
+        public IEnumerable<DatedReadCount> Days { get; set; }
 
-        /// <summary>
-        /// The total number of messages sent for the associated time period.
-        /// </summary>
-        public int Sent { get; set; }
+        public IDictionary<string, int> ReadCounts { get; set; }
 
-        public class DatedSendCount
+        public class DatedReadCount
         {
+            public DatedReadCount()
+            {
+                this.ReadCounts = new Dictionary<string, int>();
+            }
+
             /// <summary>
             /// The date for these stats, with date resolution.
             /// </summary>
             public DateTime Date { get; set; }
 
-            /// <summary>
-            /// The number of messages sent on this date.
-            /// </summary>
-            public int Sent { get; set; }
+            public IDictionary<string, int> ReadCounts { get; set; }
         }
     }
 }

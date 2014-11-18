@@ -9,9 +9,10 @@ namespace PostmarkDotNet
     /// <summary>
     /// Client Supporting the Administrative APIs.
     /// </summary>
-    public class PostmarkAdminClient : PostmarkClientBase
+    public class PostmarkAdminClient : PostmarkDotNet.PCL.PostmarkClientBase
     {
-        public PostmarkAdminClient(string accountToken)
+        public PostmarkAdminClient(string accountToken, string apiBaseUri = "https://api.postmarkapp.com")
+            : base(apiBaseUri)
         {
             _authToken = accountToken;
         }
@@ -20,7 +21,6 @@ namespace PostmarkDotNet
         {
             get { return "X-Postmark-Account-Token"; }
         }
-
 
         /// <summary>
         /// Get a server with the associated serverId.

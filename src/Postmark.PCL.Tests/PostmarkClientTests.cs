@@ -20,7 +20,7 @@ namespace Postmark.PCL.Tests
         {
             var client = new PostmarkClient(TEST_SERVER_TOKEN);
             var response = await client
-                .SendMessageAsync(TEST_SENDER_EMAIL_ADDRESS, TEST_SENDER_EMAIL_ADDRESS,
+                .SendMessageAsync(TEST_SENDER_EMAIL_ADDRESS, TEST_EMAIL_RECIPIENT_ADDRESS,
                 "Testing the postmark client: " + DateTime.Now, "<b>This is only a test!</b>");
 
             // This should successfully send.

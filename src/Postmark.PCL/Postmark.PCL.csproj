@@ -45,6 +45,9 @@
     <Compile Include="..\Postmark\Converters\UnicodeJsonStringConverter.cs">
       <Link>Converters\UnicodeJsonStringConverter.cs</Link>
     </Compile>
+    <Compile Include="..\Postmark\Model\PostmarkBaseSenderSignature.cs">
+      <Link>Model\PostmarkBaseSenderSignature.cs</Link>
+    </Compile>
     <Compile Include="..\Postmark\Model\PostmarkBounce.cs">
       <Link>Model\PostmarkBounce.cs</Link>
     </Compile>
@@ -63,6 +66,9 @@
     <Compile Include="..\Postmark\Model\PostmarkBounceType.cs">
       <Link>Model\PostmarkBounceType.cs</Link>
     </Compile>
+    <Compile Include="..\Postmark\Model\PostmarkCompleteSenderSignature.cs">
+      <Link>Model\PostmarkCompleteSenderSignature.cs</Link>
+    </Compile>
     <Compile Include="..\Postmark\Model\PostmarkDeliveryStats.cs">
       <Link>Model\PostmarkDeliveryStats.cs</Link>
     </Compile>
@@ -72,23 +78,59 @@
     <Compile Include="..\Postmark\Model\PostmarkInboundMessageList.cs">
       <Link>Model\PostmarkInboundMessageList.cs</Link>
     </Compile>
+    <Compile Include="..\Postmark\Model\PostmarkInboundRuleTriggerInfo.cs">
+      <Link>Model\PostmarkInboundRuleTriggerInfo.cs</Link>
+    </Compile>
+    <Compile Include="..\Postmark\Model\PostmarkInboundRuleTriggerList.cs">
+      <Link>Model\PostmarkInboundRuleTriggerList.cs</Link>
+    </Compile>
     <Compile Include="..\Postmark\Model\PostmarkMessageAttachment.cs">
       <Link>Model\PostmarkMessageAttachment.cs</Link>
     </Compile>
     <Compile Include="..\Postmark\Model\PostmarkOpensList.cs">
       <Link>Model\PostmarkOpensList.cs</Link>
     </Compile>
+    <Compile Include="..\Postmark\Model\PostmarkOutboundBounceStats.cs">
+      <Link>Model\PostmarkOutboundBounceStats.cs</Link>
+    </Compile>
     <Compile Include="..\Postmark\Model\PostmarkOutboundMessagesList.cs">
       <Link>Model\PostmarkOutboundMessagesList.cs</Link>
     </Compile>
+    <Compile Include="..\Postmark\Model\PostmarkOutboundOpenStats.cs">
+      <Link>Model\PostmarkOutboundOpenStats.cs</Link>
+    </Compile>
+    <Compile Include="..\Postmark\Model\PostmarkOutboundOverviewStats.cs">
+      <Link>Model\PostmarkOutboundOverviewStats.cs</Link>
+    </Compile>
+    <Compile Include="..\Postmark\Model\PostmarkOutboundPlatformStats.cs">
+      <Link>Model\PostmarkOutboundPlatformStats.cs</Link>
+    </Compile>
+    <Compile Include="..\Postmark\Model\PostmarkOutboundSentStats.cs">
+      <Link>Model\PostmarkOutboundSentStats.cs</Link>
+    </Compile>
+    <Compile Include="..\Postmark\Model\PostmarkOutboundSpamComplaintStats.cs">
+      <Link>Model\PostmarkOutboundSpamComplaintStats.cs</Link>
+    </Compile>
+    <Compile Include="..\Postmark\Model\PostmarkOutboundTrackedStats.cs">
+      <Link>Model\PostmarkOutboundTrackedStats.cs</Link>
+    </Compile>
     <Compile Include="..\Postmark\Model\PostmarkResponse.cs">
       <Link>Model\PostmarkResponse.cs</Link>
+    </Compile>
+    <Compile Include="..\Postmark\Model\PostmarkSenderSignatureList.cs">
+      <Link>Model\PostmarkSenderSignatureList.cs</Link>
     </Compile>
     <Compile Include="..\Postmark\Model\PostmarkServer.cs">
       <Link>Model\PostmarkServer.cs</Link>
     </Compile>
     <Compile Include="..\Postmark\Model\PostmarkStatus.cs">
       <Link>Model\PostmarkStatus.cs</Link>
+    </Compile>
+    <Compile Include="..\Postmark\Model\PostmarkTaggedTriggerInfo.cs">
+      <Link>Model\PostmarkTaggedTriggerInfo.cs</Link>
+    </Compile>
+    <Compile Include="..\Postmark\Model\PostmarkTaggedTriggerList.cs">
+      <Link>Model\PostmarkTaggedTriggerList.cs</Link>
     </Compile>
     <Compile Include="..\Postmark\Validation\ValidationException.cs">
       <Link>Validation\ValidationException.cs</Link>

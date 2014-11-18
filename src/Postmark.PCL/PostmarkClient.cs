@@ -370,7 +370,7 @@ namespace PostmarkDotNet
         }
 
         public async Task<PostmarkOutboundBounceStats>
-            GetOutboundSentCountsAsync(string tag = null, DateTime? fromDate = null, DateTime? toDate = null)
+            GetOutboundBounceCountsAsync(string tag = null, DateTime? fromDate = null, DateTime? toDate = null)
         {
             var parameters = ConstructSentStatsFilter(tag, fromDate, toDate);
             return await this.ProcessNoBodyRequestAsync<PostmarkOutboundBounceStats>

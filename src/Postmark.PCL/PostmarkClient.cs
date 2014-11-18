@@ -64,7 +64,6 @@ namespace PostmarkDotNet
             return await this.ProcessNoBodyRequestAsync<PostmarkDeliveryStats>("/deliverystats");
         }
 
-
         /// <summary>
         /// Retrieves a collection of <see cref = "PostmarkBounce" /> instances along
         /// with a sum total of bounces recorded by the server, based on filter parameters.
@@ -254,6 +253,204 @@ namespace PostmarkDotNet
             body = body.Where(kv => kv.Value != null).ToDictionary(k => k.Key, v => v.Value);
 
             return await this.ProcessRequestAsync<Dictionary<string, object>, PostmarkServer>("/server", HttpMethod.Put, body);
+        }
+
+        /// <summary>
+        /// Bypass rules for a blocked inbound message.
+        /// </summary>
+        /// <param name="messageid"></param>
+        /// <returns></returns>
+        public async Task<PostmarkResponse> BypassBlockedInboundMessage(string messageid)
+        {
+            return await this.ProcessNoBodyRequestAsync<PostmarkResponse>(String.Format("/messages/inbound/{0}/bypass", messageid), verb: HttpMethod.Put);
+        }
+
+        /// <summary>
+        /// Get the Open Events for messages, optionally filtering by various
+        /// attributes of the Open Events and Messages.
+        /// </summary>
+        /// <param name="offset"></param>
+        /// <param name="count"></param>
+        /// <param name="recipient"></param>
+        /// <param name="tag"></param>
+        /// <param name="clientName"></param>
+        /// <param name="clientCompany"></param>
+        /// <param name="clientFamily"></param>
+        /// <param name="operatingSystemName"></param>
+        /// <param name="operatingSystemFamily"></param>
+        /// <param name="operatingSystemCompany"></param>
+        /// <param name="platform"></param>
+        /// <param name="country"></param>
+        /// <param name="region"></param>
+        /// <param name="city"></param>
+        /// <returns></returns>
+        public async Task<PostmarkOpensList> GetOpenEventsForMessagesAsync(
+            int offset = 0, int count = 100, string recipient = null, string tag = null,
+            string clientName = null, string clientCompany = null, string clientFamily = null,
+            string operatingSystemName = null, string operatingSystemFamily = null, string operatingSystemCompany = null,
+            string platform = null, string country = null, string region = null, string city = null)
+        {
+            var parameters = new Dictionary<string, object>();
+            parameters["offset"] = offset;
+            parameters["count"] = count;
+            parameters["recipient"] = recipient;
+            parameters["tag"] = tag;
+            parameters["client_name"] = clientName;
+            parameters["client_company"] = clientCompany;
+            parameters["client_family"] = clientFamily;
+            parameters["os_name"] = operatingSystemName;
+            parameters["os_family"] = operatingSystemFamily;
+            parameters["os_company"] = operatingSystemCompany;
+            parameters["platform"] = platform;
+            parameters["country"] = country;
+            parameters["region"] = region;
+            parameters["city"] = city;
+
+            return await this
+                .ProcessNoBodyRequestAsync<PostmarkOpensList>("/messages/outbound/opens", parameters);
+        }
+
+        /// <summary>
+        /// Get the Open events for a specific message.
+        /// </summary>
+        /// <param name="messageId"></param>
+        /// <param name="offset"></param>
+        /// <param name="count"></param>
+        /// <returns></returns>
+        public async Task<PostmarkOpensList> GetOpenEventsForMessageAsync(
+            string messageId, int offset = 0, int count = 100)
+        {
+
+            var parameters = new Dictionary<string, object>();
+            parameters["offset"] = offset;
+            parameters["count"] = count;
+
+            return await this.ProcessNoBodyRequestAsync<PostmarkOpensList>
+                (String.Format("/messages/outbound/opens/{0}", messageId), parameters);
+        }
+
+        private IDictionary<string, object>
+           ConstructSentStatsFilter(string tag, DateTime? fromDate, DateTime? toDate)
+        {
+            var parameters = new Dictionary<string, object>();
+            parameters["tag"] = tag;
+            if (fromDate.HasValue)
+            {
+                parameters["fromdate"] = fromDate.Value.ToString(DATE_FORMAT);
+            }
+            if (toDate.HasValue)
+            {
+                parameters["todate"] = toDate.Value.ToString(DATE_FORMAT);
+            }
+            return parameters;
+        }
+
+
+        /// <summary>
+        /// Get an overview of outbound statistics, optionally limiting by tag or time window.
+        /// </summary>
+        /// <param name="tag"></param>
+        /// <param name="fromDate"></param>
+        /// <param name="toDate"></param>
+        /// <returns></returns>
+        public async Task<PostmarkOutboundOverviewStats> GetOutboundOverviewStatsAsync(
+            string tag = null, DateTime? fromDate = null, DateTime? toDate = null)
+        {
+            var parameters = ConstructSentStatsFilter(tag, fromDate, toDate);
+            return await this.ProcessNoBodyRequestAsync<PostmarkOutboundOverviewStats>
+                ("/stats/outbound", parameters);
+        }
+
+        public async Task<PostmarkOutboundSentStats>
+            GetOutboundSentCountsAsync(string tag = null, DateTime? fromDate = null, DateTime? toDate = null)
+        {
+            var parameters = ConstructSentStatsFilter(tag, fromDate, toDate);
+            return await this.ProcessNoBodyRequestAsync<PostmarkOutboundSentStats>
+                ("/stats/outbound/sends", parameters);
+        }
+
+        public async Task<PostmarkOutboundBounceStats>
+            GetOutboundSentCountsAsync(string tag = null, DateTime? fromDate = null, DateTime? toDate = null)
+        {
+            var parameters = ConstructSentStatsFilter(tag, fromDate, toDate);
+            return await this.ProcessNoBodyRequestAsync<PostmarkOutboundBounceStats>
+                ("/stats/outbound/bounces", parameters);
+        }
+
+        public async Task<PostmarkOutboundSpamComplaintStats> GetOutboundSpamComplaintCountsAsync(string tag = null, DateTime? fromDate = null, DateTime? toDate = null)
+        {
+            var parameters = ConstructSentStatsFilter(tag, fromDate, toDate);
+            return await this.ProcessNoBodyRequestAsync<PostmarkOutboundSpamComplaintStats>
+                ("/stats/outbound/spam", parameters);
+        }
+
+        public async Task<PostmarkOutboundTrackedStats> GetOutboundTrackingCountsAsync(string tag = null, DateTime? fromDate = null, DateTime? toDate = null)
+        {
+            var parameters = ConstructSentStatsFilter(tag, fromDate, toDate);
+            return await this.ProcessNoBodyRequestAsync<PostmarkOutboundTrackedStats>
+                ("/stats/outbound/tracked", parameters);
+        }
+
+        public async Task<PostmarkOutboundOpenStats> GetOutboundOpenCountsAsync(string tag = null, DateTime? fromDate = null, DateTime? toDate = null)
+        {
+            var parameters = ConstructSentStatsFilter(tag, fromDate, toDate);
+            return await this.ProcessNoBodyRequestAsync<PostmarkOutboundOpenStats>
+                ("/stats/outbound/opens", parameters);
+        }
+
+        public async Task<PostmarkOutboundPlatformStats> GetOutboundPlatformCountsAsync(string tag = null, DateTime? fromDate = null, DateTime? toDate = null)
+        {
+            var parameters = ConstructSentStatsFilter(tag, fromDate, toDate);
+            return await this.ProcessNoBodyRequestAsync<PostmarkOutboundPlatformStats>
+                ("/stats/outbound/platforms", parameters);
+        }
+
+        public async Task<PostmarkTaggedTriggerInfo> CreateTagTriggerAsync(string matchName, bool trackOpens = true)
+        {
+            var parameters = new Dictionary<string, object>();
+            parameters["MatchName"] = matchName;
+            parameters["TrackOpens"] = trackOpens;
+
+            return await this.ProcessRequestAsync<Dictionary<string, object>, PostmarkTaggedTriggerInfo>
+                ("/triggers/tags", HttpMethod.Post, parameters);
+        }
+
+        public async Task<PostmarkTaggedTriggerInfo> GetTagTriggerAsync(int id)
+        {
+            var result = await this.ProcessNoBodyRequestAsync<PostmarkTaggedTriggerInfo>(String.Format("/triggers/tags/{0}", id));
+            result.ID = id;
+            return result;
+        }
+
+        public async Task<PostmarkTaggedTriggerInfo> UpdateTagTriggerAsync(int id, string matchName = null, bool? trackOpens = null)
+        {
+            var parameters = new Dictionary<string, object>();
+            parameters["MatchName"] = matchName;
+            parameters["TrackOpens"] = trackOpens;
+
+            var result = await this
+                .ProcessNoBodyRequestAsync<PostmarkTaggedTriggerInfo>
+                ("/triggers/tags/" + id, parameters, HttpMethod.Put);
+
+            result.ID = id;
+            return result;
+        }
+
+        public async Task<PostmarkResponse> DeleteTagTrigger(int id)
+        {
+            return await this
+                .ProcessNoBodyRequestAsync<PostmarkResponse>("/triggers/tags/" + id,
+                verb: HttpMethod.Delete);
+        }
+
+        public async Task<PostmarkTaggedTriggerList> SearchTaggedTriggers(int offset = 0, int count = 100, string matchName = null)
+        {
+            var parameters = new Dictionary<string, object>();
+            parameters["offset"] = offset;
+            parameters["count"] = count;
+            parameters["match_name"] = matchName;
+
+            return await this.ProcessNoBodyRequestAsync<PostmarkTaggedTriggerList>("/triggers/tags/", parameters);
         }
     }
 }

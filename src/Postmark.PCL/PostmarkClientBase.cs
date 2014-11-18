@@ -8,8 +8,9 @@ using System.Threading.Tasks;
 
 namespace PostmarkDotNet
 {
-    internal abstract class PostmarkClientBase
+    public abstract class PostmarkClientBase
     {
+        protected static readonly string DATE_FORMAT = "YYYY-MM-DD";
         private static readonly string _agent = "Postmark.NET 2.x (" +
               typeof(PostmarkClient).AssemblyQualifiedName + ")";
 

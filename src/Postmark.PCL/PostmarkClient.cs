@@ -415,14 +415,14 @@ namespace PostmarkDotNet
                 ("/triggers/tags", HttpMethod.Post, parameters);
         }
 
-        public async Task<PostmarkTaggedTriggerInfo> GetTagTriggerAsync(int id)
+        public async Task<PostmarkTaggedTriggerInfo> GetTagTriggerAsync(int triggerId)
         {
-            var result = await this.ProcessNoBodyRequestAsync<PostmarkTaggedTriggerInfo>(String.Format("/triggers/tags/{0}", id));
-            result.ID = id;
+            var result = await this.ProcessNoBodyRequestAsync<PostmarkTaggedTriggerInfo>("/triggers/tags/" + triggerId);
+            result.ID = triggerId;
             return result;
         }
 
-        public async Task<PostmarkTaggedTriggerInfo> UpdateTagTriggerAsync(int id, string matchName = null, bool? trackOpens = null)
+        public async Task<PostmarkTaggedTriggerInfo> UpdateTagTriggerAsync(int triggerId, string matchName = null, bool? trackOpens = null)
         {
             var parameters = new Dictionary<string, object>();
             parameters["MatchName"] = matchName;
@@ -430,16 +430,16 @@ namespace PostmarkDotNet
 
             var result = await this
                 .ProcessNoBodyRequestAsync<PostmarkTaggedTriggerInfo>
-                ("/triggers/tags/" + id, parameters, HttpMethod.Put);
+                ("/triggers/tags/" + triggerId, parameters, HttpMethod.Put);
 
-            result.ID = id;
+            result.ID = triggerId;
             return result;
         }
 
-        public async Task<PostmarkResponse> DeleteTagTrigger(int id)
+        public async Task<PostmarkResponse> DeleteTagTrigger(int triggerId)
         {
             return await this
-                .ProcessNoBodyRequestAsync<PostmarkResponse>("/triggers/tags/" + id,
+                .ProcessNoBodyRequestAsync<PostmarkResponse>("/triggers/tags/" + triggerId,
                 verb: HttpMethod.Delete);
         }
 
@@ -451,6 +451,41 @@ namespace PostmarkDotNet
             parameters["match_name"] = matchName;
 
             return await this.ProcessNoBodyRequestAsync<PostmarkTaggedTriggerList>("/triggers/tags/", parameters);
+        }
+
+
+        public async Task<PostmarkInboundRuleTriggerInfo> CreateInboundRuleTriggerAsync(string rule)
+        {
+            var parameters = new Dictionary<string, object>();
+            parameters["Rule"] = rule;
+
+            return await this.ProcessRequestAsync<Dictionary<string, object>, PostmarkInboundRuleTriggerInfo>
+                ("/triggers/tags", HttpMethod.Post, parameters);
+        }
+
+        public async Task<PostmarkInboundRuleTriggerInfo> GetInboundRuleTriggerAsync(int triggerId)
+        {
+            var result = await this.ProcessNoBodyRequestAsync<PostmarkInboundRuleTriggerInfo>
+                ("/triggers/tags/" + triggerId);
+            result.ID = triggerId;
+            return result;
+        }
+
+
+        public async Task<PostmarkResponse> DeleteInboundRuleTrigger(int triggerId)
+        {
+            return await this
+                .ProcessNoBodyRequestAsync<PostmarkResponse>("/triggers/inboundrules/" + triggerId,
+                verb: HttpMethod.Delete);
+        }
+
+        public async Task<PostmarkInboundRuleTriggerList> GetAllInboundRuleTriggers(int offset = 0, int count = 100)
+        {
+            var parameters = new Dictionary<string, object>();
+            parameters["offset"] = offset;
+            parameters["count"] = count;
+
+            return await this.ProcessNoBodyRequestAsync<PostmarkInboundRuleTriggerList>("/triggers/inboundrules/", parameters);
         }
     }
 }

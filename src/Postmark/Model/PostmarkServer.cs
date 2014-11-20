@@ -37,7 +37,7 @@ namespace PostmarkDotNet.Model
         /// <summary>
         /// Color of the server in the rack screen.
         /// </summary>
-        public ServerColors Color { get; set; }
+        public string Color { get; set; }
 
         /// <summary>
         /// Specifies whether or not SMTP is enabled on this server.
@@ -99,15 +99,15 @@ namespace PostmarkDotNet.Model
     /// <summary>
     /// The colors shown by the Postmark server interface.
     /// </summary>
-    public enum ServerColors
+    public class ServerColors
     {
-        Grey,
-        Purple,
-        Blue,
-        Turqoise,
-        Green,
-        Red,
-        Yellow
+        public static string Grey { get { return "ggrey"; } }
+        public static string Purple { get { return "purple"; } }
+        public static string Blue { get { return "blue"; } }
+        public static string Turqoise { get { return "turqoise"; } }
+        public static string Green { get { return "green"; } }
+        public static string Red { get { return "red"; } }
+        public static string Yellow { get { return "yellow"; } }
     }
 
 }

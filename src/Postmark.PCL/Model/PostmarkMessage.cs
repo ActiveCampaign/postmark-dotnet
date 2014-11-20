@@ -1,5 +1,4 @@
 ﻿using PostmarkDotNet.Model;
-using PostmarkDotNet.Validation;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -41,163 +40,6 @@ namespace PostmarkDotNet
             HtmlBody = isHtml ? body : null;
             Headers = new HeaderCollection(headers ?? new Dictionary<string, string>());
         }
-
-
-        //#if !WINDOWS_PHONE
-        //        /// <summary>
-        //        ///   Initializes a new instance of the <see cref = "PostmarkMessage" /> class
-        //        ///   based on an existing <see cref = "MailMessage" /> instance. 
-        //        /// 
-        //        ///   Only the first recipient of the message is added to the <see cref = "PostmarkMessage" />
-        //        ///   instance.
-        //        /// </summary>
-        //        /// <param name = "message">The existing message.</param>
-        //        public PostmarkMessage(MailMessage message)
-        //        {
-        //            if (message.From != null)
-        //                From = !string.IsNullOrEmpty(message.From.DisplayName)
-        //                           ? string.Format("{0} <{1}>", message.From.DisplayName, message.From.Address)
-        //                           : message.From.Address;
-
-        //            GetMailMessageRecipients(message);
-
-        //            Subject = message.Subject;
-        //            HtmlBody = message.IsBodyHtml ? message.Body : null;
-        //            TextBody = message.IsBodyHtml ? null : message.Body;
-
-        //            GetHtmlBodyFromAlternateViews(message);
-
-        //            if (message.ReplyTo != null)
-        //            {
-        //                ReplyTo = !string.IsNullOrEmpty(message.ReplyTo.DisplayName)
-        //                              ? string.Format("{0} <{1}>", message.ReplyTo.DisplayName, message.ReplyTo.Address)
-        //                              : message.ReplyTo.Address;
-        //            }
-
-        //            var header = message.Headers.Get("X-PostmarkTag");
-        //            if (header != null)
-        //            {
-        //                Tag = header;
-        //            }
-
-        //            Headers = message.Headers;
-        //            Attachments = new List<PostmarkMessageAttachment>(0);
-
-        //            foreach (var item in from attachment in message.Attachments
-        //                                 where attachment.ContentStream != null
-        //                                 let content = ReadStream(attachment.ContentStream, 8192)
-        //                                 select new PostmarkMessageAttachment
-        //                                            {
-        //                                                Name = attachment.Name,
-        //                                                ContentType = attachment.ContentType.ToString(),
-        //                                                Content = Convert.ToBase64String(content)
-        //                                            })
-        //            {
-        //                Attachments.Add(item);
-        //            }
-        //        }
-
-        //        private void GetMailMessageRecipients(MailMessage message)
-        //        {
-        //            GetMailMessageTo(message);
-        //            GetMailMessageCc(message);
-        //            GetMailMessageBcc(message);
-        //        }
-
-        //        private void GetMailMessageCc(MailMessage message)
-        //        {
-        //            var sb = new StringBuilder(0);
-
-        //            if (message.CC.Count > 0)
-        //            {
-        //                foreach (var cc in message.CC)
-        //                {
-        //                    sb.AppendFormat("{0},", cc.Address);
-        //                }
-        //            }
-
-        //            Cc = sb.ToString();
-        //        }
-
-        //        private void GetMailMessageBcc(MailMessage message)
-        //        {
-        //            var sb = new StringBuilder(0);
-
-        //            if (message.Bcc.Count > 0)
-        //            {
-        //                foreach (var bcc in message.Bcc)
-        //                {
-        //                    sb.AppendFormat("{0},", bcc.Address);
-        //                }
-        //            }
-
-        //            Bcc = sb.ToString();
-        //        }
-
-        //        private void GetMailMessageTo(MailMessage message)
-        //        {
-        //            var sb = new StringBuilder(0);
-        //            foreach (var to in message.To)
-        //            {
-        //                if (!string.IsNullOrEmpty(to.DisplayName))
-        //                {
-        //                    sb.AppendFormat("{0} <{1}>,", to.DisplayName, to.Address);
-        //                }
-        //                else
-        //                {
-        //                    sb.AppendFormat("{0},", to.Address);
-        //                }
-        //            }
-        //            To = sb.ToString();
-        //        }
-
-        //        // http://msdn.microsoft.com/en-us/library/system.net.mail.mailmessage.alternateviews.aspx
-
-
-
-        //        private void GetHtmlBodyFromAlternateViews(MailMessage message)
-        //        {
-        //            if (message.AlternateViews.Count <= 0)
-        //            {
-        //                return;
-        //            }
-
-        //            var plainTextView = message.AlternateViews.Where(v => v.ContentType.MediaType.Equals(MediaTypeNames.Text.Plain)).FirstOrDefault();
-        //            if (plainTextView != null)
-        //            {
-        //                TextBody = GetStringFromView(plainTextView);
-        //            }
-
-        //            var htmlView = message.AlternateViews.Where(v => v.ContentType.MediaType.Equals(MediaTypeNames.Text.Html)).FirstOrDefault();
-        //            if (htmlView != null)
-        //            {
-        //                HtmlBody = GetStringFromView(htmlView);
-        //            }
-        //        }
-
-        //        private static string GetStringFromView(AttachmentBase view)
-        //        {
-
-        //          Encoding encoding = resolveViewEncoding(view, Encoding.ASCII);
-
-        //          var data = new byte[view.ContentStream.Length];
-        //          view.ContentStream.Read(data, 0, data.Length);
-        //          return encoding.GetString(data);
-        //        }
-
-        //        private static Encoding resolveViewEncoding(AttachmentBase view, Encoding fallbackEncoding)
-        //        {
-        //          String charSet = view.ContentType.CharSet;
-        //          try
-        //          {
-        //            return Encoding.GetEncoding(charSet);
-        //          }
-        //          catch
-        //          {
-        //            return fallbackEncoding;
-        //          }
-        //        }
-        //#endif
 
         /// <summary>
         ///   The sender's email address.
@@ -288,10 +130,7 @@ namespace PostmarkDotNet
         {
 
             var content = ReadStream(contentStream, 8067);
-
-            //NOTE: JP suggests that ALL validation of messages should be done on the server. For now, this check remains:
             var payload = Convert.ToBase64String(content);
-            ValidateAttachmentLength(payload.Length);
 
 
             var attachment = new PostmarkMessageAttachment
@@ -325,12 +164,5 @@ namespace PostmarkDotNet
             }
         }
 
-        private void ValidateAttachmentLength(int length)
-        {
-            if (length > 10 * 1024 * 1024)
-            {
-                throw new ValidationException("Attachments must be less than 10MB in length.");
-            }
-        }
     }
 }

@@ -105,6 +105,7 @@
     <Compile Include="Model\PostmarkServer.cs" />
     <Compile Include="Model\PostmarkInboundRuleTriggerInfo.cs" />
     <Compile Include="Model\PostmarkInboundRuleTriggerList.cs" />
+    <Compile Include="Model\PostmarkServerList.cs" />
     <Compile Include="Model\PostmarkTaggedTriggerList.cs" />
     <Compile Include="Model\PostmarkTaggedTriggerInfo.cs" />
     <Compile Include="PostmarkClient.Async.cs" />

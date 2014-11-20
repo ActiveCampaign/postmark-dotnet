@@ -1,11 +1,22 @@
 ﻿using NUnit.Framework;
 using System;
+using System.Threading.Tasks;
 
 namespace Postmark.PCL.Tests
 {
     [TestFixture]
-    public class ClientMessageSearchingTests
+    public class ClientMessageSearchingTests : ClientBaseFixture
     {
+        private PostmarkDotNet.PostmarkMessage _sentMessage;
+        public override async Task Setup()
+        {
+
+            _client = new PostmarkDotNet.PostmarkClient(READ_TEST_SERVER_TOKEN);
+            var server = await _client.GetServer();
+
+            await _client.SendMessageAsync(_sentMessage);
+        }
+
         [TestCase]
         public async void Client_CanSearchOutboundMessages()
         {
@@ -27,7 +38,9 @@ namespace Postmark.PCL.Tests
         [TestCase]
         public async void Client_CanSearchInboundMessages()
         {
-            throw new NotImplementedException();
+            var messages = await _client.GetInboundMessagesAsync();
+            Assert.Greater(0, messages.TotalCount);
+            Assert.Greater(0, messages.InboundMessages.Count);
         }
 
         [TestCase]

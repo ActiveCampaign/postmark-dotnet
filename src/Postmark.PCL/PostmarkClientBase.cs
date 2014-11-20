@@ -1,4 +1,5 @@
-﻿using Newtonsoft.Json;
+﻿using PostmarkDotNet.Converters;
+using PostmarkDotNet.Exceptions;
 using PostmarkDotNet.Utility;
 using System;
 using System.Collections.Generic;
@@ -16,14 +17,16 @@ namespace PostmarkDotNet.PCL
 
         private Uri baseUri;
 
-        public PostmarkClientBase(string apiBaseUri = "https://api.postmarkapp.com")
+        public PostmarkClientBase(string apiBaseUri = "https://api.postmarkapp.com", int requestTimeoutInSeconds = 30)
         {
             baseUri = new Uri(apiBaseUri);
+            _requestTimeout = requestTimeoutInSeconds;
         }
 
         protected abstract string AuthHeaderName { get; }
 
         protected string _authToken;
+        private int _requestTimeout;
 
         /// <summary>
         /// The core delivery method for all other API methods.
@@ -34,9 +37,12 @@ namespace PostmarkDotNet.PCL
         /// <param name="verb"></param>
         /// <param name="message"></param>
         /// <returns></returns>
-        protected async Task<TResponse> ProcessRequestAsync<TRequestBody, TResponse>(string apiPath, HttpMethod verb, TRequestBody message = null) where TRequestBody : class
+        /// <exception cref="PostmarkDotNet.PCL.Exceptions.PostmarkValidationException"></exception>
+        /// <exception cref="System.Exception"></exception>
+        protected async Task<TResponse> ProcessRequestAsync<TRequestBody, TResponse>(string apiPath,
+            HttpMethod verb, TRequestBody message = null) where TRequestBody : class
         {
-            TResponse retval;
+            TResponse retval = default(TResponse);
 
             using (var client = new HttpClient())
             {
@@ -56,12 +62,24 @@ namespace PostmarkDotNet.PCL
                 request.Headers.Add(AuthHeaderName, _authToken);
                 request.Headers.Add("User-Agent", _agent);
 
+                client.Timeout = TimeSpan.FromSeconds(this._requestTimeout);
+
                 var result = await client.SendAsync(request);
                 var body = await result.Content.ReadAsStringAsync();
 
-                retval = JsonConvert.DeserializeObject<TResponse>(body);
+                if (!body.TryDeserializeObject<TResponse>(out retval))
+                {
+                    PostmarkResponse error;
+                    if (body.TryDeserializeObject<PostmarkResponse>(out error))
+                    {
+                        throw new PostmarkValidationException(error);
+                    }
+                    else
+                    {
+                        throw new Exception("The response from the API could not be parsed.");
+                    }
+                }
             }
-
             return retval;
         }
 
@@ -72,7 +90,8 @@ namespace PostmarkDotNet.PCL
         /// <param name="apiPath"></param>
         /// <param name="parameters"></param>
         /// <returns></returns>
-        protected async Task<TResponse> ProcessNoBodyRequestAsync<TResponse>(string apiPath, IDictionary<string, object> parameters = null, HttpMethod verb = null)
+        protected async Task<TResponse> ProcessNoBodyRequestAsync<TResponse>
+            (string apiPath, IDictionary<string, object> parameters = null, HttpMethod verb = null)
         {
             parameters = parameters ?? new Dictionary<string, object>();
 

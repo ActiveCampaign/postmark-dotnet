@@ -22,8 +22,8 @@ namespace PostmarkDotNet
         /// Instantiate the client.
         /// </summary>
         /// <param name="serverToken"></param>
-        public PostmarkClient(string serverToken, string apiBaseUri = "https://api.postmarkapp.com")
-            : base(apiBaseUri)
+        public PostmarkClient(string serverToken, string apiBaseUri = "https://api.postmarkapp.com", int requestTimeoutInSeconds = 30)
+            : base(apiBaseUri, requestTimeoutInSeconds)
         {
             _authToken = serverToken;
         }
@@ -104,9 +104,9 @@ namespace PostmarkDotNet
         /// <param name="bounceId">The bounce ID</param>
         /// <returns></returns>
         /// <seealso href = "http://developer.postmarkapp.com/bounces" />
-        public async Task<PostmarkBounce> GetBounceAsync(string bounceId)
+        public async Task<PostmarkBounce> GetBounceAsync(int bounceId)
         {
-            return await ProcessNoBodyRequestAsync<PostmarkBounce>("/bounce/" + bounceId);
+            return await ProcessNoBodyRequestAsync<PostmarkBounce>("/bounces/" + bounceId);
         }
 
         /// <summary>
@@ -116,7 +116,7 @@ namespace PostmarkDotNet
         /// <param name="bounceId">The bounce ID</param>
         /// <returns></returns>
         /// <seealso href = "http://developer.postmarkapp.com/bounces" />
-        public async Task<PostmarkBounceDump> GetBounceDumpAsync(string bounceId)
+        public async Task<PostmarkBounceDump> GetBounceDumpAsync(int bounceId)
         {
             return await ProcessNoBodyRequestAsync<PostmarkBounceDump>("/bounces/" + bounceId + "/dump");
         }
@@ -127,7 +127,7 @@ namespace PostmarkDotNet
         /// <param name="bounceId">The bounce ID</param>
         /// <returns></returns>
         /// <seealso href = "http://developer.postmarkapp.com/bounces" />
-        public async Task<PostmarkBounceActivation> ActivateBounceAsync(string bounceId)
+        public async Task<PostmarkBounceActivation> ActivateBounceAsync(int bounceId)
         {
             return await ProcessNoBodyRequestAsync<PostmarkBounceActivation>("/bounces/" + bounceId + "/activate");
         }
@@ -254,7 +254,7 @@ namespace PostmarkDotNet
         /// Any parameters that are left null will use the current value for the server.
         /// </summary>
         /// <returns></returns>
-        public async Task<PostmarkServer> EditServer(String name = null, ServerColors? color = null,
+        public async Task<PostmarkServer> EditServer(String name = null, string color = null,
             bool? rawEmailEnabled = null, bool? smtpApiActivated = null, string inboundHookUrl = null,
             string bounceHookUrl = null, string openHookUrl = null, bool? postFirstOpenOnly = null,
             bool? trackOpens = null, string inboundDomain = null, int? inboundSpamThreshold = null)

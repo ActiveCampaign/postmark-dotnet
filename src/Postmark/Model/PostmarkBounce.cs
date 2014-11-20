@@ -12,7 +12,7 @@ namespace PostmarkDotNet
         ///   This is used for other API calls that require the ID.
         /// </summary>
         /// <value>The ID</value>
-        public string ID { get; set; }
+        public int ID { get; set; }
 
         /// <summary>
         ///   The <see cref = "PostmarkBounceType" /> for this bounce.

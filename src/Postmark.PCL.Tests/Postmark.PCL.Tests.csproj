@@ -43,8 +43,17 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="AdminClientSenderSignatureTests.cs" />
+    <Compile Include="AdminClientServersTests.cs" />
+    <Compile Include="ClientBounceTests.cs" />
+    <Compile Include="ClientMessageSearchingTests.cs" />
+    <Compile Include="ClientSendingTests.cs" />
+    <Compile Include="ClientServerInformationTests.cs" />
+    <Compile Include="ClientStatisticsTests.cs" />
+    <Compile Include="ClientTriggersTests.cs" />
     <Compile Include="PostmarkClientTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="TestConfigurationParameters.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Postmark.PCL\Postmark.PCL.csproj">

@@ -1,26 +1,22 @@
 ﻿using NUnit.Framework;
 using PostmarkDotNet;
 using System;
-using System.Configuration;
 using System.Linq;
 using System.Threading.Tasks;
-
+using config = Postmark.PCL.Tests.TestConfigurationParameters;
 
 namespace Postmark.PCL.Tests
 {
     [TestFixture]
     public class PostmarkClientTests
     {
-        private static string TEST_SERVER_TOKEN = ConfigurationManager.AppSettings["TEST_SERVER_TOKEN"];
-        private static string TEST_SENDER_EMAIL_ADDRESS = ConfigurationManager.AppSettings["TEST_SENDER_EMAIL_ADDRESS"];
-        private static string TEST_EMAIL_RECIPIENT_ADDRESS = ConfigurationManager.AppSettings["TEST_EMAIL_RECIPIENT_ADDRESS"];
 
         [Test]
         public async Task ClientCanSendMessage()
         {
-            var client = new PostmarkClient(TEST_SERVER_TOKEN);
+            var client = new PostmarkClient(config.TEST_SERVER_TOKEN);
             var response = await client
-                .SendMessageAsync(TEST_SENDER_EMAIL_ADDRESS, TEST_EMAIL_RECIPIENT_ADDRESS,
+                .SendMessageAsync(config.TEST_SENDER_EMAIL_ADDRESS, config.TEST_EMAIL_RECIPIENT_ADDRESS,
                 "Testing the postmark client: " + DateTime.Now, "<b>This is only a test!</b>");
 
             // This should successfully send.
@@ -31,7 +27,7 @@ namespace Postmark.PCL.Tests
         [Test]
         public async Task ClientProducesDeliveryStats()
         {
-            var client = new PostmarkClient(TEST_SERVER_TOKEN);
+            var client = new PostmarkClient(config.TEST_SERVER_TOKEN);
             var stats = await client.GetDeliveryStatsAsync();
             Assert.True(stats.Bounces.Any());
         }
@@ -39,7 +35,7 @@ namespace Postmark.PCL.Tests
         [Test]
         public async Task ClientCanRetrieveBounces()
         {
-            var client = new PostmarkClient(TEST_SERVER_TOKEN);
+            var client = new PostmarkClient(config.TEST_SERVER_TOKEN);
             var bounces = await client.GetBouncesAsync();
             Assert.NotNull(bounces);
         }
@@ -47,18 +43,18 @@ namespace Postmark.PCL.Tests
         [Test]
         public async Task ClientCanRetrieveServerInformation()
         {
-            var client = new PostmarkClient(TEST_SERVER_TOKEN);
+            var client = new PostmarkClient(config.TEST_SERVER_TOKEN);
             var server = await client.GetServer();
 
             Assert.NotNull(server);
-            Assert.Contains(TEST_SERVER_TOKEN, server.ApiTokens);
+            Assert.Contains(config.TEST_SERVER_TOKEN, server.ApiTokens);
         }
 
 
         [Test]
         public async Task ClientCanUpdateServerName()
         {
-            var client = new PostmarkClient(TEST_SERVER_TOKEN);
+            var client = new PostmarkClient(config.TEST_SERVER_TOKEN);
             var serverName = "test-server " + DateTime.Now.ToString("o");
             var nonModifiedServer = await client.GetServer();
             var updatedServer = await client.EditServer(name: serverName);
@@ -72,7 +68,7 @@ namespace Postmark.PCL.Tests
         [Test]
         public async Task ClientCanGetClientUsageStats()
         {
-            var client = new PostmarkClient(TEST_SERVER_TOKEN);
+            var client = new PostmarkClient(config.TEST_SERVER_TOKEN);
             var stats = await client.GetOutboundClientUsageCountsAsync();
             Assert.NotNull(stats);
         }
@@ -80,9 +76,10 @@ namespace Postmark.PCL.Tests
         [Test]
         public async Task ClientCanGetReadtimeStats()
         {
-            var client = new PostmarkClient(TEST_SERVER_TOKEN);
+            var client = new PostmarkClient(config.TEST_SERVER_TOKEN);
             var stats = await client.GetOutboundReadtimeStatsAsync();
             Assert.NotNull(stats);
         }
+
     }
 }

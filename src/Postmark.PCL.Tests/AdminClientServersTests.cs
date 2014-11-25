@@ -19,14 +19,13 @@ namespace Postmark.PCL.Tests
         private string _openHookUrl;
         private bool? _postFirstOpenOpenOnly;
         private bool? _trackOpens;
-        private string _inboundDomain;
         private int? _inboundSpamThreshold;
         private string _name;
         private string _color;
         private bool? _rawEmailEnabled;
         private string _bounceHookUrl;
 
-        public override async Task Setup()
+        protected override async Task SetupAsync()
         {
             _adminClient = new PostmarkAdminClient(WRITE_ACCOUNT_TOKEN);
             var id = Guid.NewGuid().ToString("n");
@@ -41,9 +40,8 @@ namespace Postmark.PCL.Tests
             _openHookUrl = "http://www.example.com/opened/" + id;
             _postFirstOpenOpenOnly = true;
             _trackOpens = true;
-            //_inboundDomain = "inbound-" + id + ".exmaple.com";
             _inboundSpamThreshold = 30;
-
+            await CompletionSource;
         }
 
         [TearDown]
@@ -83,7 +81,7 @@ namespace Postmark.PCL.Tests
         {
             var newServer = await _adminClient.CreateServerAsync(_name, _color, _rawEmailEnabled, _smtpActivated,
                 _inboundHookUrl, _bounceHookUrl, _openHookUrl, _postFirstOpenOpenOnly, _trackOpens,
-                _inboundDomain, _inboundSpamThreshold);
+                null, _inboundSpamThreshold);
 
             var updatedAffix = "updated";
 
@@ -91,7 +89,7 @@ namespace Postmark.PCL.Tests
                 !newServer.RawEmailEnabled, !newServer.SmtpApiActivated,
                 _inboundHookUrl + updatedAffix, _bounceHookUrl + updatedAffix,
                 _openHookUrl + updatedAffix, !newServer.PostFirstOpenOnly,
-                !newServer.TrackOpens, _inboundDomain, 5);
+                !newServer.TrackOpens, null, 5);
 
             var retrievedServer = await _adminClient.GetServerAsync(newServer.ID);
 
@@ -115,7 +113,7 @@ namespace Postmark.PCL.Tests
         {
             var newServer = await _adminClient.CreateServerAsync(_name, _color, _rawEmailEnabled, _smtpActivated,
                 _inboundHookUrl, _bounceHookUrl, _openHookUrl, _postFirstOpenOpenOnly, _trackOpens,
-                _inboundDomain, _inboundSpamThreshold);
+                null, _inboundSpamThreshold);
 
             var retrievedServer = await _adminClient.GetServerAsync(newServer.ID);
 

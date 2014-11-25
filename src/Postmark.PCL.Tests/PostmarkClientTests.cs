@@ -9,9 +9,10 @@ namespace Postmark.PCL.Tests
     [TestFixture]
     public class PostmarkClientTests : ClientBaseFixture
     {
-        public override async Task Setup()
+        protected override async Task SetupAsync()
         {
             //no setup needed.
+            await CompletionSource;
         }
 
         [Test]

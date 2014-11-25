@@ -12,9 +12,10 @@ namespace Postmark.PCL.Tests
     [TestFixture]
     public class ClientSendingTests : ClientBaseFixture
     {
-        public override async Task Setup()
+        protected override async Task SetupAsync()
         {
             _client = new PostmarkClient(WRITE_TEST_SERVER_TOKEN);
+            await CompletionSource;
         }
 
         [TestCase]

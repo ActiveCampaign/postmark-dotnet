@@ -21,7 +21,7 @@ namespace PostmarkDotNet
         /// <summary>
         /// Instantiate the client.
         /// </summary>
-        /// <param name="serverToken"></param>
+        /// <param name="serverToken">Used for requests that require server level privileges. This token can be found on the Credentials tab under your Postmark server.</param>
         public PostmarkClient(string serverToken, string apiBaseUri = "https://api.postmarkapp.com", int requestTimeoutInSeconds = 30)
             : base(apiBaseUri, requestTimeoutInSeconds)
         {
@@ -36,7 +36,7 @@ namespace PostmarkDotNet
         /// sender signature, log in to Postmark and navigate to:
         /// http://postmarkapp.com/signatures.
         /// </summary>
-        /// <param name="message">A prepared message instance.</param>
+        /// <param name="message">A prepared message.</param>
         /// <returns></returns>
         public async Task<PostmarkResponse> SendMessageAsync(PostmarkMessage message)
         {
@@ -50,8 +50,8 @@ namespace PostmarkDotNet
         /// sender signature, log in to Postmark and navigate to:
         /// http://postmarkapp.com/signatures.
         /// </summary>
-        /// <param name="messages">A prepared message batch.</param>
-        /// <returns></returns>
+        /// <param name="messages">A prepared batch of messages.</param>
+        /// <returns>The processed messages (Complete with system assigned message IDs)</returns>
         public async Task<IEnumerable<PostmarkResponse>> SendMessagesAsync(params PostmarkMessage[] messages)
         {
             return await ProcessRequestAsync<PostmarkMessage[], PostmarkResponse[]>("/email/batch", HttpMethod.Post, messages);
@@ -74,11 +74,11 @@ namespace PostmarkDotNet
         /// Retrieves a collection of <see cref = "PostmarkBounce" /> instances along
         /// with a sum total of bounces recorded by the server, based on filter parameters.
         /// </summary>
-        /// <param name="type">The type of bounces to filter on</param>
-        /// <param name="inactive">Whether to return only inactive or active bounces; use null to return all bounces</param>
-        /// <param name="emailFilter">Filters based on whether the filter value is contained in the bounce source's email</param>
-        /// <param name="tag">Filters on the bounce tag</param>
-        /// <param name="messageID">Filters by messageID</param>
+        /// <param name="type">The type of bounces to filter on.</param>
+        /// <param name="inactive">Whether to return only inactive or active bounces; use null to return all bounces.</param>
+        /// <param name="emailFilter">Filters based on whether the filter value is contained in the bounce source's email.</param>
+        /// <param name="tag">Filters on the bounce tag.</param>
+        /// <param name="messageID">Filter by MessageID.</param>
         /// <param name="offset">The page offset for the returned results; defaults to 0.</param>
         /// <param name="count">The number of results to return by the page offset; defaults to 100.</param>
         /// <returns></returns>
@@ -101,7 +101,7 @@ namespace PostmarkDotNet
         /// <summary>
         /// Retrieves a single <see cref = "PostmarkBounce" /> based on a specified ID.
         /// </summary>
-        /// <param name="bounceId">The bounce ID</param>
+        /// <param name="bounceId">The bounce ID of the bounce to retrieve.</param>
         /// <returns></returns>
         /// <seealso href = "http://developer.postmarkapp.com/bounces" />
         public async Task<PostmarkBounce> GetBounceAsync(int bounceId)
@@ -113,7 +113,7 @@ namespace PostmarkDotNet
         /// Returns the raw source of the bounce we accepted. 
         /// If Postmark does not have a dump for that bounce, it will return an empty string.
         /// </summary>
-        /// <param name="bounceId">The bounce ID</param>
+        /// <param name="bounceId">The bounce ID of the bounce dump to retrieve.</param>
         /// <returns></returns>
         /// <seealso href = "http://developer.postmarkapp.com/bounces" />
         public async Task<PostmarkBounceDump> GetBounceDumpAsync(int bounceId)
@@ -124,7 +124,7 @@ namespace PostmarkDotNet
         /// <summary>
         /// Activates a deactivated bounce.
         /// </summary>
-        /// <param name="bounceId">The bounce ID</param>
+        /// <param name="bounceId">The bounce ID of the bounce to Activate</param>
         /// <returns></returns>
         /// <seealso href = "http://developer.postmarkapp.com/bounces" />
         public async Task<PostmarkBounceActivation> ActivateBounceAsync(int bounceId)

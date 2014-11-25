@@ -12,11 +12,12 @@ namespace Postmark.PCL.Tests
         private DateTime _lastMonth;
         public DateTime _windowStartDate { get; set; }
 
-        public override async Task Setup()
+        protected override async Task SetupAsync()
         {
             _client = new PostmarkClient(READ_SELENIUM_TEST_SERVER_TOKEN);
             _lastMonth = TESTING_DATE - TimeSpan.FromDays(30);
             _windowStartDate = TESTING_DATE - TimeSpan.FromDays(35);
+            await CompletionSource;
         }
 
 

@@ -9,9 +9,10 @@ namespace Postmark.PCL.Tests
     [TestFixture]
     public class ClientMessageSearchingTests : ClientBaseFixture
     {
-        public override async Task Setup()
+        protected override async Task SetupAsync()
         {
             _client = new PostmarkDotNet.PostmarkClient(READ_SELENIUM_TEST_SERVER_TOKEN);
+            await CompletionSource;
         }
 
         [TestCase]
@@ -95,7 +96,7 @@ namespace Postmark.PCL.Tests
 
         [Ignore("We can't run this test because can't do a write on the inbound testing server.")]
         [TestCase]
-        public async void Client_CanBypassRulesForInboundMessage()
+        public void Client_CanBypassRulesForInboundMessage()
         {
             //_client.BypassBlockedInboundMessage(/*a message id to bypass*/);
         }

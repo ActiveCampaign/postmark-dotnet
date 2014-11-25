@@ -9,6 +9,19 @@ namespace Postmark.PCL.Tests
     [TestFixture]
     public abstract class ClientBaseFixture
     {
+
+        /// <summary>
+        /// This is just a hook to avoid await compiler warnings.
+        /// </summary>
+        protected static Task CompletionSource { get; set; }
+
+        static ClientBaseFixture()
+        {
+            var t = new TaskCompletionSource<int>();
+            t.SetResult(1);
+            CompletionSource = t.Task;
+        }
+
         private static void AssertSettingsAvailable()
         {
             Assert.NotNull(READ_INBOUND_TEST_SERVER_TOKEN, "READ_INBOUND_TEST_SERVER_TOKEN must be defined as an environment variable or app setting.");
@@ -46,9 +59,10 @@ namespace Postmark.PCL.Tests
         public void RunSetupSynchronously()
         {
             AssertSettingsAvailable();
-            Setup();
+            SetupAsync().Wait();
+
         }
 
-        public abstract Task Setup();
+        protected abstract Task SetupAsync();
     }
 }

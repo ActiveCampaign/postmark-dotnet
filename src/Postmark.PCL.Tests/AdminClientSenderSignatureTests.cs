@@ -17,7 +17,7 @@ namespace Postmark.PCL.Tests
         private string _senderName;
         private string _senderprefix;
 
-        public override async Task Setup()
+        protected override async Task SetupAsync()
         {
             _adminClient = new PostmarkAdminClient(WRITE_ACCOUNT_TOKEN);
             var id = Guid.NewGuid();
@@ -25,6 +25,7 @@ namespace Postmark.PCL.Tests
             _senderEmail = String.Format(_senderprefix + "{0:n}@example.com", id);
             _replyToAddress = String.Format(_senderprefix + "replyto-{0:n}@example.com", id);
             _senderName = String.Format("Test Sender {0}", TESTING_DATE);
+            await CompletionSource;
         }
 
 

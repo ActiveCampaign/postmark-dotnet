@@ -13,9 +13,10 @@ namespace Postmark.PCL.Tests
         private string _triggerPrefix = "integration-testing-";
         private string _inboundRulePrefix = "integration-test";
 
-        public override async Task Setup()
+        protected override async Task SetupAsync()
         {
             _client = new PostmarkClient(WRITE_TEST_SERVER_TOKEN);
+            await CompletionSource;
         }
 
         [TearDown]

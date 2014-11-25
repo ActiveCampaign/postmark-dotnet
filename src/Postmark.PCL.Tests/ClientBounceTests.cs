@@ -9,9 +9,10 @@ namespace Postmark.PCL.Tests
     [TestFixture]
     public class ClientBounceTests : ClientBaseFixture
     {
-        public async override Task Setup()
+        protected async override Task SetupAsync()
         {
             _client = new PostmarkClient(READ_SELENIUM_TEST_SERVER_TOKEN);
+            await CompletionSource;
         }
 
         [TestCase]

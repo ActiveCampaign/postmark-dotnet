@@ -13,16 +13,12 @@ namespace Postmark.PCL.Tests
         private string _serverPrefix;
         private string _name;
         private string _color;
-        private bool _rawEmailEnabled;
-        private bool _smtpActivated;
+
         private string _inboundHookUrl;
         private string _bounceHookUrl;
         private string _openHookUrl;
-        private bool _postFirstOpenOpenOnly;
-        private bool _trackOpens;
-        private int _inboundSpamThreshold;
-        private string _inboundDomain;
-        public override async Task Setup()
+
+        protected override async Task SetupAsync()
         {
             _client = new PostmarkClient(WRITE_TEST_SERVER_TOKEN);
             var id = Guid.NewGuid().ToString("n");
@@ -30,15 +26,12 @@ namespace Postmark.PCL.Tests
 
             _name = _serverPrefix + id;
             _color = ServerColors.Purple;
-            _rawEmailEnabled = true;
-            _smtpActivated = true;
+
             _inboundHookUrl = "http://www.example.com/inbound/" + id;
             _bounceHookUrl = "http://www.example.com/bounce/" + id;
             _openHookUrl = "http://www.example.com/opened/" + id;
-            _postFirstOpenOpenOnly = true;
-            _trackOpens = true;
             //_inboundDomain = "inbound-" + id + ".exmaple.com";
-            _inboundSpamThreshold = 30;
+            await CompletionSource;
         }
 
         [TestCase]
@@ -63,7 +56,7 @@ namespace Postmark.PCL.Tests
                 !existingServer.RawEmailEnabled, !existingServer.SmtpApiActivated,
                 _inboundHookUrl + updatedAffix, _bounceHookUrl + updatedAffix,
                 _openHookUrl + updatedAffix, !existingServer.PostFirstOpenOnly,
-                !existingServer.TrackOpens, _inboundDomain, 5);
+                !existingServer.TrackOpens, null, 5);
 
             //go get a fresh copy from the API.
             var retrievedServer = await _client.GetServerAsync();
@@ -74,7 +67,7 @@ namespace Postmark.PCL.Tests
                 existingServer.RawEmailEnabled, existingServer.SmtpApiActivated,
                 existingServer.InboundHookUrl, existingServer.BounceHookUrl,
                 existingServer.OpenHookUrl, existingServer.PostFirstOpenOnly,
-                existingServer.TrackOpens, _inboundDomain,
+                existingServer.TrackOpens, null,
                 existingServer.InboundSpamThreshold);
 
             Assert.AreEqual(_name + updatedAffix, retrievedServer.Name);

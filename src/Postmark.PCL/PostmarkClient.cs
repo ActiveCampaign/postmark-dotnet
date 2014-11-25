@@ -155,7 +155,7 @@ namespace PostmarkDotNet
         /// <param name="count">Number of messages to return per call. (required)</param>
         /// <param name="offset">Number of messages to offset/page per call. (required)</param>
         /// <returns>PostmarkOutboundMessageList</returns>
-        public async Task<PostmarkOutboundMessageList> GetOutboundMessagesAsync(int count = 100, int offset = 0,
+        public async Task<PostmarkOutboundMessageList> GetOutboundMessagesAsync(int offset = 0, int count = 100,
             string recipient = null, string fromemail = null, string tag = null, string subject = null)
         {
             var parameters = new Dictionary<string, object>();
@@ -166,7 +166,7 @@ namespace PostmarkDotNet
             parameters["tag"] = tag;
             parameters["subject"] = subject;
 
-            return await ProcessNoBodyRequestAsync<PostmarkOutboundMessageList>("/messages/outbound");
+            return await ProcessNoBodyRequestAsync<PostmarkOutboundMessageList>("/messages/outbound", parameters);
         }
 
         /// <summary>
@@ -202,7 +202,7 @@ namespace PostmarkDotNet
         /// <param name="count">Number of messages to return per call. (required)</param>
         /// <param name="offset">Number of messages to offset/page per call. (required)</param>
         /// <returns>PostmarkInboundMessageList</returns>
-        public async Task<PostmarkInboundMessageList> GetInboundMessagesAsync(int count = 100, int offset = 0,
+        public async Task<PostmarkInboundMessageList> GetInboundMessagesAsync(int offset = 0, int count = 100,
             string recipient = null, string fromemail = null, string subject = null, string mailboxhash = null)
         {
             var parameters = new Dictionary<string, object>();
@@ -284,7 +284,10 @@ namespace PostmarkDotNet
            ConstructSentStatsFilter(string tag, DateTime? fromDate, DateTime? toDate)
         {
             var parameters = new Dictionary<string, object>();
-            parameters["tag"] = tag;
+            if (!string.IsNullOrWhiteSpace(tag))
+            {
+                parameters["tag"] = tag;
+            }
             if (fromDate.HasValue)
             {
                 parameters["fromdate"] = fromDate.Value.ToString(DATE_FORMAT);
@@ -556,15 +559,7 @@ namespace PostmarkDotNet
             parameters["Rule"] = rule;
 
             return await this.ProcessRequestAsync<Dictionary<string, object>, PostmarkInboundRuleTriggerInfo>
-                ("/triggers/tags", HttpMethod.Post, parameters);
-        }
-
-        public async Task<PostmarkInboundRuleTriggerInfo> GetInboundRuleTriggerAsync(int triggerId)
-        {
-            var result = await this.ProcessNoBodyRequestAsync<PostmarkInboundRuleTriggerInfo>
-                ("/triggers/tags/" + triggerId);
-            result.ID = triggerId;
-            return result;
+                ("/triggers/inboundrules", HttpMethod.Post, parameters);
         }
 
         public async Task<PostmarkResponse> DeleteInboundRuleTrigger(int triggerId)
@@ -580,7 +575,7 @@ namespace PostmarkDotNet
             parameters["offset"] = offset;
             parameters["count"] = count;
 
-            return await this.ProcessNoBodyRequestAsync<PostmarkInboundRuleTriggerList>("/triggers/inboundrules/", parameters);
+            return await this.ProcessNoBodyRequestAsync<PostmarkInboundRuleTriggerList>("/triggers/inboundrules", parameters);
         }
 
         #endregion

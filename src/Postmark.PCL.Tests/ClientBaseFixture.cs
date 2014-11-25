@@ -11,7 +11,9 @@ namespace Postmark.PCL.Tests
     {
         public static readonly DateTime TESTING_DATE = DateTime.Now;
 
-        public static string READ_TEST_SERVER_TOKEN = ConfigurationManager.AppSettings["READ_TEST_SERVER_TOKEN"];
+        public static string READ_INBOUND_TEST_SERVER_TOKEN = ConfigurationManager.AppSettings["READ_INBOUND_TEST_SERVER_TOKEN"];
+        public static string READ_SELENIUM_TEST_SERVER_TOKEN = ConfigurationManager.AppSettings["READ_SELENIUM_TEST_SERVER_TOKEN"];
+
 
         public static string WRITE_ACCOUNT_TOKEN = ConfigurationManager.AppSettings["WRITE_ACCOUNT_TOKEN"];
         public static string WRITE_TEST_SERVER_TOKEN = ConfigurationManager.AppSettings["WRITE_TEST_SERVER_TOKEN"];

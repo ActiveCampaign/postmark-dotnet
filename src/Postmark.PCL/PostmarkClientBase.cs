@@ -11,7 +11,7 @@ namespace PostmarkDotNet.PCL
 {
     public abstract class PostmarkClientBase
     {
-        protected static readonly string DATE_FORMAT = "YYYY-MM-DD";
+        protected static readonly string DATE_FORMAT = "yyyy-MM-dd";
         private static readonly string _agent = "Postmark.NET 2.x (" +
               typeof(PostmarkClient).AssemblyQualifiedName + ")";
 

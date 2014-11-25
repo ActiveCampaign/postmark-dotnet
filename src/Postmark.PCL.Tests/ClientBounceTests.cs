@@ -11,7 +11,7 @@ namespace Postmark.PCL.Tests
     {
         public async override Task Setup()
         {
-            _client = new PostmarkClient(READ_TEST_SERVER_TOKEN);
+            _client = new PostmarkClient(READ_INBOUND_TEST_SERVER_TOKEN);
         }
 
         [TestCase]

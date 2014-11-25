@@ -54,7 +54,7 @@ namespace PostmarkDotNet
         /// <returns></returns>
         public async Task<IEnumerable<PostmarkResponse>> SendMessagesAsync(params PostmarkMessage[] messages)
         {
-            return await ProcessRequestAsync<PostmarkMessage[], PostmarkResponse[]>("/email", HttpMethod.Post, messages);
+            return await ProcessRequestAsync<PostmarkMessage[], PostmarkResponse[]>("/email/batch", HttpMethod.Post, messages);
         }
         #endregion
 
@@ -129,7 +129,7 @@ namespace PostmarkDotNet
         /// <seealso href = "http://developer.postmarkapp.com/bounces" />
         public async Task<PostmarkBounceActivation> ActivateBounceAsync(int bounceId)
         {
-            return await ProcessNoBodyRequestAsync<PostmarkBounceActivation>("/bounces/" + bounceId + "/activate");
+            return await ProcessNoBodyRequestAsync<PostmarkBounceActivation>("/bounces/" + bounceId + "/activate", verb: HttpMethod.Put);
         }
 
         /// <summary>
@@ -244,7 +244,7 @@ namespace PostmarkDotNet
         /// the ServerToken supplied when the client was constructed.
         /// </summary>
         /// <returns></returns>
-        public async Task<PostmarkServer> GetServer()
+        public async Task<PostmarkServer> GetServerAsync()
         {
             return await this.ProcessNoBodyRequestAsync<PostmarkServer>("/server");
         }
@@ -254,7 +254,7 @@ namespace PostmarkDotNet
         /// Any parameters that are left null will use the current value for the server.
         /// </summary>
         /// <returns></returns>
-        public async Task<PostmarkServer> EditServer(String name = null, string color = null,
+        public async Task<PostmarkServer> EditServerAsync(String name = null, string color = null,
             bool? rawEmailEnabled = null, bool? smtpApiActivated = null, string inboundHookUrl = null,
             string bounceHookUrl = null, string openHookUrl = null, bool? postFirstOpenOnly = null,
             bool? trackOpens = null, string inboundDomain = null, int? inboundSpamThreshold = null)
@@ -419,7 +419,7 @@ namespace PostmarkDotNet
         {
             var parameters = ConstructSentStatsFilter(tag, fromDate, toDate);
             return await this.ProcessNoBodyRequestAsync<PostmarkOutboundPlatformStats>
-                ("/stats/outbound/platforms", parameters);
+                ("/stats/outbound/opens/platforms", parameters);
         }
 
         public async Task<PostmarkOutboundClientStats> GetOutboundClientUsageCountsAsync(string tag = null, DateTime? fromDate = null, DateTime? toDate = null)

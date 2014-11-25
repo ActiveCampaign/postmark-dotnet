@@ -1,7 +1,7 @@
 ﻿namespace PostmarkDotNet
 {
     ///<summary>
-    ///  Represents the raw SMTP details of a particular bounce.
+    /// Represents the raw SMTP details of a particular bounce.
     ///</summary>
     public class PostmarkBounceDump
     {

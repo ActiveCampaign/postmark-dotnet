@@ -2,6 +2,7 @@
 using System;
 using System.Threading.Tasks;
 using System.Linq;
+using PostmarkDotNet;
 
 namespace Postmark.PCL.Tests
 {
@@ -75,33 +76,48 @@ namespace Postmark.PCL.Tests
         [TestCase]
         public async void Client_CanSearchInboundMessages()
         {
-            var messages = await _client.GetInboundMessagesAsync();
-            Assert.Greater(0, messages.TotalCount);
-            Assert.Greater(0, messages.InboundMessages.Count);
+            var messages = await _client.GetInboundMessagesAsync(0, 10);
+            Assert.Greater(messages.TotalCount, 0);
+            Assert.Greater(messages.InboundMessages.Count, 0);
         }
 
         [TestCase]
         public async void Client_CanGetInboundMessageDetail()
         {
-            throw new NotImplementedException();
+            var messages = await _client.GetInboundMessagesAsync(0, 10);
+            var inboundMessageId = messages.InboundMessages.First().MessageID;
+            var inboundMessage = await _client.GetInboundMessageDetailsAsync(inboundMessageId);
+
+            Assert.NotNull(inboundMessage);
+            Assert.NotNull(inboundMessage.To);
+            Assert.AreEqual(inboundMessageId, inboundMessage.MessageID);
         }
 
+        [Ignore("We can't run this test because can't do a write on the inbound testing server.")]
         [TestCase]
         public async void Client_CanBypassRulesForInboundMessage()
         {
-            throw new NotImplementedException();
+            //_client.BypassBlockedInboundMessage(/*a message id to bypass*/);
         }
 
         [TestCase]
-        public async void Client_CanGetOpenStatsForMessageS()
+        public async void Client_CanGetOpenStatsForMessages()
         {
-            throw new NotImplementedException();
+            var messagestats = await _client.GetOpenEventsForMessagesAsync();
+            Assert.Greater(messagestats.TotalCount, 0);
+            Assert.Greater(messagestats.Opens.Count(), 0);
         }
 
         [TestCase]
         public async void Client_CanGetOpenStatsForSingleMessage()
         {
-            throw new NotImplementedException();
+            var statsbatch = await _client.GetOpenEventsForMessagesAsync(0, 10);
+            var messagestats = await _client.GetOpenEventsForMessageAsync
+                (statsbatch.Opens.First().MessageID);
+
+            Assert.IsTrue(messagestats.Opens.Any());
+            Assert.Greater(messagestats.TotalCount, 0);
+            Assert.NotNull(messagestats.Opens.First().MessageID);
         }
     }
 }

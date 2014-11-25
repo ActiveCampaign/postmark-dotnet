@@ -11,7 +11,7 @@ namespace Postmark.PCL.Tests
     {
         public override async Task Setup()
         {
-            //nothing needed.
+            //no setup needed.
         }
 
         [Test]
@@ -47,7 +47,7 @@ namespace Postmark.PCL.Tests
         public async Task ClientCanRetrieveServerInformation()
         {
             var client = new PostmarkClient(WRITE_TEST_SERVER_TOKEN);
-            var server = await client.GetServer();
+            var server = await client.GetServerAsync();
 
             Assert.NotNull(server);
             Assert.Contains(WRITE_TEST_SERVER_TOKEN, server.ApiTokens);
@@ -59,9 +59,9 @@ namespace Postmark.PCL.Tests
         {
             var client = new PostmarkClient(WRITE_TEST_SERVER_TOKEN);
             var serverName = "test-server " + DateTime.Now.ToString("o");
-            var nonModifiedServer = await client.GetServer();
-            var updatedServer = await client.EditServer(name: serverName);
-            var modifiedServer = await client.GetServer();
+            var nonModifiedServer = await client.GetServerAsync();
+            var updatedServer = await client.EditServerAsync(name: serverName);
+            var modifiedServer = await client.GetServerAsync();
 
             Assert.AreNotEqual(nonModifiedServer.Name, updatedServer.Name, "Updated server name should be different than current name");
             Assert.AreEqual(serverName, updatedServer.Name, "Updated server name returned from EditServer should be the same as the value passed in.");

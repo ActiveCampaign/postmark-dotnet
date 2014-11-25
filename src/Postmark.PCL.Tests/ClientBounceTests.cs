@@ -11,14 +11,13 @@ namespace Postmark.PCL.Tests
     {
         public async override Task Setup()
         {
-            _client = new PostmarkClient(READ_INBOUND_TEST_SERVER_TOKEN);
+            _client = new PostmarkClient(READ_SELENIUM_TEST_SERVER_TOKEN);
         }
 
         [TestCase]
         public async void Client_CanGetBounceDeliveryStats()
         {
             var result = await _client.GetDeliveryStatsAsync();
-            Assert.NotNull(result);
             Assert.Greater(result.Bounces.Count, 0);
         }
 
@@ -26,7 +25,6 @@ namespace Postmark.PCL.Tests
         public async void Client_CanGetBounces()
         {
             var result = await _client.GetBouncesAsync();
-            Assert.NotNull(result);
             Assert.Greater(result.Bounces.Count, 0);
         }
 
@@ -50,10 +48,11 @@ namespace Postmark.PCL.Tests
             Assert.NotNull(dump);
         }
 
+        [Ignore("We can't run this test because can't do a write on the testing server account.")]
         [TestCase]
-        public async void Client_CanActivateABounce()
+        public void Client_CanActivateABounce()
         {
-            throw new NotImplementedException();
+            //Unfortunately, can't activate bounces on the testing server account.
         }
 
 

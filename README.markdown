@@ -11,7 +11,8 @@ From NuGet
 	PM> Install-Package Postmark
 
 ### Basic Usage
-	
+
+```csharp	
 	using PostmarkDotNet;
 	
 	PostmarkMessage message = new PostmarkMessage
@@ -37,6 +38,7 @@ From NuGet
 	{
 	    Console.WriteLine("Response was: " + response.Message);
 	}
+```
 
 ### Additional Usage
 Please see the [wiki](https://github.com/jptoto/postmark-dotnet/wiki) for additional instruction about using the bounce api and additional sending options.

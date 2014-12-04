@@ -117,7 +117,7 @@ build_script:
 
 test:
   assemblies:
-    - **\*.test
+    - '**\*.Tests.dll'
 
 # scripts to run before tests
 before_test:

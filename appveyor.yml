@@ -100,9 +100,12 @@ test:
   assemblies:
     - '**\*.Tests.dll'
 
+after_test:
+  - cmd: nuget pack postmark.nuspec
+
 artifacts:
   # pushing all *.nupkg files in directory
-  - path: '*.nupkg'
+  - path: '.\*.nupkg'
 
   #---------------------------------#
   #     deployment configuration    #

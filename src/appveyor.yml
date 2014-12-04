@@ -1,0 +1,202 @@
+# Notes:
+#   - Minimal appveyor.yml file is an empty file. All sections are optional.
+#   - Indent each level of configuration with 2 spaces. Do not use tabs!
+#   - All section names are case-sensitive.
+#   - Section names should be unique on each level.
+
+#---------------------------------#
+#      general configuration      #
+#---------------------------------#
+
+# version format
+version: 2.0.{build}
+
+# branches to build
+branches:
+  except:
+    - gh-pages
+
+#---------------------------------#
+#    environment configuration    #
+#---------------------------------#
+
+# Operating system (build VM template)
+os: Windows Server 2012
+
+# scripts that are called at very beginning, before repo cloning
+init:
+#  - git config --global core.autocrlf input
+
+# environment variables
+environment:
+  READ_INBOUND_TEST_SERVER_TOKEN
+    secure: b8peadoPhkvlwDSjm1CRYW+80kkSZUNiuQrDIGHaHxYOETjXk3D2g1l88OvvLVif
+  READ_SELENIUM_TEST_SERVER_TOKEN
+    secure: 4BGZiBocPCZc07ziFVlOxIYqLmdY98iEhKHBF9owmBffTAC6+J5h6iu2scEK3eCb
+  WRITE_ACCOUNT_TOKEN
+    secure: 7Ey3YPustdLvsCSiLuYr0d28p7AZ/e7GvTybryaGJbVG4i9dV51yVvM7J3GYaR3F
+  WRITE_TEST_SERVER_TOKEN
+    secure: 86rldGXQswnsMbj/JsJP0ql6ICPaLnptrI4zaRohLmD1DciNdW1yLhmE6wW84+gS
+  WRITE_TEST_SENDER_EMAIL_ADDRESS
+    secure: CNR5LLv1OOX0gyHGvMrqlQ==
+  WRITE_TEST_EMAIL_RECIPIENT_ADDRESS
+    secure: gWxE8LYawcvJiZvsdChuBtcJR4gAXyNL8uyuKOWtkVE=
+
+# scripts that run after cloning repository
+#install:
+  # by default, all script lines are interpreted as batch
+  #- echo This is batch
+  # to run script as a PowerShell command prepend it with ps:
+  #- ps: Write-Host 'This is PowerShell'
+  # batch commands start from cmd:
+  #- cmd: echo This is batch again
+  #- cmd: set MY_VAR=12345
+
+# enable patching of AssemblyInfo.* files
+assembly_info:
+  patch: true
+  file: AssemblyInfo.*
+  assembly_version: "2.0.{build}"
+  assembly_file_version: "{version}"
+  assembly_informational_version: "{version}"
+
+
+# Automatically register private account and/or project AppVeyor NuGet feeds.
+nuget:
+  account_feed: true
+  project_feed: true
+
+#---------------------------------#
+#       build configuration       #
+#---------------------------------#
+
+# build platform, i.e. x86, x64, Any CPU. This setting is optional.
+platform: Any CPU
+
+# to add several platforms to build matrix:
+#platform:
+#  - x86
+#  - Any CPU
+
+# build Configuration, i.e. Debug, Release, etc.
+configuration: Release
+
+# to add several configurations to build matrix:
+#configuration:
+#  - Debug
+#  - Release
+
+build:
+  project: src/PostmarkDotNet.sln  # path to Visual Studio solution or project
+  #publish_wap: false               # package Web Application Projects (WAP) for Web Deploy
+  #publish_wap_xcopy: false         # package Web Application Projects (WAP) for XCopy deployment
+  #publish_azure: false             # package Azure Cloud Service projects and push to artifacts
+  publish_nuget: true              # package projects with .nuspec files and push to artifacts
+  #publish_nuget_symbols: false     # generate and publish NuGet symbol packages
+
+  # MSBuild verbosity level
+  # quiet|minimal|normal|detailed
+  verbosity: detailed
+
+
+# scripts to run before build
+before_build:
+
+# scripts to run after build
+after_build:
+
+# to run your custom scripts instead of automatic MSBuild
+build_script:
+
+# to disable automatic builds
+#build: off
+
+#---------------------------------#
+#       tests configuration       #
+#---------------------------------#
+
+test:
+  assemblies:
+    - **\*.test
+
+# scripts to run before tests
+before_test:
+  #- echo script1
+  #- ps: Write-Host "script1"
+
+# scripts to run after tests
+after_test:
+
+# to run your custom scripts instead of automatic tests
+test_script:
+  #- echo This is my custom test script
+
+# to disable automatic tests 
+#test: off
+
+
+#---------------------------------#
+#      artifacts configuration    #
+#---------------------------------#
+
+artifacts:
+  # pushing all *.nupkg files in directory
+  #- path: **\*.nupkg
+
+#---------------------------------#
+#     deployment configuration    #
+#---------------------------------#
+
+# providers: Local, FTP, WebDeploy, AzureCS, AzureBlob, S3, NuGet, Environment
+# provider names are case-sensitive!
+deploy:
+  
+  # Deploying to NuGet feed
+  #- provider: NuGet
+  #  server: https://my.nuget.server/feed
+  #  api_key:
+  #    secure: FYWX6NfjZIVw==
+  #  skip_symbols: false
+  #  symbol_server: https://your.symbol.server/feed
+  #  artifact: MyPackage.nupkg
+
+# scripts to run before deployment
+before_deploy:
+
+# scripts to run after deployment
+after_deploy:
+
+# to run your custom scripts instead of provider deployments
+deploy_script:
+
+# to disable deployment
+#deploy: off
+
+#---------------------------------#
+#        global handlers          #
+#---------------------------------#
+
+# on successful build
+on_success:
+#  - do something
+
+# on build failure
+on_failure:
+#  - do something
+
+# after build failure or success
+on_finish:
+#  - do something
+
+  
+#---------------------------------#
+#         notifications           #
+#---------------------------------#
+  
+notifications:
+  # HipChat
+  #- provider: HipChat
+  #  auth_token:
+  #    secure: RbOnSMSFKYzxzFRrxM1+XA==
+  #  room: ProjectA
+  #  template: "{message}, {commitId}, ..."

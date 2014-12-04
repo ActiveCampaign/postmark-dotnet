@@ -57,12 +57,6 @@
     <Compile Include="ClientBaseFixture.cs" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\Postmark.PCL\Postmark.PCL.csproj">
-      <Project>{cda75e85-78de-416b-82a6-191663f0bd91}</Project>
-      <Name>Postmark.PCL</Name>
-    </ProjectReference>
-  </ItemGroup>
-  <ItemGroup>
     <None Include="App.config">
       <SubType>Designer</SubType>
     </None>
@@ -70,6 +64,12 @@
   </ItemGroup>
   <ItemGroup>
     <Service Include="{82A7F48D-3B50-4B1E-B82E-3ADA8210C358}" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Postmark.PCL\Postmark.PCL.csproj">
+      <Project>{cda75e85-78de-416b-82a6-191663f0bd91}</Project>
+      <Name>Postmark.PCL</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

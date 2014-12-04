@@ -73,26 +73,12 @@ nuget:
 # build platform, i.e. x86, x64, Any CPU. This setting is optional.
 platform: Any CPU
 
-# to add several platforms to build matrix:
-#platform:
-#  - x86
-#  - Any CPU
-
 # build Configuration, i.e. Debug, Release, etc.
 configuration: Release
 
-# to add several configurations to build matrix:
-#configuration:
-#  - Debug
-#  - Release
-
 build:
   project: src/PostmarkDotNet.sln  # path to Visual Studio solution or project
-  #publish_wap: false               # package Web Application Projects (WAP) for Web Deploy
-  #publish_wap_xcopy: false         # package Web Application Projects (WAP) for XCopy deployment
-  #publish_azure: false             # package Azure Cloud Service projects and push to artifacts
   publish_nuget: true              # package projects with .nuspec files and push to artifacts
-  #publish_nuget_symbols: false     # generate and publish NuGet symbol packages
 
   # MSBuild verbosity level
   # quiet|minimal|normal|detailed
@@ -100,16 +86,8 @@ build:
 
 
 # scripts to run before build
-before_build:
-
-# scripts to run after build
-after_build:
-
-# to run your custom scripts instead of automatic MSBuild
-build_script:
-
-# to disable automatic builds
-#build: off
+# use this to twiddle the assembly and nuget package versions.
+#before_build:
 
 #---------------------------------#
 #       tests configuration       #
@@ -119,38 +97,17 @@ test:
   assemblies:
     - '**\*.Tests.dll'
 
-# scripts to run before tests
-before_test:
-  #- echo script1
-  #- ps: Write-Host "script1"
-
-# scripts to run after tests
-after_test:
-
-# to run your custom scripts instead of automatic tests
-test_script:
-  #- echo This is my custom test script
-
-# to disable automatic tests 
-#test: off
-
-
-#---------------------------------#
-#      artifacts configuration    #
-#---------------------------------#
-
-artifacts:
+#artifacts:
   # pushing all *.nupkg files in directory
   #- path: **\*.nupkg
+  #---------------------------------#
+  #     deployment configuration    #
+  #---------------------------------#
 
-#---------------------------------#
-#     deployment configuration    #
-#---------------------------------#
+  # providers: Local, FTP, WebDeploy, AzureCS, AzureBlob, S3, NuGet, Environment
+  # provider names are case-sensitive!
 
-# providers: Local, FTP, WebDeploy, AzureCS, AzureBlob, S3, NuGet, Environment
-# provider names are case-sensitive!
-deploy:
-  
+#deploy:
   # Deploying to NuGet feed
   #- provider: NuGet
   #  server: https://my.nuget.server/feed
@@ -160,40 +117,11 @@ deploy:
   #  symbol_server: https://your.symbol.server/feed
   #  artifact: MyPackage.nupkg
 
-# scripts to run before deployment
-before_deploy:
-
-# scripts to run after deployment
-after_deploy:
-
-# to run your custom scripts instead of provider deployments
-deploy_script:
-
 # to disable deployment
-#deploy: off
+# use this to only deploy if it's a tag.
+deploy: off
 
-#---------------------------------#
-#        global handlers          #
-#---------------------------------#
-
-# on successful build
-on_success:
-#  - do something
-
-# on build failure
-on_failure:
-#  - do something
-
-# after build failure or success
-on_finish:
-#  - do something
-
-  
-#---------------------------------#
-#         notifications           #
-#---------------------------------#
-  
-notifications:
+#notifications:
   # HipChat
   #- provider: HipChat
   #  auth_token:

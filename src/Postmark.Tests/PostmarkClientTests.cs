@@ -15,14 +15,15 @@ namespace Postmark.Tests
         public void SetUp()
         {
             var settings = ConfigurationManager.AppSettings;
-            Assert.IsNotNull(
-                settings,
-                "You must include an 'app.config' file in your unit test project. See 'app.config.example'."
-                );
 
-            _serverToken = settings["ServerToken"];
-            _from = settings["From"];
-            _to = settings["To"];
+            _serverToken = Environment.GetEnvironmentVariable("WRITE_TEST_SERVER_TOKEN") ?? settings["ServerToken"];
+            Assert.IsNotNullOrEmpty(_serverToken);
+
+            _from = Environment.GetEnvironmentVariable("WRITE_TEST_SENDER_EMAIL_ADDRESS") ?? settings["From"];
+            Assert.IsNotNullOrEmpty(_from);
+
+            _to = Environment.GetEnvironmentVariable("WRITE_TEST_EMAIL_RECIPIENT_ADDRESS") ?? settings["To"];
+            Assert.IsNotNullOrEmpty(_to);
         }
 
         private const string Subject = "Postmark test";

@@ -55,6 +55,7 @@
     <WarningLevel>4</WarningLevel>
     <DocumentationFile>..\..\bin\lib\40\Postmark.xml</DocumentationFile>
     <CodeAnalysisRuleSet>AllRules.ruleset</CodeAnalysisRuleSet>
+    <NoWarn>1591</NoWarn>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="Hammock">

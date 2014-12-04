@@ -50,7 +50,9 @@
     </metadata>
     <files>
       <file src="LICENSE" target="LICENSE"/>
-      <file src="src\Postmark.PCL\bin\Release\Postmark*.*" target="lib\portable-win8+net45+wp8+wpa81+MonoAndroid1+MonoTouch1"/>
+      <file src="src\Postmark.PCL\bin\Release\Postmark*.*" target="lib\portable-win8+net45+wp8+wpa81+MonoAndroid+MonoTouch"/>
+      <file src="src\Postmark.PCL\bin\Release\Postmark*.*" target="lib\net45"/>
+      <file src="src\Postmark.PCL\bin\Release\Postmark*.*" target="lib\Xamarin.iOS10"/>
       <file src="bin\lib\**\Postmark*.*" target="lib"/>
     </files>
 </package>

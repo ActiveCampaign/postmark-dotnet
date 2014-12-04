@@ -36,4 +36,5 @@ App.config
 src/Postmark.Tests/App.config
 src/Postmark.Tests/PostmarkClientTests.Work.cs
 src/Postmark.PCL.Tests/App.config
+**/[Aa]pp.config
 *.nupkg

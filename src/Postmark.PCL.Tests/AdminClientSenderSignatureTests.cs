@@ -29,20 +29,28 @@ namespace Postmark.PCL.Tests
         }
 
 
-        [TearDown]
+        [TestFixtureTearDown]
+        [TestFixtureSetUp]
         public void Cleanup()
         {
-            var signatures = _adminClient.GetSenderSignaturesAsync().WaitForResult();
-            var pendingDeletes = new List<Task>();
-            foreach (var f in signatures.SenderSignatures)
+            try
             {
-                if (Regex.IsMatch(f.EmailAddress, _senderprefix))
+                var signatures = _adminClient.GetSenderSignaturesAsync().WaitForResult();
+                var pendingDeletes = new List<Task>();
+                foreach (var f in signatures.SenderSignatures)
                 {
-                    var deleteTask = _adminClient.DeleteSignatureAsync(f.ID);
-                    pendingDeletes.Add(deleteTask);
+                    if (Regex.IsMatch(f.EmailAddress, _senderprefix))
+                    {
+                        var deleteTask = _adminClient.DeleteSignatureAsync(f.ID);
+                        pendingDeletes.Add(deleteTask);
+                    }
                 }
+                Task.WaitAll(pendingDeletes.ToArray());
             }
-            Task.WaitAll(pendingDeletes.ToArray());
+            catch
+            {
+                //don't fail the test run if deleting all these wasn't possible.
+            }
         }
 
         [TestCase]

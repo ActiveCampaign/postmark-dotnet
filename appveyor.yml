@@ -100,9 +100,9 @@ test:
   assemblies:
     - '**\*.Tests.dll'
 
-#artifacts:
+artifacts:
   # pushing all *.nupkg files in directory
-  #- path: **\*.nupkg
+  - path: '.\*.nupkg'
   #---------------------------------#
   #     deployment configuration    #
   #---------------------------------#

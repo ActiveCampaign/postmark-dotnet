@@ -87,7 +87,10 @@ build:
 
 # scripts to run before build
 # use this to twiddle the assembly and nuget package versions.
-#before_build:
+before_build:
+  - cmd: echo Causing app.config files to exist - environment vars override these - but MSBuild does not know that.
+  - cmd: copy src/Postamrk.Tests/app.config.example src/Postamrk.Tests/App.config
+  - cmd: copy src/Postamrk.PCL.Tests/app.config.example src/Postamrk.PCL.Tests/app.config
 
 #---------------------------------#
 #       tests configuration       #

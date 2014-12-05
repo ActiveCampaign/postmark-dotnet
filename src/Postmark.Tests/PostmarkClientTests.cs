@@ -59,7 +59,7 @@ namespace Postmark.Tests
         }
 
         [Test]
-        [Ignore("This test sends a real email.")]
+        //[Ignore("This test sends a real email.")]
         public void Can_send_message_with_token_and_signature()
         {
             var postmark = new PostmarkClient(_serverToken);
@@ -83,7 +83,7 @@ namespace Postmark.Tests
         }
 
         [Test]
-        [Ignore("This test sends a real email.")]
+        //[Ignore("This test sends a real email.")]
         public void Can_send_message_with_token_and_signature_and_name_based_email()
         {
             var postmark = new PostmarkClient(_serverToken);
@@ -107,7 +107,7 @@ namespace Postmark.Tests
         }
 
         [Test]
-        [Ignore("This test sends a real email.")]
+        //[Ignore("This test sends a real email.")]
         public void Can_send_message_with_token_and_signature_and_headers()
         {
             var postmark = new PostmarkClient(_serverToken);
@@ -135,7 +135,7 @@ namespace Postmark.Tests
         }
 
         [Test]
-        [Ignore("This test sends a real email.")]
+        //[Ignore("This test sends a real email.")]
         public void Can_send_message_with_token_and_signature_and_headers_and_timeout()
         {
             var postmark = new PostmarkClient(_serverToken, 10);
@@ -163,7 +163,7 @@ namespace Postmark.Tests
         }
 
         [Test]
-        [Ignore("This test sends a real email.")]
+        //[Ignore("This test sends a real email.")]
         public void Can_send_message_with_file_attachment()
         {
             var postmark = new PostmarkClient(_serverToken);
@@ -276,7 +276,7 @@ namespace Postmark.Tests
         }
 
         [Test]
-        [Ignore("This test sends two real emails.")]
+        //[Ignore("This test sends two real emails.")]
         public void Can_send_batched_messages()
         {
             var postmark = new PostmarkClient(_serverToken);
@@ -311,7 +311,7 @@ namespace Postmark.Tests
         }
 
         [Test]
-        [Ignore("This test sends a real email.")]
+        //[Ignore("This test sends a real email.")]
         public void Can_send_message_with_zipfile_attachment()
         {
             var postmark = new PostmarkClient(_serverToken);
@@ -340,7 +340,7 @@ namespace Postmark.Tests
         // API token that is used to run the live integration tests.
 
         [Test]
-        [Ignore("Must use a valid token with messages available to check for")]
+        //[Ignore("Must use a valid token with messages available to check for")]
         public void Can_retrieve_outbound_messages_from_messages_api()
         {
             var postmark = new PostmarkClient(_serverToken);
@@ -350,7 +350,7 @@ namespace Postmark.Tests
         }
 
         [Test]
-        [Ignore("Must use a valid token with messages available to check for")]
+        //[Ignore("Must use a valid token with messages available to check for")]
         public void Can_get_outbound_message_details_and_dump_by_messages_id()
         {
             var postmark = new PostmarkClient(_serverToken);
@@ -388,7 +388,7 @@ namespace Postmark.Tests
         }
 
         [Test]
-        [Ignore("This test sends a real email.")]
+        //[Ignore("This test sends a real email.")]
         public void Can_send_message_with_tracking_enabled()
         {
             var postmark = new PostmarkClient(_serverToken);

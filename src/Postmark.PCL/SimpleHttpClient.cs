@@ -16,18 +16,6 @@ namespace PostmarkDotNet
             _client.Dispose();
         }
 
-        public Uri BaseAddress
-        {
-            get
-            {
-                return _client.BaseAddress;
-            }
-            set
-            {
-                _client.BaseAddress = value;
-            }
-        }
-
         public TimeSpan Timeout
         {
             get

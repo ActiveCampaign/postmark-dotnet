@@ -9,8 +9,6 @@ namespace PostmarkDotNet
 {
     public interface ISimpleHttpClient : IDisposable
     {
-        Uri BaseAddress { get; set; }
-
         TimeSpan Timeout { get; set; }
 
         Task<HttpResponseMessage> SendAsync(System.Net.Http.HttpRequestMessage request);

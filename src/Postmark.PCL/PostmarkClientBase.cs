@@ -61,7 +61,6 @@ namespace PostmarkDotNet.PCL
         /// <param name="verb"></param>
         /// <param name="message"></param>
         /// <returns></returns>
-        /// <exception cref="PostmarkDotNet.PCL.Exceptions.PostmarkValidationException"></exception>
         /// <exception cref="System.Exception"></exception>
         protected async Task<TResponse> ProcessRequestAsync<TRequestBody, TResponse>(string apiPath,
             HttpMethod verb, TRequestBody message = null) where TRequestBody : class
@@ -70,9 +69,7 @@ namespace PostmarkDotNet.PCL
 
             using (var client = ClientFactory())
             {
-                client.BaseAddress = baseUri;
-
-                var request = new HttpRequestMessage(verb, apiPath);
+                var request = new HttpRequestMessage(verb, baseUri + apiPath);
 
                 //if the message is not a string, or the message is a non-empty string,
                 //set a body for this request.

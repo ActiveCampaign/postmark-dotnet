@@ -9,14 +9,16 @@ using System.Threading.Tasks;
 
 namespace PostmarkDotNet.PCL
 {
+    /// <summary>
+    /// 
+    /// </summary>
     public abstract class PostmarkClientBase
     {
 
         private static Func<ISimpleHttpClient> _clientFactory = () => new SimpleHttpClient();
 
         /// <summary>
-        /// Configure a global connection factory to to process Http interactions.
-        /// 
+        /// Configure a global connection factory to to process HTTP interactions.
         /// </summary>
         /// <remarks>
         /// In most cases, you should not need to modify this property, but it's useful
@@ -36,11 +38,17 @@ namespace PostmarkDotNet.PCL
         }
 
         protected static readonly string DATE_FORMAT = "yyyy-MM-dd";
+
         private static readonly string _agent = "Postmark.NET 2.x (" +
               typeof(PostmarkClient).AssemblyQualifiedName + ")";
 
         private Uri baseUri;
 
+        /// <summary>
+        /// Provides a base implementation of core request/response interactions.
+        /// </summary>
+        /// <param name="apiBaseUri"></param>
+        /// <param name="requestTimeoutInSeconds"></param>
         public PostmarkClientBase(string apiBaseUri = "https://api.postmarkapp.com", int requestTimeoutInSeconds = 30)
         {
             baseUri = new Uri(apiBaseUri);
@@ -105,7 +113,7 @@ namespace PostmarkDotNet.PCL
         }
 
         /// <summary>
-        /// For GET/DELETE requests (which should have no
+        /// Core implementation of HTTP interaction for "no body" requests (i.e. GET/DELETE)
         /// </summary>
         /// <typeparam name="TResponse"></typeparam>
         /// <param name="apiPath"></param>

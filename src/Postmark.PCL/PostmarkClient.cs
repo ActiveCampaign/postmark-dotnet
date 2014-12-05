@@ -9,10 +9,16 @@ using System.Threading.Tasks;
 namespace PostmarkDotNet
 {
     /// <summary>
-    /// The main entry point to Postmark.
+    /// The standard Postmark API, allows all interactions with a Postmark "Server" (send/recieve/process/analyze).
     /// </summary>
+    /// <remarks>
+    /// This client supports normal API interactions, for Administrative API interactions, use the PostmarkAdminClient.
+    /// </remarks>
     public class PostmarkClient : PostmarkDotNet.PCL.PostmarkClientBase
     {
+        /// <summary>
+        /// The authorization header required, in this case, "X-Postmark-Server-Token"
+        /// </summary>
         protected override string AuthHeaderName
         {
             get { return "X-Postmark-Server-Token"; }
@@ -281,6 +287,14 @@ namespace PostmarkDotNet
         #endregion
 
         #region Stats
+
+        /// <summary>
+        /// Create parameters for the stats filtering from normal params.
+        /// </summary>
+        /// <param name="tag"></param>
+        /// <param name="fromDate"></param>
+        /// <param name="toDate"></param>
+        /// <returns></returns>
         private IDictionary<string, object>
            ConstructSentStatsFilter(string tag, DateTime? fromDate, DateTime? toDate)
         {
@@ -379,6 +393,13 @@ namespace PostmarkDotNet
                 ("/stats/outbound", parameters);
         }
 
+        /// <summary>
+        /// Retrieve sent counts for outbound emails, optionally including a time or tag filter.
+        /// </summary>
+        /// <param name="tag"></param>
+        /// <param name="fromDate"></param>
+        /// <param name="toDate"></param>
+        /// <returns></returns>
         public async Task<PostmarkOutboundSentStats>
             GetOutboundSentCountsAsync(string tag = null, DateTime? fromDate = null, DateTime? toDate = null)
         {
@@ -387,6 +408,13 @@ namespace PostmarkDotNet
                 ("/stats/outbound/sends", parameters);
         }
 
+        /// <summary>
+        /// Retrieve bounce counts for outbound emails, optionally including a time or tag filter.
+        /// </summary>
+        /// <param name="tag"></param>
+        /// <param name="fromDate"></param>
+        /// <param name="toDate"></param>
+        /// <returns></returns>
         public async Task<PostmarkOutboundBounceStats>
             GetOutboundBounceCountsAsync(string tag = null, DateTime? fromDate = null, DateTime? toDate = null)
         {
@@ -395,6 +423,13 @@ namespace PostmarkDotNet
                 ("/stats/outbound/bounces", parameters);
         }
 
+        /// <summary>
+        /// Retrieve SPAM complaint counts for outbound emails, optionally including a time or tag filter.
+        /// </summary>
+        /// <param name="tag"></param>
+        /// <param name="fromDate"></param>
+        /// <param name="toDate"></param>
+        /// <returns></returns>
         public async Task<PostmarkOutboundSpamComplaintStats> GetOutboundSpamComplaintCountsAsync(string tag = null, DateTime? fromDate = null, DateTime? toDate = null)
         {
             var parameters = ConstructSentStatsFilter(tag, fromDate, toDate);
@@ -402,6 +437,13 @@ namespace PostmarkDotNet
                 ("/stats/outbound/spam", parameters);
         }
 
+        /// <summary>
+        /// Retrieve open tracking for outbound emails, optionally including a time or tag filter.
+        /// </summary>
+        /// <param name="tag"></param>
+        /// <param name="fromDate"></param>
+        /// <param name="toDate"></param>
+        /// <returns></returns>
         public async Task<PostmarkOutboundTrackedStats> GetOutboundTrackingCountsAsync(string tag = null, DateTime? fromDate = null, DateTime? toDate = null)
         {
             var parameters = ConstructSentStatsFilter(tag, fromDate, toDate);
@@ -409,6 +451,13 @@ namespace PostmarkDotNet
                 ("/stats/outbound/tracked", parameters);
         }
 
+        /// <summary>
+        /// Retrieve open counts for outbound emails, optionally including a time or tag filter.
+        /// </summary>
+        /// <param name="tag"></param>
+        /// <param name="fromDate"></param>
+        /// <param name="toDate"></param>
+        /// <returns></returns>
         public async Task<PostmarkOutboundOpenStats> GetOutboundOpenCountsAsync(string tag = null, DateTime? fromDate = null, DateTime? toDate = null)
         {
             var parameters = ConstructSentStatsFilter(tag, fromDate, toDate);
@@ -416,6 +465,13 @@ namespace PostmarkDotNet
                 ("/stats/outbound/opens", parameters);
         }
 
+        /// <summary>
+        /// Retrieve platform statistics for outbound emails, optionally including a time or tag filter.
+        /// </summary>
+        /// <param name="tag"></param>
+        /// <param name="fromDate"></param>
+        /// <param name="toDate"></param>
+        /// <returns></returns>
         public async Task<PostmarkOutboundPlatformStats> GetOutboundPlatformCountsAsync(string tag = null, DateTime? fromDate = null, DateTime? toDate = null)
         {
             var parameters = ConstructSentStatsFilter(tag, fromDate, toDate);
@@ -423,6 +479,13 @@ namespace PostmarkDotNet
                 ("/stats/outbound/opens/platforms", parameters);
         }
 
+        /// <summary>
+        /// Retrieve client usage statistics for outbound emails, optionally including a time or tag filter.
+        /// </summary>
+        /// <param name="tag"></param>
+        /// <param name="fromDate"></param>
+        /// <param name="toDate"></param>
+        /// <returns></returns>
         public async Task<PostmarkOutboundClientStats> GetOutboundClientUsageCountsAsync(string tag = null, DateTime? fromDate = null, DateTime? toDate = null)
         {
             var parameters = ConstructSentStatsFilter(tag, fromDate, toDate);
@@ -463,6 +526,13 @@ namespace PostmarkDotNet
             return retval;
         }
 
+        /// <summary>
+        /// Retrieve read time statistics for outbound emails, optionally including a time or tag filter.
+        /// </summary>
+        /// <param name="tag"></param>
+        /// <param name="fromDate"></param>
+        /// <param name="toDate"></param>
+        /// <returns></returns>
         public async Task<PostmarkOutboundReadStats> GetOutboundReadtimeStatsAsync(string tag = null, DateTime? fromDate = null, DateTime? toDate = null)
         {
             var parameters = ConstructSentStatsFilter(tag, fromDate, toDate);
@@ -506,6 +576,12 @@ namespace PostmarkDotNet
 
         #region Triggers
 
+        /// <summary>
+        /// Create a new Tag Trigger.
+        /// </summary>
+        /// <param name="matchName"></param>
+        /// <param name="trackOpens"></param>
+        /// <returns></returns>
         public async Task<PostmarkTaggedTriggerInfo> CreateTagTriggerAsync(string matchName, bool trackOpens = true)
         {
             var parameters = new Dictionary<string, object>();
@@ -516,6 +592,11 @@ namespace PostmarkDotNet
                 ("/triggers/tags", HttpMethod.Post, parameters);
         }
 
+        /// <summary>
+        /// Retrieve a tag trigger.
+        /// </summary>
+        /// <param name="triggerId"></param>
+        /// <returns></returns>
         public async Task<PostmarkTaggedTriggerInfo> GetTagTriggerAsync(int triggerId)
         {
             var result = await this.ProcessNoBodyRequestAsync<PostmarkTaggedTriggerInfo>("/triggers/tags/" + triggerId);
@@ -523,6 +604,13 @@ namespace PostmarkDotNet
             return result;
         }
 
+        /// <summary>
+        /// Modify a Tag Trigger.
+        /// </summary>
+        /// <param name="triggerId"></param>
+        /// <param name="matchName"></param>
+        /// <param name="trackOpens"></param>
+        /// <returns></returns>
         public async Task<PostmarkTaggedTriggerInfo> UpdateTagTriggerAsync(int triggerId, string matchName = null, bool? trackOpens = null)
         {
             var parameters = new Dictionary<string, object>();
@@ -537,6 +625,11 @@ namespace PostmarkDotNet
             return result;
         }
 
+        /// <summary>
+        /// Delete a Tag Trigger based on the ID.
+        /// </summary>
+        /// <param name="triggerId"></param>
+        /// <returns></returns>
         public async Task<PostmarkResponse> DeleteTagTrigger(int triggerId)
         {
             return await this
@@ -544,6 +637,13 @@ namespace PostmarkDotNet
                 verb: HttpMethod.Delete);
         }
 
+        /// <summary>
+        /// Find all tag triggers, optionall filtering by "matchName".
+        /// </summary>
+        /// <param name="offset"></param>
+        /// <param name="count"></param>
+        /// <param name="matchName"></param>
+        /// <returns></returns>
         public async Task<PostmarkTaggedTriggerList> SearchTaggedTriggers(int offset = 0, int count = 100, string matchName = null)
         {
             var parameters = new Dictionary<string, object>();
@@ -554,6 +654,11 @@ namespace PostmarkDotNet
             return await this.ProcessNoBodyRequestAsync<PostmarkTaggedTriggerList>("/triggers/tags/", parameters);
         }
 
+        /// <summary>
+        /// Define a new Inbound Rule Trigger
+        /// </summary>
+        /// <param name="rule"></param>
+        /// <returns></returns>
         public async Task<PostmarkInboundRuleTriggerInfo> CreateInboundRuleTriggerAsync(string rule)
         {
             var parameters = new Dictionary<string, object>();
@@ -563,6 +668,11 @@ namespace PostmarkDotNet
                 ("/triggers/inboundrules", HttpMethod.Post, parameters);
         }
 
+        /// <summary>
+        /// Delete an Inbound Rule Trigger
+        /// </summary>
+        /// <param name="triggerId"></param>
+        /// <returns></returns>
         public async Task<PostmarkResponse> DeleteInboundRuleTrigger(int triggerId)
         {
             return await this
@@ -570,6 +680,12 @@ namespace PostmarkDotNet
                 verb: HttpMethod.Delete);
         }
 
+        /// <summary>
+        /// List Inbound Rule Triggers.
+        /// </summary>
+        /// <param name="offset"></param>
+        /// <param name="count"></param>
+        /// <returns></returns>
         public async Task<PostmarkInboundRuleTriggerList> GetAllInboundRuleTriggers(int offset = 0, int count = 100)
         {
             var parameters = new Dictionary<string, object>();

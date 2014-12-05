@@ -101,6 +101,7 @@ test:
     - '**\*.Tests.dll'
 
 after_test:
+  - ps: .\poke-nuget-version.ps1
   - cmd: nuget pack postmark.nuspec
 
 artifacts:

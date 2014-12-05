@@ -1,60 +1,61 @@
-<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <package>
-    <metadata>
-        <id>Postmark</id>
-        <version>2.0.0-beta</version>
-        <authors>Daniel Crenna, JP Toto, Andrew Theken</authors>
-        <owners>Wildbit</owners>
-        <description>
+  <metadata>
+    <id>Postmark</id>
+    <version>2.0.1-dev</version>
+    <authors>Daniel Crenna, JP Toto, Andrew Theken</authors>
+    <owners>Wildbit</owners>
+    <description>
           Leave email delivery to the experts with this plugin to bring Postmark email services to your web application.
           Requires a Postmark account, which you can sign up for at https://postmarkapp.com/sign_up
         </description>
-        <summary>Leave email delivery to the experts with this plugin to bring Postmark email services to your web application.</summary>
-        <releaseNotes></releaseNotes>
-        <language>en-US</language>
-        <projectUrl>http://developer.postmarkapp.com</projectUrl>
-        <licenseUrl>https://github.com/wildbit/postmark-dotnet/blob/master/LICENSE</licenseUrl>
-        <iconUrl>https://assets.postmarkapp.com/images/application/logo@2x.png</iconUrl>
-        <tags>postmark email web api client http rest services wrapper json</tags>
-        <dependencies>
-          <group targetFramework="net20">
-            <dependency id="LinqBridge" version="1.3.0"/>
-            <dependency id="Hammock" version="1.3.0" />
-            <dependency id="Specifications" version="1.0.4"/>
-            <dependency id="Newtonsoft.Json" version="4.5.7" />
-          </group>
-          <group targetFramework="net35">
-            <dependency id="Hammock" version="1.3.0" />
-            <dependency id="Specifications" version="1.0.4"/>
-            <dependency id="Newtonsoft.Json" version="4.5.7" />
-          </group>
-          <group targetFramework="net40">
-            <dependency id="Hammock" version="1.3.0" />
-            <dependency id="Specifications" version="1.0.4"/>
-            <dependency id="Newtonsoft.Json" version="4.5.7" />
-          </group>
-          <group targetFramework="net45">
-            <dependency id="Newtonsoft.Json" version="6.0.6" />
-          </group>
-          <group targetFramework="sl4-wp">
-            <dependency id="Hammock" version="1.3.0" />
-            <dependency id="Specifications" version="1.0.4"/>
-            <dependency id="Newtonsoft.Json" version="4.5.7" />
-          </group>
-          <group targetFramework="sl4-wp71">
-            <dependency id="Hammock" version="1.3.0" />
-            <dependency id="Specifications" version="1.0.4"/>
-            <dependency id="Newtonsoft.Json" version="4.5.7" />
-          </group>
-          <group>
-            <dependency id="Newtonsoft.Json" version="6.0.6" />
-          </group>
-        </dependencies>        
-    </metadata>
-    <files>
-      <file src="LICENSE" target="LICENSE"/>
-      <file src="src\Postmark.PCL\bin\Release\Postmark*.*" target="lib\portable-net45+win+wpa81+wp80+MonoAndroid10+xamarinios10+MonoTouch10"/>
-      <file src="src\Postmark.PCL\bin\Release\Postmark*.*" target="lib\Xamarin.iOS10"/>
-      <file src="bin\lib\**\Postmark*.*" target="lib"/>
-    </files>
+    <summary>Leave email delivery to the experts with this plugin to bring Postmark email services to your web application.</summary>
+    <releaseNotes>
+    </releaseNotes>
+    <language>en-US</language>
+    <projectUrl>http://developer.postmarkapp.com</projectUrl>
+    <licenseUrl>https://github.com/wildbit/postmark-dotnet/blob/master/LICENSE</licenseUrl>
+    <iconUrl>https://assets.postmarkapp.com/images/application/logo@2x.png</iconUrl>
+    <tags>postmark email web api client http rest services wrapper json</tags>
+    <dependencies>
+      <group targetFramework="net20">
+        <dependency id="LinqBridge" version="1.3.0" />
+        <dependency id="Hammock" version="1.3.0" />
+        <dependency id="Specifications" version="1.0.4" />
+        <dependency id="Newtonsoft.Json" version="4.5.7" />
+      </group>
+      <group targetFramework="net35">
+        <dependency id="Hammock" version="1.3.0" />
+        <dependency id="Specifications" version="1.0.4" />
+        <dependency id="Newtonsoft.Json" version="4.5.7" />
+      </group>
+      <group targetFramework="net40">
+        <dependency id="Hammock" version="1.3.0" />
+        <dependency id="Specifications" version="1.0.4" />
+        <dependency id="Newtonsoft.Json" version="4.5.7" />
+      </group>
+      <group targetFramework="net45">
+        <dependency id="Newtonsoft.Json" version="6.0.6" />
+      </group>
+      <group targetFramework="sl4-wp">
+        <dependency id="Hammock" version="1.3.0" />
+        <dependency id="Specifications" version="1.0.4" />
+        <dependency id="Newtonsoft.Json" version="4.5.7" />
+      </group>
+      <group targetFramework="sl4-wp71">
+        <dependency id="Hammock" version="1.3.0" />
+        <dependency id="Specifications" version="1.0.4" />
+        <dependency id="Newtonsoft.Json" version="4.5.7" />
+      </group>
+      <group>
+        <dependency id="Newtonsoft.Json" version="6.0.6" />
+      </group>
+    </dependencies>
+  </metadata>
+  <files>
+    <file src="LICENSE" target="LICENSE" />
+    <file src="src\Postmark.PCL\bin\Release\Postmark*.*" target="lib\portable-net45+win+wpa81+wp80+MonoAndroid10+xamarinios10+MonoTouch10" />
+    <file src="src\Postmark.PCL\bin\Release\Postmark*.*" target="lib\Xamarin.iOS10" />
+    <file src="bin\lib\**\Postmark*.*" target="lib" />
+  </files>
 </package>

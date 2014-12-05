@@ -54,7 +54,9 @@
   </metadata>
   <files>
     <file src="LICENSE" target="LICENSE" />
-    <file src="src\Postmark.PCL\bin\Release\Postmark*.*" target="lib\portable-net45+win+wpa81+wp80+MonoAndroid10+xamarinios10+MonoTouch10" />
+    <file src="src\Postmark.PCL\bin\Release\Postmark*.*" target="lib\portable-win+wpa81+wp80+MonoAndroid10+xamarinios10+MonoTouch10" />
+    <!-- The PCL def should handle this, but VS wants to bring in the 4.0 version (1.x) -->
+    <file src="src\Postmark.PCL\bin\Release\Postmark*.*" target="lib\net45" />
     <file src="src\Postmark.PCL\bin\Release\Postmark*.*" target="lib\Xamarin.iOS10" />
     <file src="bin\lib\**\Postmark*.*" target="lib" />
   </files>

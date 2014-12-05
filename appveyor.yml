@@ -118,22 +118,19 @@ artifacts:
 #deploy:
   # Deploying to NuGet feed
   #- provider: NuGet
-  #  server: https://my.nuget.server/feed
-  #  api_key:
-  #    secure: sKvwxg5DmHjLtvBb0YEo9M+JYle83QWCDiGWfWOGOP6mQflp48qg1C5MJeNCw9cE
-  #  skip_symbols: true
-  #  on:
-  #    appveyor_repo_tag: true
-# to disable deployment
-# use this to only deploy if it's a tag.
-deploy: off
+    #server: https://my.nuget.server/feed
+    #api_key:
+      #secure: sKvwxg5DmHjLtvBb0YEo9M+JYle83QWCDiGWfWOGOP6mQflp48qg1C5MJeNCw9cE
+    #skip_symbols: true
+    #on:
+      #appveyor_repo_tag: true
 
 notifications:
   # HipChat
   - provider: HipChat
     auth_token:
-      secure: OqT/6oTT5wCUSt4rajfZ/Ye1K0lz8nUJzj2KFtoIwmMo6QtjSuGIhf/RGIu0uXIr
+      secure: BSysTggR7oP8R0E1hhCifP0JfDEQXidmqsdqv3ElXtWgpTDo9j5EJXtV4HNs3dT2
     room: Postmark
-    template: "Postmark .Net Client {commitId}: Tagged, built, and pushed to public NuGet feed."
     on:
+      branch: master
       appveyor_repo_tag: true

@@ -11,6 +11,30 @@ namespace PostmarkDotNet.PCL
 {
     public abstract class PostmarkClientBase
     {
+
+        private static Func<ISimpleHttpClient> _clientFactory = () => new SimpleHttpClient();
+
+        /// <summary>
+        /// Configure a global connection factory to to process Http interactions.
+        /// 
+        /// </summary>
+        /// <remarks>
+        /// In most cases, you should not need to modify this property, but it's useful
+        /// in cases where you want to use another http client, or to mock the http processing
+        /// (for tests).
+        /// </remarks>
+        public static Func<ISimpleHttpClient> ClientFactory
+        {
+            get
+            {
+                return _clientFactory;
+            }
+            set
+            {
+                _clientFactory = value ?? (() => new SimpleHttpClient());
+            }
+        }
+
         protected static readonly string DATE_FORMAT = "yyyy-MM-dd";
         private static readonly string _agent = "Postmark.NET 2.x (" +
               typeof(PostmarkClient).AssemblyQualifiedName + ")";
@@ -44,7 +68,7 @@ namespace PostmarkDotNet.PCL
         {
             TResponse retval = default(TResponse);
 
-            using (var client = new HttpClient())
+            using (var client = ClientFactory())
             {
                 client.BaseAddress = baseUri;
 

@@ -115,15 +115,15 @@ artifacts:
   # providers: Local, FTP, WebDeploy, AzureCS, AzureBlob, S3, NuGet, Environment
   # provider names are case-sensitive!
 
-#deploy:
+deploy:
   # Deploying to NuGet feed
-  #- provider: NuGet
-    #server: https://my.nuget.server/feed
-    #api_key:
-      #secure: sKvwxg5DmHjLtvBb0YEo9M+JYle83QWCDiGWfWOGOP6mQflp48qg1C5MJeNCw9cE
-    #skip_symbols: true
-    #on:
-      #appveyor_repo_tag: true
+  - provider: NuGet
+    server: https://my.nuget.server/feed
+    api_key:
+      secure: sKvwxg5DmHjLtvBb0YEo9M+JYle83QWCDiGWfWOGOP6mQflp48qg1C5MJeNCw9cE
+    skip_symbols: true
+    on:
+      appveyor_repo_tag: true
 
 notifications:
   # HipChat

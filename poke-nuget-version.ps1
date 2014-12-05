@@ -9,6 +9,9 @@ function xmlPoke($file, $xpath, $value){
     }
 }
 
-if ($env:APPVEYOR_BUILD_VERSION){
+if ($env:APPVEYOR_REPO_TAG){
+    xmlPoke (Get-ChildItem ".\postmark.nuspec") "/package/metadata/version" $env:APPVEYOR_REPO_BRANCH
+}
+else{
     xmlPoke (Get-ChildItem ".\postmark.nuspec") "/package/metadata/version" $env:APPVEYOR_BUILD_VERSION
 }

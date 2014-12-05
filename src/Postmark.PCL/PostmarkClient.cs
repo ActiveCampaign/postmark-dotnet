@@ -9,10 +9,11 @@ using System.Threading.Tasks;
 namespace PostmarkDotNet
 {
     /// <summary>
-    /// The standard Postmark API, allows all interactions with a Postmark "Server" (send/recieve/process/analyze).
+    /// The standard Postmark API, allows all interactions with a Postmark "Server" (send/recieve/process/analyze emails).
+    /// This client supports normal API interactions, for Administrative API interactions, use the PostmarkAdminClient.
     /// </summary>
     /// <remarks>
-    /// This client supports normal API interactions, for Administrative API interactions, use the PostmarkAdminClient.
+    /// Make sure to include "using PostmarkDotNet;" in your class file, which will include extension methods on the base client.
     /// </remarks>
     public class PostmarkClient : PostmarkDotNet.PCL.PostmarkClientBase
     {

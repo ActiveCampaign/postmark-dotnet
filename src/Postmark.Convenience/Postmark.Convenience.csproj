@@ -4,11 +4,11 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{DC1891D6-587B-4412-86D5-019DC595F717}</ProjectGuid>
+    <ProjectGuid>{54B77A3B-4C90-41FC-B7BE-707334888401}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>Postmark.PCL.Tests</RootNamespace>
-    <AssemblyName>Postmark.PCL.Tests</AssemblyName>
+    <RootNamespace>PostmarkDotNet</RootNamespace>
+    <AssemblyName>Postmark.Convenience</AssemblyName>
     <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
   </PropertyGroup>
@@ -28,14 +28,10 @@
     <DefineConstants>TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
-    <NoWarn>1591</NoWarn>
+    <DocumentationFile>bin\Release\Postmark.Convenience.XML</DocumentationFile>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="nunit.framework">
-      <HintPath>..\packages\NUnit.2.6.3\lib\nunit.framework.dll</HintPath>
-    </Reference>
     <Reference Include="System" />
-    <Reference Include="System.Configuration" />
     <Reference Include="System.Core" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
@@ -44,32 +40,10 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="AdminClientSenderSignatureTests.cs" />
-    <Compile Include="AdminClientServersTests.cs" />
-    <Compile Include="ClientBounceTests.cs" />
-    <Compile Include="ClientMessageSearchingTests.cs" />
-    <Compile Include="ClientSendingTests.cs" />
-    <Compile Include="ClientServerInformationTests.cs" />
-    <Compile Include="ClientStatisticsTests.cs" />
-    <Compile Include="ClientTriggersTests.cs" />
-    <Compile Include="PostmarkClientTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="ClientBaseFixture.cs" />
+    <Compile Include="SystemMailExtensions.cs" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="App.config">
-      <SubType>Designer</SubType>
-    </None>
-    <None Include="packages.config" />
-  </ItemGroup>
-  <ItemGroup>
-    <Service Include="{82A7F48D-3B50-4B1E-B82E-3ADA8210C358}" />
-  </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\Postmark.Convenience\Postmark.Convenience.csproj">
-      <Project>{54b77a3b-4c90-41fc-b7be-707334888401}</Project>
-      <Name>Postmark.Convenience</Name>
-    </ProjectReference>
     <ProjectReference Include="..\Postmark.PCL\Postmark.PCL.csproj">
       <Project>{cda75e85-78de-416b-82a6-191663f0bd91}</Project>
       <Name>Postmark.PCL</Name>

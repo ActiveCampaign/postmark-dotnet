@@ -21,7 +21,7 @@ namespace PostmarkDotNet
     /// <summary>
     ///   A message destined for the Postmark service.
     /// </summary>
-    public class PostmarkMessage
+    public partial class PostmarkMessage
     {
         /// <summary>
         ///   Initializes a new instance of the <see cref = "PostmarkMessage" /> class.
@@ -178,8 +178,6 @@ namespace PostmarkDotNet
         }
 
         // http://msdn.microsoft.com/en-us/library/system.net.mail.mailmessage.alternateviews.aspx
-
-
 
         private void GetHtmlBodyFromAlternateViews(MailMessage message)
         {

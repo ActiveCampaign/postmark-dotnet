@@ -1,0 +1,1 @@
+$DTE.ItemOperations.Navigate("https://github.com/wildbit/postmark-dotnet/wiki/Version-2.0-Upgrade-Guide")

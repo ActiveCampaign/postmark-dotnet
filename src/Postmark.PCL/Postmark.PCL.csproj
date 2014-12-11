@@ -145,6 +145,7 @@
     <Compile Include="Converters\JsonNetExtensions.cs" />
     <Compile Include="Exceptions\PostmarkValidationException.cs" />
     <Compile Include="ISimpleHttpClient.cs" />
+    <Compile Include="LegacyPortableClientExtensions.cs" />
     <Compile Include="Model\HeaderCollection.cs" />
     <Compile Include="Model\PostmarkMessage.cs" />
     <Compile Include="PostmarkAdminClient.cs" />

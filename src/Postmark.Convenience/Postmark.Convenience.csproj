@@ -41,6 +41,8 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="FullProfileLegacyClientExtension.cs" />
+    <Compile Include="NameValueCollectionCompatibilityExtensions.cs" />
+    <Compile Include="PostmarkMessageFullProfileExtensions.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="SystemMailExtensions.cs" />
   </ItemGroup>

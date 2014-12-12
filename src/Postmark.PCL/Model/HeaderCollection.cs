@@ -14,6 +14,5 @@ namespace PostmarkDotNet.Model
             : base(baseCollection)
         {
         }
-
     }
 }

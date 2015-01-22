@@ -55,7 +55,7 @@
   <files>
     <file src="LICENSE" target="LICENSE" />
     <file src="src\init.ps1" target="tools\init.ps1" />
-    <file src="src\Postmark.PCL\bin\Release\Postmark*.*" target="lib\portable-portable-net45+wp80+win8+wpa81+aspnetcore50" />
+    <file src="src\Postmark.PCL\bin\Release\Postmark*.*" target="lib\portable-net45+wp80+win8+wpa81+aspnetcore50" />
     <!-- The PCL def should handle this, but VS wants to bring in the 4.0 version (1.x) -->
     <file src="src\Postmark.Convenience\bin\Release\Postmark*.*" target="lib\net45" />
     <file src="src\Postmark.PCL\bin\Release\Postmark*.*" target="lib\Xamarin.iOS10" />

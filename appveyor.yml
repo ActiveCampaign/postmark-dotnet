@@ -102,7 +102,7 @@ test:
 
 after_test:
   - ps: .\poke-nuget-version.ps1
-  - cmd: .\pack-nuget.bat
+  - ps: .\pack-nuget.bat
 
 artifacts:
   # pushing all *.nupkg files in directory

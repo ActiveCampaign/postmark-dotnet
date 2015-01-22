@@ -30,7 +30,7 @@
   <files>
     <file src="LICENSE" target="LICENSE" />
     <file src="src\init.ps1" target="tools\init.ps1" />
-    <file src="sn-build\PCL\Postmark*.*" target="lib\portable-win+wpa81+wp80+MonoAndroid10+xamarinios10+MonoTouch10" />
+    <file src="sn-build\PCL\Postmark*.*" target="lib\portable-net45+wp80+win8+wpa81+aspnetcore50" />
     <!-- The PCL def should handle this, but VS wants to bring in the 4.0 version (1.x) -->
     <file src="sn-build\Convenience\Postmark*.*" target="lib\net45" />
   </files>

@@ -6,11 +6,13 @@
     <authors>Daniel Crenna, JP Toto, Andrew Theken</authors>
     <owners>Wildbit</owners>
     <description>
-			    Leave email delivery to the experts with this plugin to bring Postmark email services to your web application.
-          Requires a Postmark account, which you can sign up for at https://postmarkapp.com/sign_up
-					
-					This is the STRONG-NAMED version of the normal Postmark NuGet Package. If you don't need strongly-named assemblies, you should use the normal Postmark package.
-        </description>
+			This is the STRONG-NAMED version of the normal Postmark NuGet Package.
+			
+			Leave email delivery to the experts with this plugin to bring Postmark email services to your web application.
+			Requires a Postmark account, which you can sign up for at https://postmarkapp.com/sign_up
+
+			If you don't need strongly-named assemblies, you should probably opt to use the normal Postmark package.
+		</description>
     <summary>Leave email delivery to the experts with this plugin to bring Postmark email services to your web application.</summary>
     <releaseNotes>
     </releaseNotes>
@@ -21,7 +23,7 @@
     <tags>postmark email web api client http rest services wrapper json</tags>
     <dependencies>
       <group>
-        <dependency id="Newtonsoft.Json" version="6.0.6" />
+        <!--<dependency id="Newtonsoft.Json" version="6.0.6" />-->
       </group>
     </dependencies>
   </metadata>

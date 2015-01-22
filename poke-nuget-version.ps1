@@ -11,7 +11,8 @@ function xmlPoke($file, $xpath, $value){
 
 if ($env:APPVEYOR_REPO_TAG -eq $true){
     xmlPoke (Get-ChildItem ".\postmark.nuspec") "/package/metadata/version" $env:APPVEYOR_REPO_TAG_NAME
+    xmlPoke (Get-ChildItem ".\postmark-strong.nuspec") "/package/metadata/version" $env:APPVEYOR_REPO_TAG_NAME
 }
 else{
-    xmlPoke (Get-ChildItem ".\postmark.nuspec") "/package/metadata/version" $env:APPVEYOR_BUILD_VERSION
+    xmlPoke (Get-ChildItem ".\postmark-strong.nuspec") "/package/metadata/version" $env:APPVEYOR_BUILD_VERSION
 }

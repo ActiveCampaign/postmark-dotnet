@@ -1,0 +1,35 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<package>
+  <metadata>
+    <id>Postmark-Strong</id>
+    <version>2.0.100-dev</version>
+    <authors>Daniel Crenna, JP Toto, Andrew Theken</authors>
+    <owners>Wildbit</owners>
+    <description>
+			    Leave email delivery to the experts with this plugin to bring Postmark email services to your web application.
+          Requires a Postmark account, which you can sign up for at https://postmarkapp.com/sign_up
+					
+					This is the STRONG-NAMED version of the normal Postmark NuGet Package. If you don't need strongly-named assemblies, you should use the normal Postmark package.
+        </description>
+    <summary>Leave email delivery to the experts with this plugin to bring Postmark email services to your web application.</summary>
+    <releaseNotes>
+    </releaseNotes>
+    <language>en-US</language>
+    <projectUrl>http://developer.postmarkapp.com</projectUrl>
+    <licenseUrl>https://github.com/wildbit/postmark-dotnet/blob/master/LICENSE</licenseUrl>
+    <iconUrl>https://raw.githubusercontent.com/wildbit/postmark-dotnet/master/postmark-logo.png</iconUrl>
+    <tags>postmark email web api client http rest services wrapper json</tags>
+    <dependencies>
+      <group>
+        <dependency id="Newtonsoft.Json" version="6.0.6" />
+      </group>
+    </dependencies>
+  </metadata>
+  <files>
+    <file src="LICENSE" target="LICENSE" />
+    <file src="src\init.ps1" target="tools\init.ps1" />
+    <file src="sn-build\PCL\Postmark*.*" target="lib\portable-win+wpa81+wp80+MonoAndroid10+xamarinios10+MonoTouch10" />
+    <!-- The PCL def should handle this, but VS wants to bring in the 4.0 version (1.x) -->
+    <file src="sn-build\Convenience\Postmark*.*" target="lib\net45" />
+  </files>
+</package>

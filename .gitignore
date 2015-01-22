@@ -42,3 +42,4 @@ sn-build
 *.il
 *.res
 src/packages/
+Postmark.dll

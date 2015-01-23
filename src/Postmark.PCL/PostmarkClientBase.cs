@@ -77,7 +77,7 @@ namespace PostmarkDotNet.PCL
 
             using (var client = ClientFactory())
             {
-                var request = new HttpRequestMessage(verb, baseUri + apiPath);
+                var request = new HttpRequestMessage(verb, baseUri + apiPath.TrimStart('/'));
 
                 //if the message is not a string, or the message is a non-empty string,
                 //set a body for this request.

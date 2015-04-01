@@ -31,15 +31,12 @@ Examples*/
 *.testrunconfig
 publish.xml
 TestResults
-/src/Postmark.Tests/App.config
 App.config
-src/Postmark.Tests/App.config
 src/Postmark.Tests/PostmarkClientTests.Work.cs
-src/Postmark.PCL.Tests/App.config
-**/[Aa]pp.config
 *.nupkg
 sn-build
 *.il
 *.res
 src/packages/
 Postmark.dll
+testconfig.config

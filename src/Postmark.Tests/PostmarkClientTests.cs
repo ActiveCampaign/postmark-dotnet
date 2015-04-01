@@ -5,24 +5,41 @@ using System.Net.Mail;
 using NUnit.Framework;
 using PostmarkDotNet;
 using PostmarkDotNet.Validation;
+using System.Xml.Linq;
+using System.Xml.XPath;
+using System.IO;
 
 namespace Postmark.Tests
 {
     [TestFixture]
     public partial class PostmarkClientTests
     {
+        private static string ConfigVariable(string variableName)
+        {
+            var retval = ConfigurationManager.AppSettings[variableName];
+            //this is here to allow us to have a config that isn't committed to source control, but still allows the project to build
+            try
+            {
+                var masterConfig = XDocument.Parse(File.ReadAllText(AppDomain.CurrentDomain + "../../../../testconfig.config"));
+                retval = masterConfig.XPathSelectElement("//appsettings/add[@name=" + variableName + "]").Attribute("value").Value;
+            }
+            catch
+            {
+                //This is OK, it just doesn't exist.. no big deal.
+            }
+            return String.IsNullOrWhiteSpace(retval) ? Environment.GetEnvironmentVariable(variableName) : retval;
+        }
+
         [SetUp]
         public void SetUp()
         {
-            var settings = ConfigurationManager.AppSettings;
-
-            _serverToken = Environment.GetEnvironmentVariable("WRITE_TEST_SERVER_TOKEN") ?? settings["ServerToken"];
+            _serverToken = ConfigVariable("WRITE_TEST_SERVER_TOKEN");
             Assert.IsNotNullOrEmpty(_serverToken);
 
-            _from = Environment.GetEnvironmentVariable("WRITE_TEST_SENDER_EMAIL_ADDRESS") ?? settings["From"];
+            _from = ConfigVariable("WRITE_TEST_SENDER_EMAIL_ADDRESS");
             Assert.IsNotNullOrEmpty(_from);
 
-            _to = Environment.GetEnvironmentVariable("WRITE_TEST_EMAIL_RECIPIENT_ADDRESS") ?? settings["To"];
+            _to = ConfigVariable("WRITE_TEST_EMAIL_RECIPIENT_ADDRESS");
             Assert.IsNotNullOrEmpty(_to);
         }
 

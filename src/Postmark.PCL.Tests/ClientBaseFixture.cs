@@ -2,7 +2,11 @@
 using PostmarkDotNet;
 using System;
 using System.Configuration;
+using System.IO;
 using System.Threading.Tasks;
+using System.Xml;
+using System.Xml.Linq;
+using System.Xml.XPath;
 
 namespace Postmark.PCL.Tests
 {
@@ -40,7 +44,18 @@ namespace Postmark.PCL.Tests
         /// <returns></returns>
         private static string ConfigVariable(string variableName)
         {
-            return Environment.GetEnvironmentVariable(variableName) ?? ConfigurationManager.AppSettings[variableName];
+            var retval = ConfigurationManager.AppSettings[variableName];
+            //this is here to allow us to have a config that isn't committed to source control, but still allows the project to build
+            try
+            {
+                var masterConfig = XDocument.Parse(File.ReadAllText(AppDomain.CurrentDomain + "../../../../testconfig.config"));
+                retval = masterConfig.XPathSelectElement("//appsettings/add[@name=" + variableName + "]").Attribute("value").Value;
+            }
+            catch
+            {
+                //This is OK, it just doesn't exist.. no big deal.
+            }
+            return String.IsNullOrWhiteSpace(retval) ? Environment.GetEnvironmentVariable(variableName) : retval;
         }
 
         public static readonly DateTime TESTING_DATE = DateTime.Now;

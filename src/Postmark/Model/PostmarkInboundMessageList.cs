@@ -40,6 +40,7 @@ namespace PostmarkDotNet.Model
         public List<ToFull> ToFull { get; set; }
         public List<CcFull> CcFull { get; set; }
         public List<BccFull> BccFull { get; set; }
+        public string OriginalRecipient { get; set; }
         public string Cc { get; set; }
         public string ReplyTo { get; set; }
         public string Subject { get; set; }

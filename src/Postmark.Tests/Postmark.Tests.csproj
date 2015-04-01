@@ -97,9 +97,6 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="app.config">
-      <SubType>Designer</SubType>
-    </None>
     <None Include="app.config.example" />
     <None Include="key.snk" />
     <None Include="packages.config" />

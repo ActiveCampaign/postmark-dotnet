@@ -30,9 +30,9 @@ init:
 # environment variables
 environment:
   READ_INBOUND_TEST_SERVER_TOKEN:
-    secure: b8peadoPhkvlwDSjm1CRYW+80kkSZUNiuQrDIGHaHxYOETjXk3D2g1l88OvvLVif
+    secure: P1NvmfCVAu9px5aTm5eg33yBqQc6GQNOjiXNfMuiGw6LN/Iv3mnIBtWwuPuNv4qR
   READ_SELENIUM_TEST_SERVER_TOKEN:
-    secure: 4BGZiBocPCZc07ziFVlOxIYqLmdY98iEhKHBF9owmBffTAC6+J5h6iu2scEK3eCb
+    secure: P1NvmfCVAu9px5aTm5eg33yBqQc6GQNOjiXNfMuiGw6LN/Iv3mnIBtWwuPuNv4qR
   WRITE_ACCOUNT_TOKEN:
     secure: 7Ey3YPustdLvsCSiLuYr0d28p7AZ/e7GvTybryaGJbVG4i9dV51yVvM7J3GYaR3F
   WRITE_TEST_SERVER_TOKEN:

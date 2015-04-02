@@ -21,9 +21,11 @@ namespace Postmark.PCL.Tests
         {
             _adminClient = new PostmarkAdminClient(WRITE_ACCOUNT_TOKEN);
             var id = Guid.NewGuid();
+            var baseEmail =
             _senderprefix = "test-sender-";
-            _senderEmail = String.Format(_senderprefix + "{0:n}@example.com", id);
-            _replyToAddress = String.Format(_senderprefix + "replyto-{0:n}@example.com", id);
+
+            _senderEmail = WRITE_TEST_SENDER_SIGNATURE_PROTOTYPE.Replace("[token]", String.Format(_senderprefix + "{0:n}", id));
+            _replyToAddress = WRITE_TEST_SENDER_SIGNATURE_PROTOTYPE.Replace("[token]", String.Format(_senderprefix + "replyto-{0:n}@example.com", id));
             _senderName = String.Format("Test Sender {0}", TESTING_DATE);
             await CompletionSource;
         }

@@ -4,9 +4,8 @@ using System;
 using System.Configuration;
 using System.IO;
 using System.Threading.Tasks;
-using System.Xml;
 using System.Xml.Linq;
-using System.Xml.XPath;
+using System.Linq;
 
 namespace Postmark.PCL.Tests
 {
@@ -34,6 +33,7 @@ namespace Postmark.PCL.Tests
             Assert.NotNull(WRITE_TEST_SERVER_TOKEN, "WRITE_TEST_SERVER_TOKEN must be defined as an environment variable or app setting.");
             Assert.NotNull(WRITE_TEST_SENDER_EMAIL_ADDRESS, "WRITE_TEST_SENDER_EMAIL_ADDRESS must be defined as an environment variable or app setting.");
             Assert.NotNull(WRITE_TEST_EMAIL_RECIPIENT_ADDRESS, "WRITE_TEST_EMAIL_RECIPIENT_ADDRESS must be defined as an environment variable or app setting.");
+            Assert.NotNull(WRITE_TEST_SENDER_SIGNATURE_PROTOTYPE, "WRITE_TEST_SENDER_SIGNATURE_PROTOTYPE must be defined as an environment variable or app setting.");
         }
 
         /// <summary>
@@ -48,8 +48,9 @@ namespace Postmark.PCL.Tests
             //this is here to allow us to have a config that isn't committed to source control, but still allows the project to build
             try
             {
-                var masterConfig = XDocument.Parse(File.ReadAllText(AppDomain.CurrentDomain + "../../../../testconfig.config"));
-                retval = masterConfig.XPathSelectElement("//appsettings/add[@name=" + variableName + "]").Attribute("value").Value;
+                var masterConfig = XDocument.Parse(File.ReadAllText(AppDomain.CurrentDomain.BaseDirectory + "/../../../../testconfig.config"));
+                retval = masterConfig.Root.Element("appSettings").Elements("add")
+                       .First(k => k.Attribute("key").Value == variableName).Attribute("value").Value;
             }
             catch
             {
@@ -67,6 +68,8 @@ namespace Postmark.PCL.Tests
         public static readonly string WRITE_TEST_SERVER_TOKEN = ConfigVariable("WRITE_TEST_SERVER_TOKEN");
         public static readonly string WRITE_TEST_SENDER_EMAIL_ADDRESS = ConfigVariable("WRITE_TEST_SENDER_EMAIL_ADDRESS");
         public static readonly string WRITE_TEST_EMAIL_RECIPIENT_ADDRESS = ConfigVariable("WRITE_TEST_EMAIL_RECIPIENT_ADDRESS");
+        public static readonly string WRITE_TEST_SENDER_SIGNATURE_PROTOTYPE = ConfigVariable("WRITE_TEST_SENDER_SIGNATURE_PROTOTYPE");
+
 
         protected PostmarkClient _client;
 

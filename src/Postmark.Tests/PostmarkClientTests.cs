@@ -1,27 +1,33 @@
-﻿using System;
+﻿using NUnit.Framework;
+using PostmarkDotNet;
+using System;
 using System.Configuration;
+using System.IO;
 using System.Linq;
 using System.Net.Mail;
-using NUnit.Framework;
-using PostmarkDotNet;
-using PostmarkDotNet.Validation;
 using System.Xml.Linq;
-using System.Xml.XPath;
-using System.IO;
 
 namespace Postmark.Tests
 {
     [TestFixture]
     public partial class PostmarkClientTests
     {
+
+        /// <summary>
+        /// Retrieve the config variable from the environment, 
+        /// or app.config if the environment doesn't specify it.
+        /// </summary>
+        /// <param name="variableName">The name of the environment variable to get.</param>
+        /// <returns></returns>
         private static string ConfigVariable(string variableName)
         {
             var retval = ConfigurationManager.AppSettings[variableName];
             //this is here to allow us to have a config that isn't committed to source control, but still allows the project to build
             try
             {
-                var masterConfig = XDocument.Parse(File.ReadAllText(AppDomain.CurrentDomain + "../../../../testconfig.config"));
-                retval = masterConfig.XPathSelectElement("//appsettings/add[@name=" + variableName + "]").Attribute("value").Value;
+                var masterConfig = XDocument.Parse(File.ReadAllText(AppDomain.CurrentDomain.BaseDirectory + "/../../../../testconfig.config"));
+                retval = masterConfig.Root.Element("appSettings").Elements("add")
+                       .First(k => k.Attribute("key").Value == variableName).Attribute("value").Value;
             }
             catch
             {
@@ -29,6 +35,7 @@ namespace Postmark.Tests
             }
             return String.IsNullOrWhiteSpace(retval) ? Environment.GetEnvironmentVariable(variableName) : retval;
         }
+
 
         [SetUp]
         public void SetUp()

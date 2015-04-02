@@ -41,6 +41,8 @@ environment:
     secure: CNR5LLv1OOX0gyHGvMrqlQ==
   WRITE_TEST_EMAIL_RECIPIENT_ADDRESS:
     secure: gWxE8LYawcvJiZvsdChuBtcJR4gAXyNL8uyuKOWtkVE=
+  WRITE_TEST_SENDER_SIGNATURE_PROTOTYPE:
+    secure: jjD4zlb+QJhZ+m1yzHrOzUDI16AkpN5cYXS599prBdhrOM/QkSU1IjtwGJ39pNV0
 
 # scripts that run after cloning repository
 #install:

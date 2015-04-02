@@ -31,7 +31,6 @@ Examples*/
 *.testrunconfig
 publish.xml
 TestResults
-App.config
 src/Postmark.Tests/PostmarkClientTests.Work.cs
 *.nupkg
 sn-build

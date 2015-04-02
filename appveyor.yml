@@ -86,14 +86,6 @@ build:
   # quiet|minimal|normal|detailed
   verbosity: detailed
 
-
-# scripts to run before build
-# use this to twiddle the assembly and nuget package versions.
-before_build:
-  - cmd: echo "Causing app.config files to exist - environment vars override these - but MSBuild does not know that."
-  - cmd: copy src\Postmark.Tests\app.config.example src\Postmark.Tests\app.config
-  - cmd: copy src\Postmark.PCL.Tests\app.config.example src\Postmark.PCL.Tests\App.config
-
 #---------------------------------#
 #       tests configuration       #
 #---------------------------------#

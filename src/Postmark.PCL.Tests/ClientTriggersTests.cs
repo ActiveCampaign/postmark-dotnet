@@ -70,7 +70,7 @@ namespace Postmark.PCL.Tests
         [TestCase]
         public async void Client_CanGetTagTrigger()
         {
-            var trigger = await _client.CreateTagTriggerAsync(_triggerPrefix + "new-trigger");
+            var trigger = await _client.CreateTagTriggerAsync(_triggerPrefix + "new-trigger" + DateTime.Now.Ticks);
             var savedTrigger = await _client.GetTagTriggerAsync(trigger.ID);
 
             Assert.NotNull(savedTrigger);
@@ -79,8 +79,8 @@ namespace Postmark.PCL.Tests
         [TestCase]
         public async void Client_CanEditTagTrigger()
         {
-            var trigger = await _client.CreateTagTriggerAsync(_triggerPrefix + "new-trigger");
-            var updatedTrigger = await _client.UpdateTagTriggerAsync(trigger.ID, _triggerPrefix + "updated", true);
+            var trigger = await _client.CreateTagTriggerAsync(_triggerPrefix + "new-trigger" + DateTime.Now.Ticks, false);
+            var updatedTrigger = await _client.UpdateTagTriggerAsync(trigger.ID, _triggerPrefix + "updated" + DateTime.Now.Ticks, true);
 
             Assert.AreNotEqual(trigger.MatchName, updatedTrigger.MatchName);
             Assert.AreNotEqual(trigger.TrackOpens, updatedTrigger.TrackOpens);

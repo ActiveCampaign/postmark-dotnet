@@ -619,8 +619,8 @@ namespace PostmarkDotNet
             parameters["TrackOpens"] = trackOpens;
 
             var result = await this
-                .ProcessNoBodyRequestAsync<PostmarkTaggedTriggerInfo>
-                ("/triggers/tags/" + triggerId, parameters, HttpMethod.Put);
+                .ProcessRequestAsync<Dictionary<string, object>, PostmarkTaggedTriggerInfo>("/triggers/tags/" + triggerId,
+                HttpMethod.Put, parameters);
 
             result.ID = triggerId;
             return result;

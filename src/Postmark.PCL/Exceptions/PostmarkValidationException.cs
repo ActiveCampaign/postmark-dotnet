@@ -10,7 +10,7 @@ namespace PostmarkDotNet.Exceptions
         public PostmarkValidationException(PostmarkResponse response)
             : base(response.Message)
         {
-            response = Response;
+            Response = response;
         }
 
         /// <summary>

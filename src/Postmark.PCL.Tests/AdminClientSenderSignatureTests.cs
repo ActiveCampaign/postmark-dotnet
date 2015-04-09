@@ -1,5 +1,6 @@
 ﻿using NUnit.Framework;
 using PostmarkDotNet;
+using PostmarkDotNet.Exceptions;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -78,6 +79,26 @@ namespace Postmark.PCL.Tests
             Assert.AreEqual(_replyToAddress, signature.ReplyToEmailAddress);
         }
 
+
+        [TestCase]
+        public async void AdminClient_ShouldProduceErrorStatusForInvalidSenderSignature()
+        {
+            var threwExpectedException = false;
+            try
+            {
+                await _adminClient.CreateSignatureAsync(Guid.NewGuid().ToString("n") + "@example.com",
+                            _senderName, _replyToAddress);
+            }
+            catch (PostmarkValidationException ex)
+            {
+                threwExpectedException = true;
+                Assert.AreEqual(PostmarkStatus.UserError, ex.Response.Status);
+            }
+
+            Assert.True(threwExpectedException);
+        }
+
+
         [TestCase]
         public async void AdminClient_CanDeleteSenderSignature()
         {
@@ -125,6 +146,7 @@ namespace Postmark.PCL.Tests
         }
 
         [TestCase]
+        [Ignore("DKIM renewal cannot be triggered frequently.")]
         public async void AdminClient_CanRequestNewDKIM()
         {
             var signature = await _adminClient.CreateSignatureAsync(_senderEmail, _senderName, _replyToAddress);

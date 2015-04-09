@@ -20,7 +20,6 @@ namespace PostmarkDotNet
             Attachments = new List<PostmarkMessageAttachment>(0);
         }
 
-
         /// <summary>
         ///   Initializes a new instance of the <see cref = "PostmarkMessage" /> class.
         /// </summary>

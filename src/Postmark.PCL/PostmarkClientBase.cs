@@ -94,13 +94,26 @@ namespace PostmarkDotNet.PCL
                 client.Timeout = TimeSpan.FromSeconds(this._requestTimeout);
 
                 var result = await client.SendAsync(request);
+
                 var body = await result.Content.ReadAsStringAsync();
 
-                if (!body.TryDeserializeObject<TResponse>(out retval))
+                if (!body.TryDeserializeObject<TResponse>(out retval) || result.StatusCode != HttpStatusCode.OK)
                 {
                     PostmarkResponse error;
                     if (body.TryDeserializeObject<PostmarkResponse>(out error))
                     {
+                        switch ((int)result.StatusCode)
+                        {
+                            case 422:
+                                error.Status = PostmarkStatus.UserError;
+                                break;
+                            case 500:
+                                error.Status = PostmarkStatus.ServerError;
+                                break;
+                            default:
+                                error.Status = PostmarkStatus.Unknown;
+                                break;
+                        }
                         throw new PostmarkValidationException(error);
                     }
                     else

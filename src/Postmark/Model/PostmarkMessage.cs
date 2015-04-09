@@ -116,7 +116,8 @@ namespace PostmarkDotNet
                                             {
                                                 Name = attachment.Name,
                                                 ContentType = attachment.ContentType.ToString(),
-                                                Content = Convert.ToBase64String(content)
+                                                Content = Convert.ToBase64String(content),
+                                                ContentId = attachment.ContentId
                                             })
             {
                 Attachments.Add(item);

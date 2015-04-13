@@ -1,5 +1,4 @@
 ﻿using System;
-using Specifications;
 
 namespace PostmarkDotNet.Validation
 {

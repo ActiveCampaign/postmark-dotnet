@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.ComponentModel;
 using System.Linq;
 using Hammock;
 using Hammock.Web;
@@ -39,7 +38,7 @@ namespace PostmarkDotNet
                 DefaultValueHandling = DefaultValueHandling.Include
             };
 
-            _settings.Converters.Add(new UnicodeJsonStringConverter());                                                                              
+            _settings.Converters.Add(new UnicodeJsonStringConverter());
             _settings.Converters.Add(new NameValueCollectionConverter());
             _serializer = new PostmarkSerializer(_settings);
         }
@@ -110,7 +109,7 @@ namespace PostmarkDotNet
         /// </summary>
         /// <value>The server token.</value>
         public string ServerToken { get; private set; }
-        
+
 #if !WINDOWS_PHONE
 
         #region Mail API
@@ -183,7 +182,7 @@ namespace PostmarkDotNet
         /// <returns></returns>
         public IEnumerable<PostmarkResponse> SendMessages(params PostmarkMessage[] messages)
         {
-            if(messages.Count() > 500)
+            if (messages.Count() > 500)
             {
                 throw new ValidationException("You may only send up to 500 messages in a batched call");
             }
@@ -490,7 +489,7 @@ namespace PostmarkDotNet
             var request = NewBouncesRequest();
             request.Method = WebMethod.Put;
             request.Path = string.Format("bounces/{0}/activate", bounceId.Trim());
-            
+
             var response = _client.Request(request);
 
             return JsonConvert.DeserializeObject<PostmarkBounceActivation>(response.Content, _settings);
@@ -537,7 +536,7 @@ namespace PostmarkDotNet
             return GetOutboundMessagesImpl(null, null, null, null, count, offset);
         }
 
-         /// <summary>
+        /// <summary>
         /// Return a listing of Outbound sent messages using the filters supported by the API.
         /// </summary>
         /// <param name="recipient">Filter by the recipient(s) of the message.</param>
@@ -563,7 +562,7 @@ namespace PostmarkDotNet
             return GetOutboundMessagesImpl(null, null, null, subject, count, offset);
         }
 
-       /// <summary>
+        /// <summary>
         /// Return a listing of Outbound sent messages using the filters supported by the API.
         /// </summary>
         /// <param name="fromemail">Filter by the email address the message is sent from.</param>
@@ -612,7 +611,7 @@ namespace PostmarkDotNet
             if (!string.IsNullOrEmpty(fromemail)) request.AddParameter("fromemail", fromemail);
             if (!string.IsNullOrEmpty(tag)) request.AddParameter("tag", tag);
             if (!string.IsNullOrEmpty(subject)) request.AddParameter("subject", subject);
-               
+
             request.AddParameter("count", count.ToString());
             request.AddParameter("offset", offset.ToString());
 
@@ -629,7 +628,7 @@ namespace PostmarkDotNet
         {
             var request = NewMessagesRequest();
             request.Path = string.Format("messages/outbound/{0}/details", messageID.Trim());
-            
+
             var response = _client.Request(request);
             return JsonConvert.DeserializeObject<OutboundMessageDetail>(response.Content, _settings);
         }
@@ -763,15 +762,15 @@ namespace PostmarkDotNet
             request.AddHeader("Accept", "application/json");
             request.AddHeader("Content-Type", "application/json; charset=utf-8");
             request.AddHeader("X-Postmark-Server-Token", ServerToken);
-            request.AddHeader("User-Agent", "Postmark.NET");
+            request.AddHeader("User-Agent", "Postmark.NET 1.x (" + this.GetType().AssemblyQualifiedName + ")");
         }
 
         private static void CleanPostmarkMessage(PostmarkMessage message)
         {
             message.From = message.From.Trim();
-            if(!string.IsNullOrEmpty(message.To))
+            if (!string.IsNullOrEmpty(message.To))
             {
-                message.To = message.To.Trim();    
+                message.To = message.To.Trim();
             }
             message.Subject = message.Subject != null ? message.Subject.Trim() : "";
         }
@@ -803,7 +802,7 @@ namespace PostmarkDotNet
                                 }
                         };
 
-            foreach(var result in results)
+            foreach (var result in results)
             {
                 switch ((int)response.StatusCode)
                 {
@@ -819,7 +818,7 @@ namespace PostmarkDotNet
                         break;
                 }
             }
-            
+
             return results;
         }
 

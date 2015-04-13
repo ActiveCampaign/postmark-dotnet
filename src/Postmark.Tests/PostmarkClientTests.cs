@@ -1,28 +1,53 @@
-﻿using System;
+﻿using NUnit.Framework;
+using PostmarkDotNet;
+using System;
 using System.Configuration;
+using System.IO;
 using System.Linq;
 using System.Net.Mail;
-using NUnit.Framework;
-using PostmarkDotNet;
-using PostmarkDotNet.Validation;
+using System.Xml.Linq;
 
 namespace Postmark.Tests
 {
     [TestFixture]
     public partial class PostmarkClientTests
     {
+
+        /// <summary>
+        /// Retrieve the config variable from the environment, 
+        /// or app.config if the environment doesn't specify it.
+        /// </summary>
+        /// <param name="variableName">The name of the environment variable to get.</param>
+        /// <returns></returns>
+        private static string ConfigVariable(string variableName)
+        {
+            var retval = ConfigurationManager.AppSettings[variableName];
+            //this is here to allow us to have a config that isn't committed to source control, but still allows the project to build
+            try
+            {
+                var masterConfig = XDocument.Parse(File.ReadAllText(AppDomain.CurrentDomain.BaseDirectory + "/../../../../testconfig.config"));
+                retval = masterConfig.Root.Element("appSettings").Elements("add")
+                       .First(k => k.Attribute("key").Value == variableName).Attribute("value").Value;
+            }
+            catch
+            {
+                //This is OK, it just doesn't exist.. no big deal.
+            }
+            return String.IsNullOrWhiteSpace(retval) ? Environment.GetEnvironmentVariable(variableName) : retval;
+        }
+
+
         [SetUp]
         public void SetUp()
         {
-            var settings = ConfigurationManager.AppSettings;
-            Assert.IsNotNull(
-                settings,
-                "You must include an 'app.config' file in your unit test project. See 'app.config.example'."
-                );
+            _serverToken = ConfigVariable("WRITE_TEST_SERVER_TOKEN");
+            Assert.IsNotNullOrEmpty(_serverToken);
 
-            _serverToken = settings["ServerToken"];
-            _from = settings["From"];
-            _to = settings["To"];
+            _from = ConfigVariable("WRITE_TEST_SENDER_EMAIL_ADDRESS");
+            Assert.IsNotNullOrEmpty(_from);
+
+            _to = ConfigVariable("WRITE_TEST_EMAIL_RECIPIENT_ADDRESS");
+            Assert.IsNotNullOrEmpty(_to);
         }
 
         private const string Subject = "Postmark test";
@@ -58,7 +83,7 @@ namespace Postmark.Tests
         }
 
         [Test]
-        [Ignore("This test sends a real email.")]
+        //[Ignore("This test sends a real email.")]
         public void Can_send_message_with_token_and_signature()
         {
             var postmark = new PostmarkClient(_serverToken);
@@ -82,7 +107,7 @@ namespace Postmark.Tests
         }
 
         [Test]
-        [Ignore("This test sends a real email.")]
+        //[Ignore("This test sends a real email.")]
         public void Can_send_message_with_token_and_signature_and_name_based_email()
         {
             var postmark = new PostmarkClient(_serverToken);
@@ -106,7 +131,7 @@ namespace Postmark.Tests
         }
 
         [Test]
-        [Ignore("This test sends a real email.")]
+        //[Ignore("This test sends a real email.")]
         public void Can_send_message_with_token_and_signature_and_headers()
         {
             var postmark = new PostmarkClient(_serverToken);
@@ -134,7 +159,7 @@ namespace Postmark.Tests
         }
 
         [Test]
-        [Ignore("This test sends a real email.")]
+        //[Ignore("This test sends a real email.")]
         public void Can_send_message_with_token_and_signature_and_headers_and_timeout()
         {
             var postmark = new PostmarkClient(_serverToken, 10);
@@ -162,7 +187,7 @@ namespace Postmark.Tests
         }
 
         [Test]
-        [Ignore("This test sends a real email.")]
+        //[Ignore("This test sends a real email.")]
         public void Can_send_message_with_file_attachment()
         {
             var postmark = new PostmarkClient(_serverToken);
@@ -275,7 +300,7 @@ namespace Postmark.Tests
         }
 
         [Test]
-        [Ignore("This test sends two real emails.")]
+        //[Ignore("This test sends two real emails.")]
         public void Can_send_batched_messages()
         {
             var postmark = new PostmarkClient(_serverToken);
@@ -310,7 +335,7 @@ namespace Postmark.Tests
         }
 
         [Test]
-        [Ignore("This test sends a real email.")]
+        //[Ignore("This test sends a real email.")]
         public void Can_send_message_with_zipfile_attachment()
         {
             var postmark = new PostmarkClient(_serverToken);
@@ -339,7 +364,7 @@ namespace Postmark.Tests
         // API token that is used to run the live integration tests.
 
         [Test]
-        [Ignore("Must use a valid token with messages available to check for")]
+        //[Ignore("Must use a valid token with messages available to check for")]
         public void Can_retrieve_outbound_messages_from_messages_api()
         {
             var postmark = new PostmarkClient(_serverToken);
@@ -349,7 +374,7 @@ namespace Postmark.Tests
         }
 
         [Test]
-        [Ignore("Must use a valid token with messages available to check for")]
+        //[Ignore("Must use a valid token with messages available to check for")]
         public void Can_get_outbound_message_details_and_dump_by_messages_id()
         {
             var postmark = new PostmarkClient(_serverToken);
@@ -368,7 +393,7 @@ namespace Postmark.Tests
         public void Can_get_inbound_messages_from_messages_api()
         {
             var postmark = new PostmarkClient(_serverToken);
-            var inboundmessages = postmark.GetInboundMessages(1, 0);
+            var inboundmessages = postmark.GetInboundMessages(10, 0);
 
             Assert.AreEqual(1, inboundmessages.InboundMessages.Count);
         }
@@ -378,7 +403,7 @@ namespace Postmark.Tests
         public void Can_get_inbound_message_detail_from_api()
         {
             var postmark = new PostmarkClient(_serverToken);
-            var inboundmessages = postmark.GetInboundMessages(10, 0);
+            var inboundmessages = postmark.GetInboundMessages(10, 1);
 
             var inboundMessage =
                 postmark.GetInboundMessageDetail(inboundmessages.InboundMessages.FirstOrDefault().MessageID);
@@ -387,7 +412,7 @@ namespace Postmark.Tests
         }
 
         [Test]
-        [Ignore("This test sends a real email.")]
+        //[Ignore("This test sends a real email.")]
         public void Can_send_message_with_tracking_enabled()
         {
             var postmark = new PostmarkClient(_serverToken);

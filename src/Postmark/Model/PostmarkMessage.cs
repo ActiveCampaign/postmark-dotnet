@@ -11,6 +11,7 @@ using System.Linq;
 using System.Net.Mail;
 using System.Net.Mime;
 using System.Text;
+using System.Diagnostics.CodeAnalysis;
 #else
 using Hammock.Silverlight.Compat;
 #endif
@@ -20,7 +21,7 @@ namespace PostmarkDotNet
     /// <summary>
     ///   A message destined for the Postmark service.
     /// </summary>
-    public class PostmarkMessage
+    public partial class PostmarkMessage
     {
         /// <summary>
         ///   Initializes a new instance of the <see cref = "PostmarkMessage" /> class.
@@ -38,7 +39,8 @@ namespace PostmarkDotNet
         /// <param name = "to">An email address for a recipient.</param>
         /// <param name = "subject">The message subject line.</param>
         /// <param name = "body">The message body.</param>
-        public PostmarkMessage(string from, string to, string subject, string body) : this(from, to, subject, body, null)
+        public PostmarkMessage(string from, string to, string subject, string body)
+            : this(from, to, subject, body, null)
         {
 
         }
@@ -79,22 +81,25 @@ namespace PostmarkDotNet
                 From = !string.IsNullOrEmpty(message.From.DisplayName)
                            ? string.Format("{0} <{1}>", message.From.DisplayName, message.From.Address)
                            : message.From.Address;
-            
+
             GetMailMessageRecipients(message);
-            
+
             Subject = message.Subject;
             HtmlBody = message.IsBodyHtml ? message.Body : null;
             TextBody = message.IsBodyHtml ? null : message.Body;
 
             GetHtmlBodyFromAlternateViews(message);
-            
+
+            //Disabling "ReplyTo" obsolecense warning, as we need to continue to map this for users of the API that cannot upgrade."
+#pragma warning disable 0618
+
             if (message.ReplyTo != null)
             {
                 ReplyTo = !string.IsNullOrEmpty(message.ReplyTo.DisplayName)
                               ? string.Format("{0} <{1}>", message.ReplyTo.DisplayName, message.ReplyTo.Address)
                               : message.ReplyTo.Address;
             }
-            
+#pragma warning restore 0618
             var header = message.Headers.Get("X-PostmarkTag");
             if (header != null)
             {
@@ -111,7 +116,8 @@ namespace PostmarkDotNet
                                             {
                                                 Name = attachment.Name,
                                                 ContentType = attachment.ContentType.ToString(),
-                                                Content = Convert.ToBase64String(content)
+                                                Content = Convert.ToBase64String(content),
+                                                ContentId = attachment.ContentId
                                             })
             {
                 Attachments.Add(item);
@@ -128,7 +134,7 @@ namespace PostmarkDotNet
         private void GetMailMessageCc(MailMessage message)
         {
             var sb = new StringBuilder(0);
-            
+
             if (message.CC.Count > 0)
             {
                 foreach (var cc in message.CC)
@@ -143,7 +149,7 @@ namespace PostmarkDotNet
         private void GetMailMessageBcc(MailMessage message)
         {
             var sb = new StringBuilder(0);
-            
+
             if (message.Bcc.Count > 0)
             {
                 foreach (var bcc in message.Bcc)
@@ -173,8 +179,6 @@ namespace PostmarkDotNet
         }
 
         // http://msdn.microsoft.com/en-us/library/system.net.mail.mailmessage.alternateviews.aspx
-        
-
 
         private void GetHtmlBodyFromAlternateViews(MailMessage message)
         {
@@ -199,24 +203,24 @@ namespace PostmarkDotNet
         private static string GetStringFromView(AttachmentBase view)
         {
 
-          Encoding encoding = resolveViewEncoding(view, Encoding.ASCII);
+            Encoding encoding = resolveViewEncoding(view, Encoding.ASCII);
 
-          var data = new byte[view.ContentStream.Length];
-          view.ContentStream.Read(data, 0, data.Length);
-          return encoding.GetString(data);
+            var data = new byte[view.ContentStream.Length];
+            view.ContentStream.Read(data, 0, data.Length);
+            return encoding.GetString(data);
         }
 
         private static Encoding resolveViewEncoding(AttachmentBase view, Encoding fallbackEncoding)
         {
-          String charSet = view.ContentType.CharSet;
-          try
-          {
-            return Encoding.GetEncoding(charSet);
-          }
-          catch
-          {
-            return fallbackEncoding;
-          }
+            String charSet = view.ContentType.CharSet;
+            try
+            {
+                return Encoding.GetEncoding(charSet);
+            }
+            catch
+            {
+                return fallbackEncoding;
+            }
         }
 #endif
 
@@ -317,7 +321,7 @@ namespace PostmarkDotNet
         {
             ValidateAttachmentPath(path);
 
-            using(var stream = File.OpenRead(path))
+            using (var stream = File.OpenRead(path))
             {
                 var content = ReadStream(stream, 8067);
 
@@ -384,13 +388,13 @@ namespace PostmarkDotNet
                 Name = attachmentName,
                 ContentType = contentType,
 #if !WINDOWS_PHONE
-                    Content = Convert.ToBase64String(content, Base64FormattingOptions.InsertLineBreaks)
+                Content = Convert.ToBase64String(content, Base64FormattingOptions.InsertLineBreaks)
 #else
                     Content = Convert.ToBase64String(content)
 #endif
             };
 
-            Attachments.Add(attachment);   
+            Attachments.Add(attachment);
         }
 
         /// <summary>
@@ -408,7 +412,7 @@ namespace PostmarkDotNet
                 Name = attachmentName,
                 ContentType = contentType,
 #if !WINDOWS_PHONE
-                    Content = Convert.ToBase64String(content, Base64FormattingOptions.InsertLineBreaks),
+                Content = Convert.ToBase64String(content, Base64FormattingOptions.InsertLineBreaks),
 #else
                     Content = Convert.ToBase64String(content),
 #endif
@@ -424,7 +428,7 @@ namespace PostmarkDotNet
         private static void ValidateAttachmentPath(string path)
         {
             var fileInfo = new FileInfo(path);
-            
+
             if (fileInfo.Length == 0)
             {
                 throw new ValidationException("File path provided has no length.");

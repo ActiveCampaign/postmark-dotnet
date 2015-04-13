@@ -35,6 +35,8 @@
     <BootstrapperEnabled>true</BootstrapperEnabled>
     <TargetFrameworkProfile>
     </TargetFrameworkProfile>
+    <SolutionDir Condition="$(SolutionDir) == '' Or $(SolutionDir) == '*Undefined*'">..\</SolutionDir>
+    <RestorePackages>true</RestorePackages>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -49,12 +51,13 @@
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>pdbonly</DebugType>
     <Optimize>true</Optimize>
-    <OutputPath>..\..\bin\lib\40\</OutputPath>
-    <DefineConstants>TRACE;NET40</DefineConstants>
+    <OutputPath>..\..\bin\lib\net40\</OutputPath>
+    <DefineConstants>TRACE;NET40;LEGACY</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
-    <DocumentationFile>..\..\bin\lib\40\Postmark.xml</DocumentationFile>
+    <DocumentationFile>..\..\bin\lib\net40\Postmark.xml</DocumentationFile>
     <CodeAnalysisRuleSet>AllRules.ruleset</CodeAnalysisRuleSet>
+    <NoWarn>1591</NoWarn>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="Hammock">
@@ -80,6 +83,8 @@
     <Compile Include="Converters\UnicodeJsonStringConverter.cs" />
     <Compile Include="IPostmarkClient.Async.cs" />
     <Compile Include="IPostmarkClient.cs" />
+    <Compile Include="Model\PostmarkCompleteSenderSignature.cs" />
+    <Compile Include="Model\PostmarkBaseSenderSignature.cs" />
     <Compile Include="Model\PostmarkBounce.cs" />
     <Compile Include="Model\PostmarkBounceActivation.cs" />
     <Compile Include="Model\PostmarkBounceDump.cs" />
@@ -90,7 +95,22 @@
     <Compile Include="Model\PostmarkInboundMessage.cs" />
     <Compile Include="Model\PostmarkInboundMessageList.cs" />
     <Compile Include="Model\PostmarkMessageAttachment.cs" />
+    <Compile Include="Model\PostmarkOpensList.cs" />
     <Compile Include="Model\PostmarkOutboundMessagesList.cs" />
+    <Compile Include="Model\PostmarkOutboundClientStats.cs" />
+    <Compile Include="Model\PostmarkOutboundOverviewStats.cs" />
+    <Compile Include="Model\PostmarkOutboundSpamComplaintStats.cs" />
+    <Compile Include="Model\PostmarkOutboundOpenStats.cs" />
+    <Compile Include="Model\PostmarkOutboundTrackedStats.cs" />
+    <Compile Include="Model\PostmarkOutboundSentStats.cs" />
+    <Compile Include="Model\PostmarkOutboundBounceStats.cs" />
+    <Compile Include="Model\PostmarkSenderSignatureList.cs" />
+    <Compile Include="Model\PostmarkServer.cs" />
+    <Compile Include="Model\PostmarkInboundRuleTriggerInfo.cs" />
+    <Compile Include="Model\PostmarkInboundRuleTriggerList.cs" />
+    <Compile Include="Model\PostmarkServerList.cs" />
+    <Compile Include="Model\PostmarkTaggedTriggerList.cs" />
+    <Compile Include="Model\PostmarkTaggedTriggerInfo.cs" />
     <Compile Include="PostmarkClient.Async.cs" />
     <Compile Include="Serializers\PostmarkSerializer.cs" />
     <Compile Include="PostmarkClient.cs" />
@@ -134,4 +154,11 @@
     <PostBuildEvent>
     </PostBuildEvent>
   </PropertyGroup>
+  <Import Project="$(SolutionDir)\.nuget\NuGet.targets" Condition="Exists('$(SolutionDir)\.nuget\NuGet.targets')" />
+  <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
+    <PropertyGroup>
+      <ErrorText>This project references NuGet package(s) that are missing on this computer. Enable NuGet Package Restore to download them.  For more information, see http://go.microsoft.com/fwlink/?LinkID=322105. The missing file is {0}.</ErrorText>
+    </PropertyGroup>
+    <Error Condition="!Exists('$(SolutionDir)\.nuget\NuGet.targets')" Text="$([System.String]::Format('$(ErrorText)', '$(SolutionDir)\.nuget\NuGet.targets'))" />
+  </Target>
 </Project>

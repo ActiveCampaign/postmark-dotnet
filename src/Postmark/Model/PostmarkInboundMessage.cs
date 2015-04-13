@@ -80,6 +80,11 @@ namespace PostmarkDotNet
         public string Tag { get; set; }
 
         /// <summary>
+        /// The stripped text for replies for inbound messages
+        /// </summary>
+        public string StrippedTextReply { get; set; }
+
+        /// <summary>
         /// A list of headers from the message, fully parsed
         /// </summary>
         public List<Header> Headers { get; set; }

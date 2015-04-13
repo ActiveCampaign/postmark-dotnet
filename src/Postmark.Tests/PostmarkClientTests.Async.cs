@@ -7,7 +7,7 @@ namespace Postmark.Tests
     partial class PostmarkClientTests
     {
         [Test]
-        [Ignore("This test sends a real email.")]
+        //[Ignore("This test sends a real email.")]
         public void Can_send_message_with_token_and_signature_async()
         {
             var postmark = new PostmarkClient(_serverToken);
@@ -20,7 +20,7 @@ namespace Postmark.Tests
                 TextBody = TextBody,
             };
             email.Headers.Add("MIME-Version", "babbaboey!");
-            
+
             var result = postmark.BeginSendMessage(email);
             var response = postmark.EndSendMessage(result);
 

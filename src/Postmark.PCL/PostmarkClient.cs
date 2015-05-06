@@ -95,7 +95,7 @@ namespace PostmarkDotNet
         {
             var parameters = new Dictionary<string, object>();
             parameters["type"] = type;
-            parameters["inactive"] = type;
+            parameters["inactive"] = inactive;
             parameters["emailFilter"] = emailFilter;
             parameters["tag"] = tag;
             parameters["messageID"] = messageID;

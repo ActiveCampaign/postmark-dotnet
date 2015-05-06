@@ -47,7 +47,7 @@ namespace Postmark.PCL.Tests
         [TearDown]
         public void Cleanup()
         {
-            var servers = _adminClient.GetServersAsync().WaitForResult();
+            var servers = Task.Run(async () => await _adminClient.GetServersAsync()).Result;
             var pendingDeletes = new List<Task>();
             foreach (var server in servers.Servers)
             {

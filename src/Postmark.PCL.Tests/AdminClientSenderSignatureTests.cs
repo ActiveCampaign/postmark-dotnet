@@ -38,7 +38,7 @@ namespace Postmark.PCL.Tests
         {
             try
             {
-                var signatures = _adminClient.GetSenderSignaturesAsync().WaitForResult();
+                var signatures = Task.Run(async () => await _adminClient.GetSenderSignaturesAsync()).Result;
                 var pendingDeletes = new List<Task>();
                 foreach (var f in signatures.SenderSignatures)
                 {

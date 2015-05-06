@@ -18,7 +18,8 @@ namespace PostmarkDotNet.Model
         public string DKIMUpdateStatus { get; set; }
 
         public string ReturnPathDomain { get; set; }
-        public string ReturnPathDomainState { get; set; }
+        public bool ReturnPathDomainVerified { get; set; }
+        public string ReturnPathDomainCNAMEValue { get; set; }
 
         public bool SafeToRemoveRevokedKeyFromDNS { get; set; }
     }

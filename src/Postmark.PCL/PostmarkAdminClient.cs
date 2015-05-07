@@ -191,13 +191,15 @@ namespace PostmarkDotNet
         /// <param name="fromEmail"></param>
         /// <param name="name"></param>
         /// <param name="replyToEmail"></param>
+        /// <param name="returnPathDomain"></param>
         /// <returns></returns>
-        public async Task<PostmarkCompleteSenderSignature> CreateSignatureAsync(string fromEmail, string name, string replyToEmail = null)
+        public async Task<PostmarkCompleteSenderSignature> CreateSignatureAsync(string fromEmail, string name, string replyToEmail = null, string returnPathDomain = null)
         {
             var parameters = new Dictionary<string, object>();
             parameters["FromEmail"] = fromEmail;
             parameters["Name"] = name;
             parameters["ReplyToEmail"] = replyToEmail;
+            parameters["ReturnPathDomain"] = returnPathDomain;
 
             return await this.ProcessRequestAsync<Dictionary<string, object>, PostmarkCompleteSenderSignature>
                ("/senders/", HttpMethod.Post, parameters);
@@ -209,13 +211,15 @@ namespace PostmarkDotNet
         /// <param name="signatureId"></param>
         /// <param name="name"></param>
         /// <param name="replyToEmail"></param>
+        /// <param name="returnPathDomain"></param>
         /// <returns></returns>
         public async Task<PostmarkCompleteSenderSignature> UpdateSignatureAsync
-            (int signatureId, string name = null, string replyToEmail = null)
+            (int signatureId, string name = null, string replyToEmail = null, string returnPathDomain = null)
         {
             var parameters = new Dictionary<string, object>();
             parameters["Name"] = name;
             parameters["ReplyToEmail"] = replyToEmail;
+            parameters["ReturnPathDomain"] = returnPathDomain;
 
             return await this.ProcessRequestAsync<Dictionary<string, object>, PostmarkCompleteSenderSignature>
                ("/senders/" + signatureId, HttpMethod.Put, parameters);

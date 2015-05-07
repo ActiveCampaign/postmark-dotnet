@@ -17,14 +17,14 @@ namespace Postmark.PCL.Tests
         private string _replyToAddress;
         private string _senderName;
         private string _senderprefix;
+        private string _returnPath;
 
         protected override async Task SetupAsync()
         {
             _adminClient = new PostmarkAdminClient(WRITE_ACCOUNT_TOKEN);
             var id = Guid.NewGuid();
-            var baseEmail =
             _senderprefix = "test-sender-";
-
+            _returnPath = "test." + WRITE_TEST_SENDER_SIGNATURE_PROTOTYPE.Split('@')[1];
             _senderEmail = WRITE_TEST_SENDER_SIGNATURE_PROTOTYPE.Replace("[token]", String.Format(_senderprefix + "{0:n}", id));
             _replyToAddress = WRITE_TEST_SENDER_SIGNATURE_PROTOTYPE.Replace("[token]", String.Format(_senderprefix + "replyto-{0:n}@example.com", id));
             _senderName = String.Format("Test Sender {0}", TESTING_DATE);
@@ -134,6 +134,29 @@ namespace Postmark.PCL.Tests
 
             Assert.AreEqual(prefix + signature.Name, updatedSignature.Name);
             Assert.AreEqual(prefix + signature.ReplyToEmailAddress, updatedSignature.ReplyToEmailAddress);
+        }
+
+        [TestCase]
+        public async void AdminClient_CanUpdateSenderSignatureReturnPath()
+        {
+            var signature = await _adminClient.CreateSignatureAsync(_senderEmail, _senderName, _replyToAddress, _returnPath);
+
+            var prefix = "updated-";
+
+            var updateResult = await _adminClient.UpdateSignatureAsync(signature.ID, returnPathDomain: prefix + _returnPath);
+
+            var updatedSignature = await _adminClient.GetSenderSignatureAsync(signature.ID);
+
+            Assert.AreEqual(updateResult.ReturnPathDomain, updatedSignature.ReturnPathDomain);
+        }
+
+
+        [TestCase]
+        public async void AdminClient_CanCreateSignatureWithReturnPath()
+        {
+
+            var signature = await _adminClient.CreateSignatureAsync(_senderEmail, _senderName, _replyToAddress, _returnPath);
+            Assert.AreEqual(_returnPath, signature.ReturnPathDomain);
         }
 
         [TestCase]

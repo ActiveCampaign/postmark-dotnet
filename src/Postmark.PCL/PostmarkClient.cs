@@ -697,5 +697,124 @@ namespace PostmarkDotNet
         }
 
         #endregion
+
+        #region Templates
+
+        /// <summary>
+        /// Get basic info associated with the specified ID.
+        /// </summary>
+        /// <param name="templateId">The ID of the template you wish to retrive.</param>
+        /// <returns></returns>
+        public async Task<PostmarkTemplate> GetTemplateAsync(int templateId)
+        {
+            return await ProcessNoBodyRequestAsync<PostmarkTemplate>("/templates/" + templateId, null, HttpMethod.Get);
+        }
+
+        /// <summary>
+        /// Get a listing of templates, optionally including deleted templates.
+        /// </summary>
+        /// <param name="count"></param>
+        /// <param name="offset"></param>
+        /// <param name="includeDeletedTemplates"></param>
+        /// <returns></returns>
+        public async Task<PostmarkTemplateListingResponse> GetTemplatesAsync(int offset = 0, int count = 100, bool includeDeletedTemplates = false)
+        {
+            var query = new Dictionary<string, object>();
+            query["Count"] = count;
+            query["Offset"] = offset;
+            query["IncludeDeletedTemplates"] = includeDeletedTemplates;
+
+            return await ProcessNoBodyRequestAsync<PostmarkTemplateListingResponse>("/templates/", query, HttpMethod.Get);
+        }
+
+
+        /// <summary>
+        /// Store a new template associated with this server.
+        /// </summary>
+        /// <param name="name">A display name for this template.</param>
+        /// <param name="subject">The subject to be used when sending with this template.</param>
+        /// <param name="htmlBody">The HTMLBody to be used when sending with this template. Optional if TextBody is specified.</param>
+        /// <param name="textBody">The TextBody to be used when sending with this template. Optional if HtmlBody is specified.</param>
+        /// <returns></returns>
+        public async Task<BasicTemplateInformation> CreateTemplateAsync(string name, string subject, string htmlBody = null, string textBody = null)
+        {
+            var body = new Dictionary<string, object>();
+            body["Name"] = name;
+            body["HTMLBody"] = htmlBody;
+            body["TextBody"] = textBody;
+            body["Subject"] = subject;
+
+            return await ProcessNoBodyRequestAsync<BasicTemplateInformation>("/templates/", body, HttpMethod.Post);
+        }
+
+        public async Task<BasicTemplateInformation> EditTemplateAsync(int templateId, string name = null, string subject = null, string htmlBody = null, string textBody = null)
+        {
+            var body = new Dictionary<string, object>();
+            body["Name"] = name;
+            body["HTMLBody"] = htmlBody;
+            body["TextBody"] = textBody;
+            body["Subject"] = subject;
+
+            return await ProcessNoBodyRequestAsync<BasicTemplateInformation>("/templates/" + templateId, body, HttpMethod.Put);
+        }
+
+        /// <summary>
+        /// Delete a template from the server.
+        /// </summary>
+        /// <param name="templateId">The ID of the template you wish to delete from the server.</param>
+        /// <returns></returns>
+        public async Task<PostmarkResponse> DeleteTemplateAsync(int templateId)
+        {
+            return await ProcessNoBodyRequestAsync<PostmarkResponse>("/templates/" + templateId, null, HttpMethod.Delete);
+        }
+
+        public async Task<PostmarkResponse> SendEmailWithTemplateAsync<T>(int templateId, T templateModel,
+            string to, string from,
+            bool? inlineCss = null, string cc = null,
+            string bcc = null, string replyTo = null,
+            bool? trackOpens = null,
+            IDictionary<string, string> headers = null,
+            params PostmarkMessageAttachment[] attachments)
+        {
+            var body = new Dictionary<string, object>();
+            body["TemplateId"] = templateId;
+            body["TemplateModel"] = templateModel;
+            body["To"] = to;
+            body["From"] = from;
+            body["InlineCSS"] = inlineCss;
+            body["Cc"] = cc;
+            body["Bcc"] = bcc;
+            body["TrackOpens"] = trackOpens;
+            body["ReplyTo"] = replyTo;
+
+            if (headers != null)
+            {
+                body["Headers"] = new HeaderCollection(headers);
+            }
+            if (attachments != null)
+            {
+                body["Attachments"] = attachments;
+            }
+            //also want to include cc, bcc, headers, tag, track opens, attachments.
+            return await ProcessNoBodyRequestAsync<PostmarkResponse>("/email/withTemplate", body, HttpMethod.Post);
+        }
+
+
+        public async Task<TemplateValidationResponse> ValidateTemplateAsync<T>(string subjectTemplate = null, string htmlTemplate = null,
+            string textTemplate = null, T testingRenderModel = default(T))
+        {
+            var body = new Dictionary<string, object>();
+            body["TestingRenderModel"] = testingRenderModel;
+            body["SubjectTemplate"] = subjectTemplate;
+            body["HtmlBodyTemplate"] = htmlTemplate;
+            body["TextBodyTemplate"] = textTemplate;
+
+            //also want to include cc, bcc, headers, tag, track opens, attachments.
+
+            return await ProcessNoBodyRequestAsync<TemplateValidationResponse>("/templates/validate", body, HttpMethod.Post);
+        }
+
+
+        #endregion
     }
 }

@@ -21,7 +21,7 @@ namespace PostmarkDotNet.Utility
             };
 
             retval.Converters.Add(new UnicodeJsonStringConverter());
-            retval.Converters.Add(new DictionaryConverter());
+            retval.Converters.Add(new HeaderCollectionConverter());
             return retval;
         });
 

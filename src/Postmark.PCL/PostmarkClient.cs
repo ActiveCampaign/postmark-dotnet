@@ -705,7 +705,7 @@ namespace PostmarkDotNet
         /// </summary>
         /// <param name="templateId">The ID of the template you wish to retrive.</param>
         /// <returns></returns>
-        public async Task<PostmarkTemplate> GetTemplateAsync(int templateId)
+        public async Task<PostmarkTemplate> GetTemplateAsync(long templateId)
         {
             return await ProcessNoBodyRequestAsync<PostmarkTemplate>("/templates/" + templateId, null, HttpMethod.Get);
         }
@@ -744,10 +744,10 @@ namespace PostmarkDotNet
             body["TextBody"] = textBody;
             body["Subject"] = subject;
 
-            return await ProcessNoBodyRequestAsync<BasicTemplateInformation>("/templates/", body, HttpMethod.Post);
+            return await ProcessRequestAsync<Dictionary<string, object>, BasicTemplateInformation>("/templates/", HttpMethod.Post, body);
         }
 
-        public async Task<BasicTemplateInformation> EditTemplateAsync(int templateId, string name = null, string subject = null, string htmlBody = null, string textBody = null)
+        public async Task<BasicTemplateInformation> EditTemplateAsync(long templateId, string name = null, string subject = null, string htmlBody = null, string textBody = null)
         {
             var body = new Dictionary<string, object>();
             body["Name"] = name;
@@ -755,7 +755,7 @@ namespace PostmarkDotNet
             body["TextBody"] = textBody;
             body["Subject"] = subject;
 
-            return await ProcessNoBodyRequestAsync<BasicTemplateInformation>("/templates/" + templateId, body, HttpMethod.Put);
+            return await ProcessRequestAsync<Dictionary<string, object>, BasicTemplateInformation>("/templates/" + templateId, HttpMethod.Put, body);
         }
 
         /// <summary>
@@ -763,12 +763,12 @@ namespace PostmarkDotNet
         /// </summary>
         /// <param name="templateId">The ID of the template you wish to delete from the server.</param>
         /// <returns></returns>
-        public async Task<PostmarkResponse> DeleteTemplateAsync(int templateId)
+        public async Task<PostmarkResponse> DeleteTemplateAsync(long templateId)
         {
             return await ProcessNoBodyRequestAsync<PostmarkResponse>("/templates/" + templateId, null, HttpMethod.Delete);
         }
 
-        public async Task<PostmarkResponse> SendEmailWithTemplateAsync<T>(int templateId, T templateModel,
+        public async Task<PostmarkResponse> SendEmailWithTemplateAsync<T>(long templateId, T templateModel,
             string to, string from,
             bool? inlineCss = null, string cc = null,
             string bcc = null, string replyTo = null,
@@ -796,22 +796,23 @@ namespace PostmarkDotNet
                 body["Attachments"] = attachments;
             }
             //also want to include cc, bcc, headers, tag, track opens, attachments.
-            return await ProcessNoBodyRequestAsync<PostmarkResponse>("/email/withTemplate", body, HttpMethod.Post);
+            return await ProcessRequestAsync<Dictionary<string, object>, PostmarkResponse>("/email/withTemplate", HttpMethod.Post, body);
         }
 
 
-        public async Task<TemplateValidationResponse> ValidateTemplateAsync<T>(string subjectTemplate = null, string htmlTemplate = null,
-            string textTemplate = null, T testingRenderModel = default(T))
+        public async Task<TemplateValidationResponse> ValidateTemplateAsync<T>(string subject = null, string htmlbody = null,
+            string textBody = null, T testRenderModel = default(T), bool inlineCssForHtmlTestRender = true)
         {
             var body = new Dictionary<string, object>();
-            body["TestingRenderModel"] = testingRenderModel;
-            body["SubjectTemplate"] = subjectTemplate;
-            body["HtmlBodyTemplate"] = htmlTemplate;
-            body["TextBodyTemplate"] = textTemplate;
+            body["TestRenderModel"] = testRenderModel;
+            body["Subject"] = subject;
+            body["HtmlBody"] = htmlbody;
+            body["TextBody"] = textBody;
+            body["InlineCssForHtmlTestRender"] = inlineCssForHtmlTestRender;
 
             //also want to include cc, bcc, headers, tag, track opens, attachments.
 
-            return await ProcessNoBodyRequestAsync<TemplateValidationResponse>("/templates/validate", body, HttpMethod.Post);
+            return await ProcessRequestAsync<Dictionary<string, object>, TemplateValidationResponse>("/templates/validate", HttpMethod.Post, body);
         }
 
 

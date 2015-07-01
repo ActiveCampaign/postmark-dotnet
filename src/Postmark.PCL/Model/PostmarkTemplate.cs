@@ -8,7 +8,7 @@ namespace PostmarkDotNet.Model
 {
     public class PostmarkTemplate
     {
-        public int TemplateId { get; set; }
+        public long TemplateId { get; set; }
 
         public string Subject { get; set; }
 
@@ -20,7 +20,7 @@ namespace PostmarkDotNet.Model
 
         public int AssociatedServerId { get; set; }
 
-        public bool IsActive { get; set; }
+        public bool Active { get; set; }
 
     }
 }

@@ -104,24 +104,23 @@ namespace Postmark.PCL.Tests
             Assert.AreEqual(9, result.TotalCount);
             Assert.False(result.Templates.Any(k => k.TemplateId == toDelete));
             var offsetResults = await _client.GetTemplatesAsync(5);
-
             Assert.True(result.Templates.Skip(5).Select(k => k.TemplateId).SequenceEqual(offsetResults.Templates.Select(k => k.TemplateId)));
 
-            result = await _client.GetTemplatesAsync(count: 10, includeDeletedTemplates: true);
-            Assert.AreEqual(10, result.TotalCount);
         }
 
         [TestCase]
         public async Task ClientCanValidateTemplate()
         {
-            var result = await _client.ValidateTemplateAsync("{{name}}", "<html><body>{{content}}{{company.address}}</body></html>", "{{content}}", new { name = "Johnny", content = "hello, world!" });
+            var result = await _client.ValidateTemplateAsync("{{name}}", "<html><body>{{content}}{{company.address}}{{#each products}}{{/each}}{{^competitors}}There are no substitutes.{{/competitors}}</body></html>", "{{content}}", new { name = "Johnny", content = "hello, world!" });
 
             Assert.IsTrue(result.AllContentIsValid);
             Assert.IsTrue(result.HtmlBody.ContentIsValid);
             Assert.IsTrue(result.TextBody.ContentIsValid);
             Assert.IsTrue(result.Subject.ContentIsValid);
             var inferredAddress = result.SuggestedTemplateModel.company.address;
+            var products = result.SuggestedTemplateModel.products;
             Assert.IsNotNull(inferredAddress);
+            Assert.AreEqual(3, products.Length);
         }
 
         [TestCase]

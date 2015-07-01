@@ -717,12 +717,11 @@ namespace PostmarkDotNet
         /// <param name="offset"></param>
         /// <param name="includeDeletedTemplates"></param>
         /// <returns></returns>
-        public async Task<PostmarkTemplateListingResponse> GetTemplatesAsync(int offset = 0, int count = 100, bool includeDeletedTemplates = false)
+        public async Task<PostmarkTemplateListingResponse> GetTemplatesAsync(int offset = 0, int count = 100)
         {
             var query = new Dictionary<string, object>();
             query["Count"] = count;
             query["Offset"] = offset;
-            query["IncludeDeletedTemplates"] = includeDeletedTemplates;
 
             return await ProcessNoBodyRequestAsync<PostmarkTemplateListingResponse>("/templates/", query, HttpMethod.Get);
         }

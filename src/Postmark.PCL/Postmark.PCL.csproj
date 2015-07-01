@@ -144,7 +144,7 @@
     <Compile Include="..\Postmark\Model\PostmarkTaggedTriggerList.cs">
       <Link>Model\PostmarkTaggedTriggerList.cs</Link>
     </Compile>
-    <Compile Include="Converters\DictionaryConverter.cs" />
+    <Compile Include="Converters\HeaderCollectionConverter.cs" />
     <Compile Include="Converters\JsonNetExtensions.cs" />
     <Compile Include="Exceptions\PostmarkValidationException.cs" />
     <Compile Include="ISimpleHttpClient.cs" />

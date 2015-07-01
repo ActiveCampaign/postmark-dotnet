@@ -14,7 +14,6 @@ namespace PostmarkDotNet.PCL
     /// </summary>
     public abstract class PostmarkClientBase
     {
-
         private static Func<ISimpleHttpClient> _clientFactory = () => new SimpleHttpClient();
 
         /// <summary>

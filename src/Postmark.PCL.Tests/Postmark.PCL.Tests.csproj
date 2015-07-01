@@ -53,6 +53,7 @@
     <Compile Include="ClientSendingTests.cs" />
     <Compile Include="ClientServerInformationTests.cs" />
     <Compile Include="ClientStatisticsTests.cs" />
+    <Compile Include="ClientTemplateTests.cs" />
     <Compile Include="ClientTriggersTests.cs" />
     <Compile Include="PostmarkClientTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

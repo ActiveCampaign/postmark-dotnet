@@ -17,6 +17,6 @@ namespace PostmarkDotNet.Model
     {
         public bool IsActive { get; set; }
         public String Name { get; set; }
-        public int TemplateId { get; set; }
+        public long TemplateId { get; set; }
     }
 }

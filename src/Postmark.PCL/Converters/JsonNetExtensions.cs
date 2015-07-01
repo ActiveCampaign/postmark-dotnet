@@ -23,11 +23,12 @@ namespace PostmarkDotNet.Converters
                    NullValueHandling = NullValueHandling.Include,
                    DefaultValueHandling = DefaultValueHandling.Include
                };
+
                 settings.Converters.Add(new UnicodeJsonStringConverter());
-                settings.Converters.Add(new DictionaryConverter());
+                settings.Converters.Add(new HeaderCollectionConverter());
 
-
-                result = JsonConvert.DeserializeObject<T>(json, settings);
+                //result = JsonConvert.DeserializeObject<T>(json, settings);
+                result = JsonConvert.DeserializeObject<T>(json);
                 retval = true;
             }
             catch

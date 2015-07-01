@@ -34,6 +34,7 @@ namespace Postmark.PCL.Tests
             Assert.NotNull(WRITE_TEST_SENDER_EMAIL_ADDRESS, "WRITE_TEST_SENDER_EMAIL_ADDRESS must be defined as an environment variable or app setting.");
             Assert.NotNull(WRITE_TEST_EMAIL_RECIPIENT_ADDRESS, "WRITE_TEST_EMAIL_RECIPIENT_ADDRESS must be defined as an environment variable or app setting.");
             Assert.NotNull(WRITE_TEST_SENDER_SIGNATURE_PROTOTYPE, "WRITE_TEST_SENDER_SIGNATURE_PROTOTYPE must be defined as an environment variable or app setting.");
+            Assert.NotNull(API_BASE_URL, "API_BASE_URL must be defined as an environment variable or app setting.");
         }
 
         /// <summary>
@@ -70,6 +71,7 @@ namespace Postmark.PCL.Tests
         public static readonly string WRITE_TEST_EMAIL_RECIPIENT_ADDRESS = ConfigVariable("WRITE_TEST_EMAIL_RECIPIENT_ADDRESS");
         public static readonly string WRITE_TEST_SENDER_SIGNATURE_PROTOTYPE = ConfigVariable("WRITE_TEST_SENDER_SIGNATURE_PROTOTYPE");
 
+        public static readonly string API_BASE_URL = ConfigVariable("API_BASE_URL");
 
         protected PostmarkClient _client;
 

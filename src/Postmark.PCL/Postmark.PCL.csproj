@@ -151,8 +151,10 @@
     <Compile Include="LegacyPortableClientExtensions.cs" />
     <Compile Include="Model\HeaderCollection.cs" />
     <Compile Include="Model\PostmarkMessage.cs" />
+    <Compile Include="Model\PostmarkMessageBase.cs" />
     <Compile Include="Model\PostmarkTemplate.cs" />
     <Compile Include="Model\PostmarkTemplateListingResponse.cs" />
+    <Compile Include="Model\TemplatedPostmarkMessage.cs" />
     <Compile Include="Model\TemplateValidationResponse.cs" />
     <Compile Include="PostmarkAdminClient.cs" />
     <Compile Include="PostmarkClient.cs" />

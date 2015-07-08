@@ -767,6 +767,16 @@ namespace PostmarkDotNet
             return await ProcessNoBodyRequestAsync<PostmarkResponse>("/templates/" + templateId, null, HttpMethod.Delete);
         }
 
+        public async Task<PostmarkResponse> SendMessageAsync(TemplatedPostmarkMessage emailToSend)
+        {
+            return await SendEmailWithTemplateAsync(emailToSend);
+        }
+
+        public async Task<PostmarkResponse> SendEmailWithTemplateAsync(TemplatedPostmarkMessage emailToSend)
+        {
+            return await ProcessRequestAsync<TemplatedPostmarkMessage, PostmarkResponse>("/email/withTemplate", HttpMethod.Post, emailToSend);
+        }
+
         public async Task<PostmarkResponse> SendEmailWithTemplateAsync<T>(long templateId, T templateModel,
             string to, string from,
             bool? inlineCss = null, string cc = null,
@@ -775,29 +785,32 @@ namespace PostmarkDotNet
             IDictionary<string, string> headers = null,
             params PostmarkMessageAttachment[] attachments)
         {
-            var body = new Dictionary<string, object>();
-            body["TemplateId"] = templateId;
-            body["TemplateModel"] = templateModel;
-            body["To"] = to;
-            body["From"] = from;
-            body["InlineCSS"] = inlineCss;
-            body["Cc"] = cc;
-            body["Bcc"] = bcc;
-            body["TrackOpens"] = trackOpens;
-            body["ReplyTo"] = replyTo;
-
+            var email = new TemplatedPostmarkMessage();
+            email.TemplateId = templateId;
+            email.TemplateModel = templateModel;
+            email.To = to;
+            email.From = from;
+            if (inlineCss.HasValue)
+            {
+                email.InlineCss = inlineCss.Value;
+            }
+            email.Cc = cc;
+            email.Bcc = bcc;
+            if (trackOpens.HasValue)
+            {
+                email.TrackOpens = trackOpens.Value;
+            }
+            email.ReplyTo = replyTo;
             if (headers != null)
             {
-                body["Headers"] = new HeaderCollection(headers);
+                email.Headers = new HeaderCollection(headers);
             }
             if (attachments != null)
             {
-                body["Attachments"] = attachments;
+                email.Attachments = attachments;
             }
-            //also want to include cc, bcc, headers, tag, track opens, attachments.
-            return await ProcessRequestAsync<Dictionary<string, object>, PostmarkResponse>("/email/withTemplate", HttpMethod.Post, body);
+            return await SendEmailWithTemplateAsync(email);
         }
-
 
         public async Task<TemplateValidationResponse> ValidateTemplateAsync<T>(string subject = null, string htmlbody = null,
             string textBody = null, T testRenderModel = default(T), bool inlineCssForHtmlTestRender = true)
@@ -808,8 +821,6 @@ namespace PostmarkDotNet
             body["HtmlBody"] = htmlbody;
             body["TextBody"] = textBody;
             body["InlineCssForHtmlTestRender"] = inlineCssForHtmlTestRender;
-
-            //also want to include cc, bcc, headers, tag, track opens, attachments.
 
             return await ProcessRequestAsync<Dictionary<string, object>, TemplateValidationResponse>("/templates/validate", HttpMethod.Post, body);
         }

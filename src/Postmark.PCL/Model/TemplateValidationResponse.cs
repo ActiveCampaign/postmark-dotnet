@@ -72,9 +72,22 @@ namespace PostmarkDotNet.Model
         /// </summary>
         public class TemplateValidationResult
         {
+            public TemplateValidationResult()
+            {
+                ValidationErrors = new TemplateValidationError[0];
+            }
+
             public bool ContentIsValid { get; set; }
-            public string ValidationError { get; set; }
+            public IEnumerable<TemplateValidationError> ValidationErrors { get; set; }
             public string RenderedContent { get; set; }
+
+            public class TemplateValidationError
+            {
+                public string Message { get; set; }
+                public int? Line { get; set; }
+                public int? CharacterPosition { get; set; }
+            }
         }
+
     }
 }

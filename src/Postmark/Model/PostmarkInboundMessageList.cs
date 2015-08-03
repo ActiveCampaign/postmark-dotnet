@@ -1,4 +1,5 @@
-﻿using System;
+﻿using PostmarkDotNet;
+using System;
 using System.Collections.Generic;
 
 namespace PostmarkDotNet.Model
@@ -49,6 +50,7 @@ namespace PostmarkDotNet.Model
         public string Tag { get; set; }
         public List<Attachment> Attachments { get; set; }
         public string MessageID { get; set; }
+        public InboundMessageStatus Status {get;set;}
     }
 
     public class InboundMessageDetail : InboundMessage

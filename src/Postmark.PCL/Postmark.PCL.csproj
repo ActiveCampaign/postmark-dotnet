@@ -48,6 +48,12 @@
     <Compile Include="..\Postmark\Converters\UnicodeJsonStringConverter.cs">
       <Link>Converters\UnicodeJsonStringConverter.cs</Link>
     </Compile>
+    <Compile Include="..\Postmark\Model\InboundMessageStatus.cs">
+      <Link>Model\InboundMessageStatus.cs</Link>
+    </Compile>
+    <Compile Include="..\Postmark\Model\OutboundMessageStatus.cs">
+      <Link>Model\OutboundMessageStatus.cs</Link>
+    </Compile>
     <Compile Include="..\Postmark\Model\PostmarkBaseSenderSignature.cs">
       <Link>Model\PostmarkBaseSenderSignature.cs</Link>
     </Compile>

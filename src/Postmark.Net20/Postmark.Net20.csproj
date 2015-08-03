@@ -70,6 +70,12 @@
     <Compile Include="..\Postmark\IPostmarkClient.cs">
       <Link>IPostmarkClient.cs</Link>
     </Compile>
+    <Compile Include="..\Postmark\Model\InboundMessageStatus.cs">
+      <Link>Model\InboundMessageStatus.cs</Link>
+    </Compile>
+    <Compile Include="..\Postmark\Model\OutboundMessageStatus.cs">
+      <Link>Model\OutboundMessageStatus.cs</Link>
+    </Compile>
     <Compile Include="..\postmark\model\PostmarkBounce.cs">
       <Link>Model\PostmarkBounce.cs</Link>
     </Compile>

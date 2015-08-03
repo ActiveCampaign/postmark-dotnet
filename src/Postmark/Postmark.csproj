@@ -83,6 +83,8 @@
     <Compile Include="Converters\UnicodeJsonStringConverter.cs" />
     <Compile Include="IPostmarkClient.Async.cs" />
     <Compile Include="IPostmarkClient.cs" />
+    <Compile Include="Model\InboundMessageStatus.cs" />
+    <Compile Include="Model\OutboundMessageStatus.cs" />
     <Compile Include="Model\PostmarkCompleteSenderSignature.cs" />
     <Compile Include="Model\PostmarkBaseSenderSignature.cs" />
     <Compile Include="Model\PostmarkBounce.cs" />

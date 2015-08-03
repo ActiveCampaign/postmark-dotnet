@@ -162,9 +162,13 @@ namespace PostmarkDotNet
         /// <param name="subject">Filter by message subject.</param>
         /// <param name="count">Number of messages to return per call. (required)</param>
         /// <param name="offset">Number of messages to offset/page per call. (required)</param>
+        /// <param name="status">The status of the outbound message.</param>
+        /// <param name="fromDate">Get messages on or after YYYY-MM-DD.</param>
+        /// <param name="toDate">Get messages on or before YYYY-MM-DD.</param>
         /// <returns>PostmarkOutboundMessageList</returns>
         public async Task<PostmarkOutboundMessageList> GetOutboundMessagesAsync(int offset = 0, int count = 100,
-            string recipient = null, string fromemail = null, string tag = null, string subject = null)
+            string recipient = null, string fromemail = null, string tag = null, string subject = null,
+            OutboundMessageStatus status = OutboundMessageStatus.Sent, string toDate = null, string fromDate = null)
         {
             var parameters = new Dictionary<string, object>();
             parameters["count"] = count;
@@ -173,7 +177,10 @@ namespace PostmarkDotNet
             parameters["fromemail"] = fromemail;
             parameters["tag"] = tag;
             parameters["subject"] = subject;
-
+            parameters["todate"] = toDate;
+            parameters["fromdate"] = fromDate;
+            parameters["status"] = status.ToString().ToLower();
+           
             return await ProcessNoBodyRequestAsync<PostmarkOutboundMessageList>("/messages/outbound", parameters);
         }
 
@@ -209,9 +216,13 @@ namespace PostmarkDotNet
         /// <param name="mailboxhash">Filter by mailbox hash that was parsed from the inbound message.</param>
         /// <param name="count">Number of messages to return per call. (required)</param>
         /// <param name="offset">Number of messages to offset/page per call. (required)</param>
+        /// <param name="status">The status of the inbound message.</param>
+        /// <param name="fromDate">Get messages on or after YYYY-MM-DD.</param>
+        /// <param name="toDate">Get messages on or before YYYY-MM-DD.</param>
         /// <returns>PostmarkInboundMessageList</returns>
         public async Task<PostmarkInboundMessageList> GetInboundMessagesAsync(int offset = 0, int count = 100,
-            string recipient = null, string fromemail = null, string subject = null, string mailboxhash = null)
+            string recipient = null, string fromemail = null, string subject = null, 
+            string mailboxhash = null, InboundMessageStatus? status = InboundMessageStatus.Processed, String toDate = null, String fromDate = null)
         {
             var parameters = new Dictionary<string, object>();
             parameters["count"] = count;
@@ -220,7 +231,10 @@ namespace PostmarkDotNet
             parameters["fromemail"] = fromemail;
             parameters["subject"] = subject;
             parameters["mailboxhash"] = mailboxhash;
-
+            parameters["todate"] = toDate;
+            parameters["fromdate"] = fromDate;
+            parameters["status"] = status.ToString().ToLower();
+        
             return await ProcessNoBodyRequestAsync<PostmarkInboundMessageList>("/messages/inbound", parameters);
         }
 
@@ -243,6 +257,18 @@ namespace PostmarkDotNet
         {
             return await this.ProcessNoBodyRequestAsync<PostmarkResponse>(String.Format("/messages/inbound/{0}/bypass", messageid), verb: HttpMethod.Put);
         }
+
+        /// <summary>
+        /// Request that Postmark retries POSTing to your Inbound Hook for the specified inbound message.
+        /// </summary>
+        /// <param name="messageId"></param>
+        /// <returns></returns>
+        public async Task<PostmarkResponse> RetryInboundHookForMessage(string messageId)
+        {
+            return await this.ProcessNoBodyRequestAsync<PostmarkResponse>(String.Format("/messages/inbound/{0}/retry", messageId), verb: HttpMethod.Put);
+        }
+
+
         #endregion
 
         #region Servers

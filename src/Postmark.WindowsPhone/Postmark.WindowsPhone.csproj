@@ -165,6 +165,12 @@
     <Compile Include="..\Postmark\PostmarkClient.cs">
       <Link>PostmarkClient.cs</Link>
     </Compile>
+    <Compile Include="..\Postmark\Model\InboundMessageStatus.cs">
+      <Link>Model\InboundMessageStatus.cs</Link>
+    </Compile>
+    <Compile Include="..\Postmark\Model\OutboundMessageStatus.cs">
+      <Link>Model\OutboundMessageStatus.cs</Link>
+    </Compile>
     <Compile Include="..\postmark\serializers\PostmarkSerializer.cs">
       <Link>Serializers\PostmarkSerializer.cs</Link>
     </Compile>

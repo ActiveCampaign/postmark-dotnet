@@ -85,7 +85,7 @@ build:
 
   # MSBuild verbosity level
   # quiet|minimal|normal|detailed
-  verbosity: detailed
+  verbosity: normal
 
 #---------------------------------#
 #       tests configuration       #

@@ -50,7 +50,7 @@ namespace PostmarkDotNet.Model
         public string Tag { get; set; }
         public List<Attachment> Attachments { get; set; }
         public string MessageID { get; set; }
-        public InboundMessageStatus Status {get;set;}
+        public string Status {get;set;}
     }
 
     public class InboundMessageDetail : InboundMessage

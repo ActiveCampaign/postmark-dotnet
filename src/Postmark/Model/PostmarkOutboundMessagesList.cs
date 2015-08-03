@@ -34,7 +34,7 @@ namespace PostmarkDotNet.Model
         public string From { get; set; }
         public string Subject { get; set; }
         public List<string> Attachments { get; set; }
-        public InboundMessageStatus Status { get; set; }
+        public string Status { get; set; }
     }
 
     public class OutboundMessageDetail : Message

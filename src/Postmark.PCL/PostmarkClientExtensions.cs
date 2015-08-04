@@ -43,6 +43,5 @@ namespace PostmarkDotNet
         {
             return await client.SendMessagesAsync(messages.ToArray());
         }
-
     }
 }

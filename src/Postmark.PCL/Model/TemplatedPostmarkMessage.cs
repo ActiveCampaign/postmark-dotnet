@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace PostmarkDotNet.Model
+﻿namespace PostmarkDotNet
 {
     /// <summary>
     /// Send a message using a template that you have previously created in Postmark.

@@ -1,13 +1,9 @@
-﻿using Newtonsoft.Json;
-using Newtonsoft.Json.Linq;
-using System;
+﻿using Newtonsoft.Json.Linq;
 using System.Collections.Generic;
 using System.Dynamic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
-namespace PostmarkDotNet.Model
+namespace PostmarkDotNet
 {
     /// <summary>
     /// Indicates the result of validating and test rendering template content against the API.

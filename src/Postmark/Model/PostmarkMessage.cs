@@ -100,7 +100,7 @@ namespace PostmarkDotNet
                               : message.ReplyTo.Address;
             }
 #pragma warning restore 0618
-            var header = message.Headers.Get("X-PostmarkTag");
+            var header = message.Headers.Get("X-PM-Tag") ?? message.Headers.Get("X-PostmarkTag");
             if (header != null)
             {
                 Tag = header;

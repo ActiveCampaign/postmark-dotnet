@@ -72,12 +72,15 @@ namespace PostmarkDotNet
                               : message.ReplyTo.Address;
             }
 #pragma warning restore 0618
-            var header = message.Headers.Get("X-PostmarkTag");
+            // We include the coalescing of 'X-PostmarkTag' here because it was historically
+            // in the library, and clients may rely upon it, but "X-PM-Tag" is the header that matches
+            // Our SMTP docs, and therefore the "correct" header.
+            var header = message.Headers.Get("X-PM-Tag") ?? message.Headers.Get("X-PostmarkTag");
             if (header != null)
             {
                 pm.Tag = header;
             }
-
+           
             pm.Headers = new HeaderCollection();
 
             if (message.Headers != null)

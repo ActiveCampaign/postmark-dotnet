@@ -291,12 +291,30 @@ namespace Postmark.Tests
             mm.To.Add("me@me.com");
             mm.Bcc.Add("me@me.com");
             mm.CC.Add("me@me.com");
+            //legacy tag header handling.
             mm.Headers.Add("X-PostmarkTag", "mytag");
 
             var pm = new PostmarkMessage(mm);
             Assert.AreEqual(mm.Subject, pm.Subject);
             Assert.AreEqual(mm.Body, pm.TextBody);
             Assert.AreEqual("mytag", pm.Tag);
+        }
+        
+        [Test]
+        public void Can_generate_postmarkmessage_using_correct_tag_header_from_mailmessage()
+        {
+            var mm = new MailMessage
+            {
+                Subject = "test",
+                Body = "test"
+            };
+            mm.To.Add("me@me.com");
+            mm.Headers.Add("X-PM-Tag", "correct tag");           
+            //This header should be overridden by using the correct 'X-PM-Tag'
+            mm.Headers.Add("X-PostmarkTag", "overridden tag");
+            
+            var pm = new PostmarkMessage(mm);
+            Assert.AreEqual("correct tag", pm.Tag);
         }
 
         [Test]

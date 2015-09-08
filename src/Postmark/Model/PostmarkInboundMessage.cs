@@ -54,6 +54,11 @@ namespace PostmarkDotNet
         public string MessageID { get; set; }
 
         /// <summary>
+        /// The original recipient the messages was addressed to
+        /// </summary>
+        public string OriginalRecipient { get; set; }
+
+        /// <summary>
         /// The received time of the message by Postmark
         /// </summary>
         public string Date { get; set; }

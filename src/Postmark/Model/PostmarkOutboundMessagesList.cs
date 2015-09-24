@@ -42,6 +42,15 @@ namespace PostmarkDotNet.Model
         public string TextBody { get; set; }
         public string HtmlBody { get; set; }
         public string Body { get; set; }
+        public List<MessageEvent> MessageEvents { get; set; } 
+    }
+
+    public class MessageEvent
+    {
+        public string Recipient { get; set; }
+        public string Type { get; set; }
+        public DateTime ReceivedAt { get; set; }
+        public object Details { get; set; }
     }
 
     public class MessageDump

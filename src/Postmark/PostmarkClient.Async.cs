@@ -104,6 +104,18 @@ namespace PostmarkDotNet
         }
 
         /// <summary>
+        /// Send an email using a template associated with your Server.
+        /// </summary>
+        /// <param name="message"></param>
+        /// <returns></returns>
+        public IAsyncResult BeginSendMessage(TemplatedPostmarkMessage message)
+        {
+            var request = NewTemplatedEmailRequest();
+            request.Entity = message;
+            return BeginGetPostmarkResponse(request);
+        }
+
+        /// <summary>
         ///   Sends a batch of up to messages through the Postmark API.
         ///   All email addresses must be valid, and the sender must be
         ///   a valid sender signature according to Postmark. To obtain a valid

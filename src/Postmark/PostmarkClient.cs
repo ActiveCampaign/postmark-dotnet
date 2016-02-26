@@ -172,6 +172,18 @@ namespace PostmarkDotNet
         }
 
         /// <summary>
+        /// Send an email using a template associated with your Server.
+        /// </summary>
+        /// <param name="message"></param>
+        /// <returns></returns>
+        public PostmarkResponse SendMessage(TemplatedPostmarkMessage message)
+        {
+            var request = NewTemplatedEmailRequest();
+            request.Entity = message;
+            return GetPostmarkResponse(request);
+        }
+
+        /// <summary>
         ///   Sends a batch of messages through the Postmark API.
         ///   All email addresses must be valid, and the sender must be
         ///   a valid sender signature according to Postmark. To obtain a valid
@@ -908,6 +920,21 @@ namespace PostmarkDotNet
 
             return request;
         }
+
+        private RestRequest NewTemplatedEmailRequest()
+        {
+            var request = new RestRequest
+            {
+                Path = "email/withTemplate",
+                Method = WebMethod.Post,
+                Serializer = _serializer
+            };
+
+            SetPostmarkMeta(request);
+
+            return request;
+        }
+
 
         private RestRequest NewBatchedEmailRequest()
         {

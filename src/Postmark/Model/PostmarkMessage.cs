@@ -18,19 +18,10 @@ using Hammock.Silverlight.Compat;
 
 namespace PostmarkDotNet
 {
-    /// <summary>
-    ///   A message destined for the Postmark service.
-    /// </summary>
-    public partial class PostmarkMessage
+    public class PostmarkMessage : PostmarkMessageBase
     {
-        /// <summary>
-        ///   Initializes a new instance of the <see cref = "PostmarkMessage" /> class.
-        /// </summary>
-        public PostmarkMessage()
-        {
-            Headers = new NameValueCollection(0);
-            Attachments = new List<PostmarkMessageAttachment>(0);
-        }
+
+        public PostmarkMessage() : base() { }
 
         /// <summary>
         ///   Initializes a new instance of the <see cref = "PostmarkMessage" /> class.
@@ -44,6 +35,7 @@ namespace PostmarkDotNet
         {
 
         }
+
 
         /// <summary>
         ///   Initializes a new instance of the <see cref = "PostmarkMessage" /> class.
@@ -65,8 +57,8 @@ namespace PostmarkDotNet
             Headers = headers ?? new NameValueCollection(0);
         }
 
-
 #if !WINDOWS_PHONE
+
         /// <summary>
         ///   Initializes a new instance of the <see cref = "PostmarkMessage" /> class
         ///   based on an existing <see cref = "MailMessage" /> instance. 
@@ -123,64 +115,10 @@ namespace PostmarkDotNet
                 Attachments.Add(item);
             }
         }
-
-        private void GetMailMessageRecipients(MailMessage message)
-        {
-            GetMailMessageTo(message);
-            GetMailMessageCc(message);
-            GetMailMessageBcc(message);
-        }
-
-        private void GetMailMessageCc(MailMessage message)
-        {
-            var sb = new StringBuilder(0);
-
-            if (message.CC.Count > 0)
-            {
-                foreach (var cc in message.CC)
-                {
-                    sb.AppendFormat("{0},", cc.Address);
-                }
-            }
-
-            Cc = sb.ToString();
-        }
-
-        private void GetMailMessageBcc(MailMessage message)
-        {
-            var sb = new StringBuilder(0);
-
-            if (message.Bcc.Count > 0)
-            {
-                foreach (var bcc in message.Bcc)
-                {
-                    sb.AppendFormat("{0},", bcc.Address);
-                }
-            }
-
-            Bcc = sb.ToString();
-        }
-
-        private void GetMailMessageTo(MailMessage message)
-        {
-            var sb = new StringBuilder(0);
-            foreach (var to in message.To)
-            {
-                if (!string.IsNullOrEmpty(to.DisplayName))
-                {
-                    sb.AppendFormat("{0} <{1}>,", to.DisplayName, to.Address);
-                }
-                else
-                {
-                    sb.AppendFormat("{0},", to.Address);
-                }
-            }
-            To = sb.ToString();
-        }
-
+#endif
         // http://msdn.microsoft.com/en-us/library/system.net.mail.mailmessage.alternateviews.aspx
 
-        private void GetHtmlBodyFromAlternateViews(MailMessage message)
+        protected void GetHtmlBodyFromAlternateViews(MailMessage message)
         {
             if (message.AlternateViews.Count <= 0)
             {
@@ -200,7 +138,95 @@ namespace PostmarkDotNet
             }
         }
 
-        private static string GetStringFromView(AttachmentBase view)
+        /// <summary>
+        ///   The message subject line.
+        /// </summary>
+        public string Subject { get; set; }
+
+        /// <summary>
+        ///   The message body, if the message contains
+        /// </summary>
+        public string HtmlBody { get; set; }
+
+        /// <summary>
+        ///   The message body, if the message is plain text.
+        /// </summary>
+        public string TextBody { get; set; }
+    }
+
+    /// <summary>
+    ///   A message destined for the Postmark service.
+    /// </summary>
+    public abstract partial class PostmarkMessageBase
+    {
+        /// <summary>
+        ///   Initializes a new instance of the <see cref = "PostmarkMessage" /> class.
+        /// </summary>
+        public PostmarkMessageBase()
+        {
+            Headers = new NameValueCollection(0);
+            Attachments = new List<PostmarkMessageAttachment>(0);
+        }
+
+#if !WINDOWS_PHONE
+
+        protected void GetMailMessageRecipients(MailMessage message)
+        {
+            GetMailMessageTo(message);
+            GetMailMessageCc(message);
+            GetMailMessageBcc(message);
+        }
+
+        protected void GetMailMessageCc(MailMessage message)
+        {
+            var sb = new StringBuilder(0);
+
+            if (message.CC.Count > 0)
+            {
+                foreach (var cc in message.CC)
+                {
+                    sb.AppendFormat("{0},", cc.Address);
+                }
+            }
+
+            Cc = sb.ToString();
+        }
+
+        protected void GetMailMessageBcc(MailMessage message)
+        {
+            var sb = new StringBuilder(0);
+
+            if (message.Bcc.Count > 0)
+            {
+                foreach (var bcc in message.Bcc)
+                {
+                    sb.AppendFormat("{0},", bcc.Address);
+                }
+            }
+
+            Bcc = sb.ToString();
+        }
+
+        protected void GetMailMessageTo(MailMessage message)
+        {
+            var sb = new StringBuilder(0);
+            foreach (var to in message.To)
+            {
+                if (!string.IsNullOrEmpty(to.DisplayName))
+                {
+                    sb.AppendFormat("{0} <{1}>,", to.DisplayName, to.Address);
+                }
+                else
+                {
+                    sb.AppendFormat("{0},", to.Address);
+                }
+            }
+            To = sb.ToString();
+        }
+
+
+
+        protected static string GetStringFromView(AttachmentBase view)
         {
 
             Encoding encoding = resolveViewEncoding(view, Encoding.ASCII);
@@ -210,7 +236,7 @@ namespace PostmarkDotNet
             return encoding.GetString(data);
         }
 
-        private static Encoding resolveViewEncoding(AttachmentBase view, Encoding fallbackEncoding)
+        protected static Encoding resolveViewEncoding(AttachmentBase view, Encoding fallbackEncoding)
         {
             String charSet = view.ContentType.CharSet;
             try
@@ -249,20 +275,6 @@ namespace PostmarkDotNet
         /// </summary>
         public string ReplyTo { get; set; }
 
-        /// <summary>
-        ///   The message subject line.
-        /// </summary>
-        public string Subject { get; set; }
-
-        /// <summary>
-        ///   The message body, if the message contains
-        /// </summary>
-        public string HtmlBody { get; set; }
-
-        /// <summary>
-        ///   The message body, if the message is plain text.
-        /// </summary>
-        public string TextBody { get; set; }
 
         /// <summary>
         ///   An optional message tag, that is used for breaking down
@@ -288,7 +300,7 @@ namespace PostmarkDotNet
         /// </summary>
         public ICollection<PostmarkMessageAttachment> Attachments { get; set; }
 
-        private static byte[] ReadStream(Stream input, int bufferSize)
+        protected static byte[] ReadStream(Stream input, int bufferSize)
         {
             var buffer = new byte[bufferSize];
             using (var ms = new MemoryStream())
@@ -425,7 +437,7 @@ namespace PostmarkDotNet
         /// Be sure the path to the attachment actually exists
         /// </summary>
         /// <param name="path"></param>
-        private static void ValidateAttachmentPath(string path)
+        protected static void ValidateAttachmentPath(string path)
         {
             var fileInfo = new FileInfo(path);
 
@@ -439,7 +451,7 @@ namespace PostmarkDotNet
         /// Restrict attacments to 10 mb. The API will do this anyway but this is faster
         /// </summary>
         /// <param name="content"></param>
-        private static void ValidateAttachmentLength(string content)
+        protected static void ValidateAttachmentLength(string content)
         {
             if (content.Length > 10485760)
             {

@@ -54,6 +54,13 @@ namespace PostmarkDotNet
         IAsyncResult BeginSendMessage(PostmarkMessage message);
 
         /// <summary>
+        /// Send a templated message through the Postmark API.
+        /// </summary>
+        /// <param name="message"></param>
+        /// <returns></returns>
+        IAsyncResult BeginSendMessage(TemplatedPostmarkMessage message);
+        
+        /// <summary>
         /// Sends a batch of up to messages through the Postmark API.
         /// All email addresses must be valid, and the sender must be
         /// a valid sender signature according to Postmark. To obtain a valid

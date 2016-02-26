@@ -55,6 +55,9 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="..\Postmark.PCL\Model\TemplatedPostmarkMessage.cs">
+      <Link>Model\TemplatedPostmarkMessage.cs</Link>
+    </Compile>
     <Compile Include="..\Postmark\AssemblyVersionInfo.cs">
       <Link>AssemblyVersionInfo.cs</Link>
     </Compile>

@@ -78,6 +78,15 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="..\Postmark.PCL\Model\PostmarkTemplate.cs">
+      <Link>Model\PostmarkTemplate.cs</Link>
+    </Compile>
+    <Compile Include="..\Postmark.PCL\Model\PostmarkTemplateListingResponse.cs">
+      <Link>Model\PostmarkTemplateListingResponse.cs</Link>
+    </Compile>
+    <Compile Include="..\Postmark.PCL\Model\TemplatedPostmarkMessage.cs">
+      <Link>Model\TemplatedPostmarkMessage.cs</Link>
+    </Compile>
     <Compile Include="AssemblyVersionInfo.cs" />
     <Compile Include="Converters\NameValueCollectionConverter.cs" />
     <Compile Include="Converters\UnicodeJsonStringConverter.cs" />

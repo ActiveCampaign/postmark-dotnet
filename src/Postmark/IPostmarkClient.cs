@@ -66,6 +66,13 @@ namespace PostmarkDotNet
         PostmarkResponse SendMessage(PostmarkMessage message);
 
         /// <summary>
+        /// Send an email using a template associated with your Server.
+        /// </summary>
+        /// <param name="message"></param>
+        /// <returns></returns>
+        PostmarkResponse SendMessage(TemplatedPostmarkMessage message);
+
+        /// <summary>
         /// Sends a batch of up to 500 messages through the Postmark API.
         /// All email addresses must be valid, and the sender must be
         /// a valid sender signature according to Postmark. To obtain a valid

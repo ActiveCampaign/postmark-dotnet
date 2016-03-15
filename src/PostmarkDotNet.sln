@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 2013
-VisualStudioVersion = 12.0.40629.0
+# Visual Studio 14
+VisualStudioVersion = 14.0.24720.0
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{66CC7207-833B-4759-940E-1CECE646D7D5}"
 	ProjectSection(SolutionItems) = preProject
@@ -31,6 +31,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = ".nuget", ".nuget", "{4DB909
 		.nuget\NuGet.exe = .nuget\NuGet.exe
 		.nuget\NuGet.targets = .nuget\NuGet.targets
 	EndProjectSection
+EndProject
+Project("{8BB2217D-0F2D-49D1-97BC-3654ED321F3B}") = "Postmark.NetCore", "Postmark.NetCore\Postmark.NetCore.xproj", "{9EAB61C3-914B-4F95-8BD6-4BD6A480EB97}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -98,6 +100,18 @@ Global
 		{54B77A3B-4C90-41FC-B7BE-707334888401}.Release|Any CPU.Build.0 = Release|Any CPU
 		{54B77A3B-4C90-41FC-B7BE-707334888401}.Release|ARM.ActiveCfg = Release|Any CPU
 		{54B77A3B-4C90-41FC-B7BE-707334888401}.Release|x86.ActiveCfg = Release|Any CPU
+		{9EAB61C3-914B-4F95-8BD6-4BD6A480EB97}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{9EAB61C3-914B-4F95-8BD6-4BD6A480EB97}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{9EAB61C3-914B-4F95-8BD6-4BD6A480EB97}.Debug|ARM.ActiveCfg = Debug|Any CPU
+		{9EAB61C3-914B-4F95-8BD6-4BD6A480EB97}.Debug|ARM.Build.0 = Debug|Any CPU
+		{9EAB61C3-914B-4F95-8BD6-4BD6A480EB97}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{9EAB61C3-914B-4F95-8BD6-4BD6A480EB97}.Debug|x86.Build.0 = Debug|Any CPU
+		{9EAB61C3-914B-4F95-8BD6-4BD6A480EB97}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{9EAB61C3-914B-4F95-8BD6-4BD6A480EB97}.Release|Any CPU.Build.0 = Release|Any CPU
+		{9EAB61C3-914B-4F95-8BD6-4BD6A480EB97}.Release|ARM.ActiveCfg = Release|Any CPU
+		{9EAB61C3-914B-4F95-8BD6-4BD6A480EB97}.Release|ARM.Build.0 = Release|Any CPU
+		{9EAB61C3-914B-4F95-8BD6-4BD6A480EB97}.Release|x86.ActiveCfg = Release|Any CPU
+		{9EAB61C3-914B-4F95-8BD6-4BD6A480EB97}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

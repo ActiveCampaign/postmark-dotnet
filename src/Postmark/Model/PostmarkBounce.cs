@@ -87,4 +87,22 @@ namespace PostmarkDotNet
         /// <value>Subject text of the original message</value>
         public string Subject { get; set; }
     }
+
+    /// <summary>
+    /// Representation of the payload of the bounce webhook
+    /// </summary>
+    public class PostmarkBounceWebhookMessage : PostmarkBounce
+    {
+        /// <summary>
+        ///   The int based type code for this bounce.
+        /// </summary>
+        /// <value>The type code</value>
+        public int TypeCode { get; set; }
+
+        /// <summary>
+        ///   The friendly name for this bounce.
+        /// </summary>
+        /// <value>The friendly name of the bounce</value>
+        public string Name { get; set; }
+    }
 }

@@ -103,10 +103,12 @@
     <Compile Include="Model\PostmarkBounceSummary.cs" />
     <Compile Include="Model\PostmarkBounceType.cs" />
     <Compile Include="Model\PostmarkDeliveryStats.cs" />
+    <Compile Include="Model\PostmarkInboundWebhookMessage.cs" />
     <Compile Include="Model\PostmarkInboundMessage.cs" />
     <Compile Include="Model\PostmarkInboundMessageList.cs" />
     <Compile Include="Model\PostmarkMessageAttachment.cs" />
     <Compile Include="Model\PostmarkOpensList.cs" />
+    <Compile Include="Model\PostmarkOpenWebhookMessage.cs" />
     <Compile Include="Model\PostmarkOutboundMessagesList.cs" />
     <Compile Include="Model\PostmarkOutboundClientStats.cs" />
     <Compile Include="Model\PostmarkOutboundOverviewStats.cs" />
@@ -122,6 +124,7 @@
     <Compile Include="Model\PostmarkServerList.cs" />
     <Compile Include="Model\PostmarkTaggedTriggerList.cs" />
     <Compile Include="Model\PostmarkTaggedTriggerInfo.cs" />
+    <Compile Include="Model\PostmarkBounceWebhookMessage.cs" />
     <Compile Include="PostmarkClient.Async.cs" />
     <Compile Include="Serializers\PostmarkSerializer.cs" />
     <Compile Include="PostmarkClient.cs" />

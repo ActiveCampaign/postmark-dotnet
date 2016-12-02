@@ -57,7 +57,10 @@ namespace PostmarkDotNet
         /// Track this message using Postmark's OpenTracking feature. Message should be in html
         /// to allow for tracking techniques
         /// </summary>
-        public bool TrackOpens { get; set; }
+        /// <remarks>
+        /// Previously, this was defaulted to false, but ignored by the server.
+        /// </remarks>
+        public bool? TrackOpens { get; set; }
 
         /// <summary>
         ///   A collection of optional message headers.

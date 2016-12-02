@@ -779,7 +779,10 @@ namespace PostmarkDotNet
 
         private static void CleanPostmarkMessage(PostmarkMessage message)
         {
-            message.From = message.From.Trim();
+            if (!string.IsNullOrEmpty(message.From))
+            {
+                message.From = message.From.Trim();
+            }
             if (!string.IsNullOrEmpty(message.To))
             {
                 message.To = message.To.Trim();

@@ -1,13 +1,3 @@
-# Notes:
-#   - Minimal appveyor.yml file is an empty file. All sections are optional.
-#   - Indent each level of configuration with 2 spaces. Do not use tabs!
-#   - All section names are case-sensitive.
-#   - Section names should be unique on each level.
-
-#---------------------------------#
-#      general configuration      #
-#---------------------------------#
-
 # version format
 version: 2.0.{build}
 
@@ -15,10 +5,6 @@ version: 2.0.{build}
 branches:
   except:
     - gh-pages
-
-#---------------------------------#
-#    environment configuration    #
-#---------------------------------#
 
 # Operating system (build VM template)
 os: Windows Server 2012
@@ -31,29 +17,23 @@ init:
 environment:
   API_BASE_URL: https://api.postmarkapp.com
   READ_INBOUND_TEST_SERVER_TOKEN:
-    secure: P1NvmfCVAu9px5aTm5eg33yBqQc6GQNOjiXNfMuiGw6LN/Iv3mnIBtWwuPuNv4qR
-  READ_SELENIUM_TEST_SERVER_TOKEN:
-    secure: P1NvmfCVAu9px5aTm5eg33yBqQc6GQNOjiXNfMuiGw6LN/Iv3mnIBtWwuPuNv4qR
-  WRITE_ACCOUNT_TOKEN:
-    secure: 7Ey3YPustdLvsCSiLuYr0d28p7AZ/e7GvTybryaGJbVG4i9dV51yVvM7J3GYaR3F
+    secure: vJ62QJ+ipfs/ZBUGy2zjfQH9VhMO4bgSO6LgN0LqEaCMz/CYhDgElhxGOv3suNmt
+  READ_SELENIUM_TEST_SERVER_TOKEN: 
+    secure: ecc4V3tEuyfOAM6k+brMlDJN0Ec18mnLu6fMz5CmydmItoAdk2u3Xj8bEQYUXyPK
+  READ_LINK_TRACKING_TEST_SERVER_TOKEN:
+    secure: Iwzsp8yoHYe8nSZlWUYBLFwTMyEu9uo5wkt3GqZAGhTF4YVVW2Tg5cXZqxwgI/iH
+  WRITE_ACCOUNT_TOKEN: 
+    secure: 8WHfQJv+ZjUJp8pd5KcG0MjOelyEskSA9c/o0QnbIIQaV5hA3BqprE2cnorsCtnR
   WRITE_TEST_SERVER_TOKEN:
-    secure: pV6j8JnCkqGInPu8WHJE6JaDEXFI8W78Vvs7GMvWct0coHDPiPsCexi9WH3yq0jg
+    secure: 4Pt2zMfFltMLSxpvud43AYFTlZWqXRurVBZgCajtzXk3hZpOV1wPPXvUPIUYcw1D
   WRITE_TEST_SENDER_EMAIL_ADDRESS:
-    secure: CNR5LLv1OOX0gyHGvMrqlQ==
-  WRITE_TEST_EMAIL_RECIPIENT_ADDRESS:
-    secure: gWxE8LYawcvJiZvsdChuBtcJR4gAXyNL8uyuKOWtkVE=
+    secure: Ke83sTbZc/+9/mokIvL8BxtPl6yA9tyjjs5kWTI06ZNodxd5gfXpm6Ns+6l0jMLZ
   WRITE_TEST_SENDER_SIGNATURE_PROTOTYPE:
-    secure: jjD4zlb+QJhZ+m1yzHrOzUDI16AkpN5cYXS599prBdhrOM/QkSU1IjtwGJ39pNV0
-
-# scripts that run after cloning repository
-#install:
-  # by default, all script lines are interpreted as batch
-  #- echo This is batch
-  # to run script as a PowerShell command prepend it with ps:
-  #- ps: Write-Host 'This is PowerShell'
-  # batch commands start from cmd:
-  #- cmd: echo This is batch again
-  #- cmd: set MY_VAR=12345
+    secure: dfbWIBndqE2MTj/qyJVP2I13XJlMKA64mI9/jcx1Fa1bZqPqW/tAfxeMViEMjQU836IYWflAG2h4IjARH+K+2uvhTz5y2rb9DzpLvzohKs8=
+  WRITE_TEST_EMAIL_RECIPIENT_ADDRESS:
+    secure: Ke83sTbZc/+9/mokIvL8BxtPl6yA9tyjjs5kWTI06ZNodxd5gfXpm6Ns+6l0jMLZ
+  WRITE_TEST_DOMAIN_NAME:
+    secure: +c0Z9XqvuliGsFGKWOLGEkeSx7dSTe41ehS8ZLpc/Bo=
 
 # enable patching of AssemblyInfo.* files
 assembly_info:
@@ -69,10 +49,6 @@ nuget:
   account_feed: true
   project_feed: true
 
-#---------------------------------#
-#       build configuration       #
-#---------------------------------#
-
 # build platform, i.e. x86, x64, Any CPU. This setting is optional.
 platform: Any CPU
 
@@ -87,10 +63,6 @@ build:
   # quiet|minimal|normal|detailed
   verbosity: normal
 
-#---------------------------------#
-#       tests configuration       #
-#---------------------------------#
-
 test:
   assemblies:
     - '**\*.Tests.dll'
@@ -103,13 +75,6 @@ artifacts:
   # pushing all *.nupkg files in directory
   - path: '.\*.nupkg'
 
-  #---------------------------------#
-  #     deployment configuration    #
-  #---------------------------------#
-
-  # providers: Local, FTP, WebDeploy, AzureCS, AzureBlob, S3, NuGet, Environment
-  # provider names are case-sensitive!
-
 deploy:
   # Deploying to NuGet feed
   - provider: NuGet
@@ -118,10 +83,3 @@ deploy:
     skip_symbols: true
     on:
       appveyor_repo_tag: true
-
-notifications:
-  # HipChat
-  - provider: HipChat
-    auth_token:
-      secure: OqT/6oTT5wCUSt4rajfZ/Ye1K0lz8nUJzj2KFtoIwmMo6QtjSuGIhf/RGIu0uXIr
-    room: Postmark

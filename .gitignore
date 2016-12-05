@@ -39,3 +39,4 @@ sn-build
 src/packages/
 Postmark.dll
 testconfig.config
+testing_keys.json

@@ -25,8 +25,8 @@ namespace Postmark.PCL.Tests
             var id = Guid.NewGuid();
             _senderprefix = "test-sender-";
             _returnPath = "test." + WRITE_TEST_SENDER_SIGNATURE_PROTOTYPE.Split('@')[1];
-            _senderEmail = WRITE_TEST_SENDER_SIGNATURE_PROTOTYPE.Replace("[token]", String.Format(_senderprefix + "{0:n}", id));
-            _replyToAddress = WRITE_TEST_SENDER_SIGNATURE_PROTOTYPE.Replace("[token]", String.Format(_senderprefix + "replyto-{0:n}@example.com", id));
+            _senderEmail = WRITE_TEST_SENDER_SIGNATURE_PROTOTYPE.Replace("[TOKEN]", String.Format(_senderprefix + "{0:n}", id));
+            _replyToAddress = WRITE_TEST_SENDER_SIGNATURE_PROTOTYPE.Replace("[TOKEN]", String.Format(_senderprefix + "replyto-{0:n}@example.com", id));
             _senderName = String.Format("Test Sender {0}", TESTING_DATE);
             await CompletionSource;
         }

@@ -6,6 +6,8 @@ using System.IO;
 using System.Threading.Tasks;
 using System.Xml.Linq;
 using System.Linq;
+using Newtonsoft.Json;
+using System.Collections.Generic;
 
 namespace Postmark.PCL.Tests
 {
@@ -45,13 +47,15 @@ namespace Postmark.PCL.Tests
         /// <returns></returns>
         private static string ConfigVariable(string variableName)
         {
-            var retval = ConfigurationManager.AppSettings[variableName];
+            string retval = null;
             //this is here to allow us to have a config that isn't committed to source control, but still allows the project to build
             try
             {
-                var masterConfig = XDocument.Parse(File.ReadAllText(AppDomain.CurrentDomain.BaseDirectory + "/../../../../testconfig.config"));
-                retval = masterConfig.Root.Element("appSettings").Elements("add")
-                       .First(k => k.Attribute("key").Value == variableName).Attribute("value").Value;
+                var json_parameters = File.ReadAllText(AppDomain.CurrentDomain.BaseDirectory + "/../../../../testing_keys.json");
+
+                var values = JsonConvert.DeserializeObject<Dictionary<String, String>>(json_parameters);
+
+                retval = values[variableName];
             }
             catch
             {
@@ -71,7 +75,7 @@ namespace Postmark.PCL.Tests
         public static readonly string WRITE_TEST_EMAIL_RECIPIENT_ADDRESS = ConfigVariable("WRITE_TEST_EMAIL_RECIPIENT_ADDRESS");
         public static readonly string WRITE_TEST_SENDER_SIGNATURE_PROTOTYPE = ConfigVariable("WRITE_TEST_SENDER_SIGNATURE_PROTOTYPE");
 
-        public static readonly string API_BASE_URL = ConfigVariable("API_BASE_URL");
+        public static readonly string API_BASE_URL = ConfigVariable("BASE_URL");
 
         protected PostmarkClient _client;
 

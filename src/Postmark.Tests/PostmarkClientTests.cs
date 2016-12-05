@@ -1,6 +1,8 @@
-﻿using NUnit.Framework;
+﻿using Newtonsoft.Json;
+using NUnit.Framework;
 using PostmarkDotNet;
 using System;
+using System.Collections.Generic;
 using System.Configuration;
 using System.IO;
 using System.Linq;
@@ -21,13 +23,15 @@ namespace Postmark.Tests
         /// <returns></returns>
         private static string ConfigVariable(string variableName)
         {
-            var retval = ConfigurationManager.AppSettings[variableName];
+            string retval = null;
             //this is here to allow us to have a config that isn't committed to source control, but still allows the project to build
             try
             {
-                var masterConfig = XDocument.Parse(File.ReadAllText(AppDomain.CurrentDomain.BaseDirectory + "/../../../../testconfig.config"));
-                retval = masterConfig.Root.Element("appSettings").Elements("add")
-                       .First(k => k.Attribute("key").Value == variableName).Attribute("value").Value;
+                var json_parameters = File.ReadAllText(AppDomain.CurrentDomain.BaseDirectory + "/../../../../testing_keys.json");
+
+                var values = JsonConvert.DeserializeObject<Dictionary<String, String>>(json_parameters);
+
+                retval = values[variableName];
             }
             catch
             {
@@ -299,7 +303,7 @@ namespace Postmark.Tests
             Assert.AreEqual(mm.Body, pm.TextBody);
             Assert.AreEqual("mytag", pm.Tag);
         }
-        
+
         [Test]
         public void Can_generate_postmarkmessage_using_correct_tag_header_from_mailmessage()
         {
@@ -309,10 +313,10 @@ namespace Postmark.Tests
                 Body = "test"
             };
             mm.To.Add("me@me.com");
-            mm.Headers.Add("X-PM-Tag", "correct tag");           
+            mm.Headers.Add("X-PM-Tag", "correct tag");
             //This header should be overridden by using the correct 'X-PM-Tag'
             mm.Headers.Add("X-PostmarkTag", "overridden tag");
-            
+
             var pm = new PostmarkMessage(mm);
             Assert.AreEqual("correct tag", pm.Tag);
         }

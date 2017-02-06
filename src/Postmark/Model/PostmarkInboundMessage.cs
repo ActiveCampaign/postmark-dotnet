@@ -44,6 +44,16 @@ namespace PostmarkDotNet
         public List<CcFull> CcFull { get; set; }
 
         /// <summary>
+        /// See also To, From, Cc
+        /// </summary>
+        public string Bcc { get; set; }
+
+        /// <summary>
+        /// See also ToFull, FromFull, CcFull
+        /// </summary>
+        public List<BccFull> BccFull { get; set; }
+
+        /// <summary>
         /// The ReplyTo address if available from the Inbound message
         /// </summary>
         public string ReplyTo { get; set; }
@@ -120,6 +130,13 @@ namespace PostmarkDotNet
     }
 
     public class CcFull
+    {
+        public string Email { get; set; }
+        public string Name { get; set; }
+        public string MailboxHash { get; set; }
+    }
+
+    public class BccFull
     {
         public string Email { get; set; }
         public string Name { get; set; }

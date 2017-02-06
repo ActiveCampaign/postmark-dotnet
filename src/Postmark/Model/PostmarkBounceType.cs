@@ -1,89 +1,120 @@
-﻿namespace PostmarkDotNet
+namespace PostmarkDotNet
 {
     /// <summary>
-    ///   Represents the type of bounce for a <see cref = "PostmarkBounce" />.
+    /// Represents the type of Bounce.
+    /// More details:
+    /// - http://developer.postmarkapp.com/developer-api-bounce.html#bounce-types
     /// </summary>
     public enum PostmarkBounceType
     {
         /// <summary>
-        ///   HardBounce
+        /// Hard bounce — The server was unable to deliver your message (ex: unknown user, mailbox not found).
         /// </summary>
-        HardBounce,
+        HardBounce = 1,
+
         /// <summary>
-        ///   Transient
+        /// Message delayed — The server could not temporarily deliver your message (ex: Message is delayed due to network troubles).
         /// </summary>
-        Transient,
+        Transient = 2,
+
         /// <summary>
-        ///   Unsubscribe
+        /// Unsubscribe request — Unsubscribe or Remove request.
         /// </summary>
-        Unsubscribe,
+        Unsubscribe = 16,
+
         /// <summary>
-        ///   Subscribe
+        /// Subscribe request — Subscribe request from someone wanting to get added to the mailing list.
         /// </summary>
-        Subscribe,
+        Subscribe = 32,
+
         /// <summary>
-        ///   AutoResponder
+        /// Auto responder — Automatic email responder (ex: "Out of Office" or "On Vacation").
         /// </summary>
-        AutoResponder,
+        AutoResponder = 64,
+
         /// <summary>
-        ///   AddressChange
+        /// Address change — The recipient has requested an address change.
         /// </summary>
-        AddressChange,
+        AddressChange = 128,
+
         /// <summary>
-        ///   DnsError
+        /// DNS error — A temporary DNS error.
         /// </summary>
-        DnsError,
+        DnsError = 256,
+
         /// <summary>
-        ///   SpamNotification
+        /// Spam notification — The message was delivered, but was either blocked by the user, or classified as spam, bulk mail, or had rejected content.
         /// </summary>
-        SpamNotification,
+        SpamNotification = 512,
+
         /// <summary>
-        ///   OpenRelayTest
+        /// Open relay test — The NDR is actually a test email message to see if the mail server is an open relay.
         /// </summary>
-        OpenRelayTest,
+        OpenRelayTest = 1024,
+
         /// <summary>
-        ///   Unknown
+        /// Unknown — Unable to classify the NDR.
         /// </summary>
-        Unknown,
+        Unknown = 2048,
+
         /// <summary>
-        ///   SoftBounce
+        /// Soft bounce — Unable to temporarily deliver message (i.e. mailbox full, account disabled, exceeds quota, out of disk space).
         /// </summary>
-        SoftBounce,
+        SoftBounce = 4096,
+
         /// <summary>
-        ///   VirusNotification
+        /// Virus notification — The bounce is actually a virus notification warning about a virus/code infected message.
         /// </summary>
-        VirusNotification,
+        VirusNotification = 8192,
+
         /// <summary>
-        ///   ChallengeVerification
+        /// Spam challenge verification — The bounce is a challenge asking for verification you actually sent the email. Typcial challenges are made by Spam Arrest, or MailFrontier Matador.
         /// </summary>
-        ChallengeVerification,
+        ChallengeVerification = 16384,
+
         /// <summary>
-        ///   BadEmailAddress
+        /// Invalid email address — The address is not a valid email address.
         /// </summary>
-        BadEmailAddress,
+        BadEmailAddress = 100000,
+
         /// <summary>
-        ///   SpamComplaint
+        /// Spam complaint — The subscriber explicitly marked this message as spam.
         /// </summary>
-        SpamComplaint,
+        SpamComplaint = 100001,
+
         /// <summary>
-        ///   ManuallyDeactivated
+        /// Manually deactivated — The email was manually deactivated.
         /// </summary>
-        ManuallyDeactivated,
+        ManuallyDeactivated = 100002,
+
         /// <summary>
-        ///   Unconfirmed
+        /// Registration not confirmed — The subscriber has not clicked on the confirmation link upon registration or import.
         /// </summary>
-        Unconfirmed,
+        Unconfirmed = 100003,
+
         /// <summary>
-        ///   Blocked
+        /// ISP block — Blocked from this ISP due to content or blacklisting.
         /// </summary>
-        Blocked,
-        ///
-        ///  SMTPApiError
-        /// 
-        SMTPApiError,
+        Blocked = 100006,
+
         /// <summary>
-        /// AOL Spam Notification
+        /// SMTP API error — An error occurred while accepting an email through the SMTP API.
         /// </summary>
-        AOLSpamNotification
+        SMTPApiError = 100007,
+
+        /// <summary>
+        /// Processing failed — Unable to deliver inbound message to destination inbound hook.
+        /// </summary>
+        InboundError = 100008,
+
+        /// <summary>
+        /// DMARC Policy — Email rejected due DMARC Policy.
+        /// </summary>
+        DMARCPolicy = 100009,
+
+        /// <summary>
+        /// Template rendering failed — An error occurred while attempting to render your template.
+        /// </summary>
+        TemplateRenderingFailed = 100010,
     }
 }

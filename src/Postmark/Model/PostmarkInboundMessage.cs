@@ -17,6 +17,11 @@ namespace PostmarkDotNet
         /// The fully populated From address in Name/Email format
         /// </summary>
         public FromFull FromFull { get; set; }
+        
+        /// <summary>
+        /// ?
+        /// </summary>
+        public string FromName { get; set; }
 
         /// <summary>
         /// The Address the inbound message was sent to
@@ -29,12 +34,12 @@ namespace PostmarkDotNet
         public List<ToFull> ToFull { get; set; }
 
         /// <summary>
-        /// See also To, From
+        /// See also To, From, Bcc
         /// </summary>
         public string Cc { get; set; }
 
         /// <summary>
-        /// See also ToFull, FromFull
+        /// See also ToFull, FromFull, BccFull
         /// </summary>
         public List<CcFull> CcFull { get; set; }
 
@@ -104,18 +109,21 @@ namespace PostmarkDotNet
     {
         public string Email { get; set; }
         public string Name { get; set; }
+        public string MailboxHash { get; set; }
     }
 
     public class ToFull
     {
         public string Email { get; set; }
         public string Name { get; set; }
+        public string MailboxHash { get; set; }
     }
 
     public class CcFull
     {
         public string Email { get; set; }
         public string Name { get; set; }
+        public string MailboxHash { get; set; }
     }
 
     public class Header

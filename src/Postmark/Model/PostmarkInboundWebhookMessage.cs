@@ -15,7 +15,7 @@ namespace PostmarkDotNet.Webhooks
         public string From { get; set; }
 
         /// <summary>
-        /// The Address the Inbound message is originally from name
+        /// The name from the Address the Inbound message is originally from
         /// </summary>
         public string FromName { get; set; }
 

@@ -17,9 +17,9 @@ namespace PostmarkDotNet
         /// The fully populated From address in Name/Email format
         /// </summary>
         public FromFull FromFull { get; set; }
-        
+
         /// <summary>
-        /// ?
+        /// The name from the Address the Inbound message is originally from
         /// </summary>
         public string FromName { get; set; }
 

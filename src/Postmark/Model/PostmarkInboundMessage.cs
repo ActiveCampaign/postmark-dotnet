@@ -115,29 +115,24 @@ namespace PostmarkDotNet
         public List<Attachment> Attachments { get; set; }
     }
 
-    public class FromFull
+    public class FromFull : AddressFull
     {
-        public string Email { get; set; }
-        public string Name { get; set; }
-        public string MailboxHash { get; set; }
     }
 
-    public class ToFull
+    public class ToFull : AddressFull
     {
-        public string Email { get; set; }
-        public string Name { get; set; }
-        public string MailboxHash { get; set; }
     }
 
-    public class CcFull
+    public class CcFull : AddressFull
     {
-        public string Email { get; set; }
-        public string Name { get; set; }
-        public string MailboxHash { get; set; }
     }
 
-    public class BccFull
+    public class BccFull : AddressFull
     {
+    }
+    
+    public class AddressFull
+    {   
         public string Email { get; set; }
         public string Name { get; set; }
         public string MailboxHash { get; set; }

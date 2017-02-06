@@ -35,14 +35,24 @@ namespace PostmarkDotNet.Webhooks
         public List<ToFull> ToFull { get; set; }
 
         /// <summary>
-        /// See also To, From
+        /// See also To, From, Bcc
         /// </summary>
         public string Cc { get; set; }
 
         /// <summary>
-        /// See also ToFull, FromFull
+        /// See also ToFull, FromFull, BccFull
         /// </summary>
         public List<CcFull> CcFull { get; set; }
+
+        /// <summary>
+        /// See also To, From, Cc
+        /// </summary>
+        public string Bcc { get; set; }
+
+        /// <summary>
+        /// See also ToFull, FromFull, CcFull
+        /// </summary>
+        public List<BccFull> BccFull { get; set; }
 
         /// <summary>
         /// The ReplyTo address if available from the Inbound message

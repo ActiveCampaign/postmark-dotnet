@@ -109,6 +109,9 @@
     <Compile Include="..\Postmark\Model\PostmarkDeliveryStats.cs">
       <Link>Model\PostmarkDeliveryStats.cs</Link>
     </Compile>
+    <Compile Include="..\Postmark\Model\PostmarkDeliveryWebhookMessage.cs">
+      <Link>Model\PostmarkDeliveryWebhookMessage.cs</Link>
+    </Compile>
     <Compile Include="..\Postmark\Model\PostmarkInboundMessageList.cs">
       <Link>Model\PostmarkInboundMessageList.cs</Link>
     </Compile>

@@ -1,4 +1,5 @@
-﻿using System;
+﻿using PostmarkDotNet.Model;
+using System;
 using System.Collections.Generic;
 
 namespace PostmarkDotNet.Webhooks

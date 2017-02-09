@@ -75,6 +75,9 @@
     <Compile Include="..\Postmark\Model\PostmarkBounceType.cs">
       <Link>Model\PostmarkBounceType.cs</Link>
     </Compile>
+    <Compile Include="..\Postmark\Model\PostmarkBounceWebhookMessage.cs">
+      <Link>Model\PostmarkBounceWebhookMessage.cs</Link>
+    </Compile>
     <Compile Include="..\Postmark\Model\PostmarkCompleteSenderSignature.cs">
       <Link>Model\PostmarkCompleteSenderSignature.cs</Link>
     </Compile>
@@ -93,11 +96,17 @@
     <Compile Include="..\Postmark\Model\PostmarkInboundRuleTriggerList.cs">
       <Link>Model\PostmarkInboundRuleTriggerList.cs</Link>
     </Compile>
+    <Compile Include="..\Postmark\Model\PostmarkInboundWebhookMessage.cs">
+      <Link>Model\PostmarkInboundWebhookMessage.cs</Link>
+    </Compile>
     <Compile Include="..\Postmark\Model\PostmarkMessageAttachment.cs">
       <Link>Model\PostmarkMessageAttachment.cs</Link>
     </Compile>
     <Compile Include="..\Postmark\Model\PostmarkOpensList.cs">
       <Link>Model\PostmarkOpensList.cs</Link>
+    </Compile>
+    <Compile Include="..\Postmark\Model\PostmarkOpenWebhookMessage.cs">
+      <Link>Model\PostmarkOpenWebhookMessage.cs</Link>
     </Compile>
     <Compile Include="..\Postmark\Model\PostmarkOutboundBounceStats.cs">
       <Link>Model\PostmarkOutboundBounceStats.cs</Link>

@@ -19,6 +19,11 @@ namespace PostmarkDotNet
         public FromFull FromFull { get; set; }
 
         /// <summary>
+        /// The name from the Address the Inbound message is originally from
+        /// </summary>
+        public string FromName { get; set; }
+
+        /// <summary>
         /// The Address the inbound message was sent to
         /// </summary>
         public string To { get; set; }
@@ -29,14 +34,24 @@ namespace PostmarkDotNet
         public List<ToFull> ToFull { get; set; }
 
         /// <summary>
-        /// See also To, From
+        /// See also To, From, Bcc
         /// </summary>
         public string Cc { get; set; }
 
         /// <summary>
-        /// See also ToFull, FromFull
+        /// See also ToFull, FromFull, BccFull
         /// </summary>
         public List<CcFull> CcFull { get; set; }
+
+        /// <summary>
+        /// See also To, From, Cc
+        /// </summary>
+        public string Bcc { get; set; }
+
+        /// <summary>
+        /// See also ToFull, FromFull, CcFull
+        /// </summary>
+        public List<BccFull> BccFull { get; set; }
 
         /// <summary>
         /// The ReplyTo address if available from the Inbound message
@@ -100,22 +115,27 @@ namespace PostmarkDotNet
         public List<Attachment> Attachments { get; set; }
     }
 
-    public class FromFull
+    public class FromFull : AddressFull
     {
-        public string Email { get; set; }
-        public string Name { get; set; }
     }
 
-    public class ToFull
+    public class ToFull : AddressFull
     {
-        public string Email { get; set; }
-        public string Name { get; set; }
     }
 
-    public class CcFull
+    public class CcFull : AddressFull
     {
+    }
+
+    public class BccFull : AddressFull
+    {
+    }
+    
+    public class AddressFull
+    {   
         public string Email { get; set; }
         public string Name { get; set; }
+        public string MailboxHash { get; set; }
     }
 
     public class Header

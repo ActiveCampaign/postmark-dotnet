@@ -15,7 +15,8 @@ init:
 
 # environment variables
 environment:
-  API_BASE_URL: https://api.postmarkapp.com
+  API_BASE_URL:
+    secure: ehA5Ev0HawoRI9YQqAzTjLoIxQH8wh9vjp9YWBgzvSI=
   READ_INBOUND_TEST_SERVER_TOKEN:
     secure: vJ62QJ+ipfs/ZBUGy2zjfQH9VhMO4bgSO6LgN0LqEaCMz/CYhDgElhxGOv3suNmt
   READ_SELENIUM_TEST_SERVER_TOKEN: 

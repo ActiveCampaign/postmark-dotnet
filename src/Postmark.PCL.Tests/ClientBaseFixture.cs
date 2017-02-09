@@ -61,7 +61,7 @@ namespace Postmark.PCL.Tests
             {
                 //This is OK, it just doesn't exist.. no big deal.
             }
-            return String.IsNullOrWhiteSpace(retval) ? Environment.GetEnvironmentVariable(variableName) : retval;
+            return string.IsNullOrWhiteSpace(retval) ? Environment.GetEnvironmentVariable(variableName) : retval;
         }
 
         public static readonly DateTime TESTING_DATE = DateTime.Now;

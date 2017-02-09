@@ -11,7 +11,7 @@ namespace Postmark.PCL.Tests
     {
         protected override async Task SetupAsync()
         {
-            _client = new PostmarkDotNet.PostmarkClient(READ_SELENIUM_TEST_SERVER_TOKEN);
+            _client = new PostmarkClient(READ_SELENIUM_TEST_SERVER_TOKEN, requestTimeoutInSeconds: 60);
             await CompletionSource;
         }
 
@@ -25,7 +25,7 @@ namespace Postmark.PCL.Tests
             var baseList = (await _client.GetOutboundMessagesAsync());
 
             var fromemail = baseList.Messages
-                .First(k => !String.IsNullOrWhiteSpace(k.From)).From;
+                .First(k => !string.IsNullOrWhiteSpace(k.From)).From;
             var recipient = baseList.Messages.First().Recipients.First();
             var tag = "test_tag";
             var subject = baseList.Messages.First().Subject;

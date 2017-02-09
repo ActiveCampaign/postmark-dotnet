@@ -13,7 +13,7 @@ namespace Postmark.PCL.Tests
     {
         protected override async Task SetupAsync()
         {
-            _client = new PostmarkClient(WRITE_TEST_SERVER_TOKEN, API_BASE_URL);
+            _client = new PostmarkClient(WRITE_TEST_SERVER_TOKEN, BASE_URL);
             await CompletionSource;
         }
 

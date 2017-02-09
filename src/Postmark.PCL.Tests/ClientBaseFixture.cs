@@ -1,11 +1,8 @@
 ﻿using NUnit.Framework;
 using PostmarkDotNet;
 using System;
-using System.Configuration;
 using System.IO;
 using System.Threading.Tasks;
-using System.Xml.Linq;
-using System.Linq;
 using Newtonsoft.Json;
 using System.Collections.Generic;
 

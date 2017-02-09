@@ -3,11 +3,9 @@ using NUnit.Framework;
 using PostmarkDotNet;
 using System;
 using System.Collections.Generic;
-using System.Configuration;
 using System.IO;
 using System.Linq;
 using System.Net.Mail;
-using System.Xml.Linq;
 
 namespace Postmark.Tests
 {
@@ -212,7 +210,6 @@ namespace Postmark.Tests
             Assert.IsNotNull(response);
             Assert.IsNotNullOrEmpty(response.Message);
             Assert.IsTrue(response.Status == PostmarkStatus.Success);
-            Console.WriteLine("Postmark -> {0}", response.Message);
         }
 
         [Test]
@@ -233,8 +230,6 @@ namespace Postmark.Tests
             Assert.IsNotNull(response);
             Assert.IsNotNullOrEmpty(response.Message);
             Assert.IsTrue(response.Status == PostmarkStatus.UserError);
-
-            Console.WriteLine("Postmark -> {0}", response.Message);
         }
 
         [Test]

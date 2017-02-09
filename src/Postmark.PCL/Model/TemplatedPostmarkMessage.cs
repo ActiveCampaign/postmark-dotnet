@@ -30,7 +30,7 @@
         /// This means that you can assign a Dictionary&lt;K,V&gt; to this property. 
         /// The dictionary may contain any keys and or objects that can be serialized to JSON.
         /// 
-        /// Additionally, POCOs and anonymous types can be assign to this property, 
+        /// Additionally, POCOs and anonymous types can be assigned to this property, 
         /// provided they can be serialized to JSON (we use JSON.net internally).
         ///
         /// Objects that would be serialized as "JSON scalars" or arrays should *not* be assigned to this property.

@@ -89,5 +89,11 @@ namespace PostmarkDotNet
         /// </summary>
         /// <value>Subject text of the original message</value>
         public string Subject { get; set; }
+        
+        /// <summary>
+        /// The original sender of the email, if available.
+        /// </summary>
+        /// <value>Subject text of the original message</value>
+        public string From { get; set; }
     }
 }

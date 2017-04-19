@@ -93,7 +93,16 @@ namespace PostmarkDotNet
         /// <summary>
         /// The original sender of the email, if available.
         /// </summary>
-        /// <value>Subject text of the original message</value>
         public string From { get; set; }
+        
+        /// <summary>
+        /// The ID of the Server that sent the original message.
+        /// </summary>
+        public int ServerID { get; set; }
+        
+        /// <summary>
+        /// The Bounce Type "Friendly Name"
+        /// </summary>
+        public string Name { get; set; }
     }
 }

@@ -131,6 +131,14 @@ namespace Postmark.PCL.Tests
             Assert.AreNotEqual(Guid.Empty, sendResult.MessageID);
         }
 
+        [TestCase]
+        public async Task ClientCanSendTemplateWithStringModel()
+        {
+            var template = await _client.CreateTemplateAsync("test template name", "test subject", "test html body");
+            var sendResult = await _client.SendEmailWithTemplateAsync(template.TemplateId, "{ \"name\" = \"Andrew\" }", WRITE_TEST_SENDER_EMAIL_ADDRESS, WRITE_TEST_SENDER_EMAIL_ADDRESS, false);
+            Assert.AreNotEqual(Guid.Empty, sendResult.MessageID);
+        }
+
         [TearDown]
         public virtual async void CleanupTemplates()
         {

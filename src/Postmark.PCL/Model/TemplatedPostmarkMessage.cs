@@ -1,4 +1,6 @@
-﻿namespace PostmarkDotNet
+﻿using Newtonsoft.Json.Linq;
+
+namespace PostmarkDotNet
 {
     /// <summary>
     /// Send a message using a template that you have previously created in Postmark.
@@ -21,6 +23,8 @@
         /// </summary>
         public long TemplateId { get; set; }
 
+        private object _templateModel;
+
         /// <summary>
         /// The values to merge with the template when creating the content.
         ///
@@ -38,6 +42,35 @@
         /// See this guide for more information on how this model is used, and how Postmark Templates work:
         /// http://support.postmarkapp.com/article/786-using-a-postmark-starter-template
         /// </summary>
-        public object TemplateModel { get; set; }
+        /// <remarks>
+        /// In some cases (perhaps for performance reasons), you may wish to assign a "pre-serialized" 
+        /// JSON object to this property. In such cases, you can assign it as a string. Keep in mind that 
+        /// the string MUST a JSON Object, not a scalar or array, and if you do assign an invalid model, 
+        /// the API may reject it.
+        /// </remarks>
+        public object TemplateModel {
+            get
+            {
+                if (_templateModel is JRaw)
+                {
+                    return ((JRaw)_templateModel).Value;
+                }
+                else
+                {
+                    return _templateModel;
+                }
+            }
+            set
+            {
+                if(value is string)
+                {
+                    _templateModel = new JRaw(value);
+                }
+                else
+                {
+                    _templateModel = value;
+                }
+            }
+        }
     }
 }

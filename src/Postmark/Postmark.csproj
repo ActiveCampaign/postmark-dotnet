@@ -94,6 +94,7 @@
     <Compile Include="IPostmarkClient.Async.cs" />
     <Compile Include="IPostmarkClient.cs" />
     <Compile Include="Model\InboundMessageStatus.cs" />
+    <Compile Include="Model\LinkTrackingOptions.cs" />
     <Compile Include="Model\OutboundMessageStatus.cs" />
     <Compile Include="Model\PostmarkCompleteSenderSignature.cs" />
     <Compile Include="Model\PostmarkBaseSenderSignature.cs" />

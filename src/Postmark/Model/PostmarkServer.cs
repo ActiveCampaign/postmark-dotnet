@@ -80,6 +80,11 @@ namespace PostmarkDotNet.Model
         public bool TrackOpens { get; set; }
 
         /// <summary>
+        /// The link tracking setting for this server.
+        /// </summary>
+        public LinkTrackingOptions TrackLinks { get; set; }
+
+        /// <summary>
         /// Inbound domain for MX setup
         /// </summary>
         public string InboundDomain { get; set; }

@@ -2,7 +2,6 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Net;
 
 namespace PostmarkDotNet
 {
@@ -18,6 +17,7 @@ namespace PostmarkDotNet
         {
             Headers = new HeaderCollection();
             Attachments = new List<PostmarkMessageAttachment>(0);
+            TrackLinks = LinkTrackingOptions.None;
         }
 
         /// <summary>
@@ -61,6 +61,8 @@ namespace PostmarkDotNet
         /// Previously, this was defaulted to false, but ignored by the server.
         /// </remarks>
         public bool? TrackOpens { get; set; }
+
+        public LinkTrackingOptions TrackLinks { get; set; }
 
         /// <summary>
         ///   A collection of optional message headers.

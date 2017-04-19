@@ -59,6 +59,7 @@ namespace Postmark.PCL.Tests
                 HtmlBody = String.Format("Testing the Postmark .net client, <b>{0}</b>", TESTING_DATE),
                 TextBody = "This is plain text.",
                 TrackOpens = true,
+                TrackLinks = LinkTrackingOptions.HtmlAndText,
                 Headers = new HeaderCollection(){
                   {  "X-Integration-Testing-Postmark-Type-Message" , TESTING_DATE.ToString("o")}
                 },

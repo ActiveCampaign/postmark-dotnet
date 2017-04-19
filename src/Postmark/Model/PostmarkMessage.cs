@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Web;
 using PostmarkDotNet.Validation;
 
 #if !WINDOWS_PHONE
@@ -11,7 +10,6 @@ using System.Linq;
 using System.Net.Mail;
 using System.Net.Mime;
 using System.Text;
-using System.Diagnostics.CodeAnalysis;
 #else
 using Hammock.Silverlight.Compat;
 #endif
@@ -166,6 +164,7 @@ namespace PostmarkDotNet
         {
             Headers = new NameValueCollection(0);
             Attachments = new List<PostmarkMessageAttachment>(0);
+            TrackLinks = LinkTrackingOptions.None;
         }
 
 #if !WINDOWS_PHONE
@@ -289,6 +288,11 @@ namespace PostmarkDotNet
         /// to allow for tracking techniques
         /// </summary>
         public bool TrackOpens { get; set; }
+
+        /// <summary>
+        /// Setting determining whether to track links, default is "None"
+        /// </summary>
+        public LinkTrackingOptions TrackLinks { get; set; }
 
         /// <summary>
         ///   A collection of optional message headers.

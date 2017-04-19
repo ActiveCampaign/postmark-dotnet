@@ -9,7 +9,6 @@
         public TemplatedPostmarkMessage()
             : base()
         {
-
         }
 
         /// <summary>

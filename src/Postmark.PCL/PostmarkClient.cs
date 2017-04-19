@@ -291,7 +291,8 @@ namespace PostmarkDotNet
         public async Task<PostmarkServer> EditServerAsync(String name = null, string color = null,
             bool? rawEmailEnabled = null, bool? smtpApiActivated = null, string inboundHookUrl = null,
             string bounceHookUrl = null, string openHookUrl = null, bool? postFirstOpenOnly = null,
-            bool? trackOpens = null, string inboundDomain = null, int? inboundSpamThreshold = null)
+            bool? trackOpens = null, string inboundDomain = null, int? inboundSpamThreshold = null, 
+            LinkTrackingOptions? trackLinks = null)
         {
             var body = new Dictionary<string, object>();
             body["Name"] = name;
@@ -305,6 +306,7 @@ namespace PostmarkDotNet
             body["TrackOpens"] = trackOpens;
             body["InboundDomain"] = inboundDomain;
             body["InboundSpamThreshold"] = inboundSpamThreshold;
+            body["TrackLinks"] = trackLinks;
 
             body = body.Where(kv => kv.Value != null).ToDictionary(k => k.Key, v => v.Value);
 

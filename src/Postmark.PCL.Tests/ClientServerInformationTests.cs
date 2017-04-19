@@ -56,7 +56,7 @@ namespace Postmark.PCL.Tests
                 !existingServer.RawEmailEnabled, !existingServer.SmtpApiActivated,
                 _inboundHookUrl + updatedAffix, _bounceHookUrl + updatedAffix,
                 _openHookUrl + updatedAffix, !existingServer.PostFirstOpenOnly,
-                !existingServer.TrackOpens, null, 10);
+                !existingServer.TrackOpens, null, 10, LinkTrackingOptions.HtmlOnly);
 
             //go get a fresh copy from the API.
             var retrievedServer = await _client.GetServerAsync();
@@ -68,7 +68,8 @@ namespace Postmark.PCL.Tests
                 existingServer.InboundHookUrl, existingServer.BounceHookUrl,
                 existingServer.OpenHookUrl, existingServer.PostFirstOpenOnly,
                 existingServer.TrackOpens, null,
-                existingServer.InboundSpamThreshold);
+                existingServer.InboundSpamThreshold,
+                LinkTrackingOptions.None);
 
             Assert.AreEqual(_name + updatedAffix, retrievedServer.Name);
             Assert.AreEqual(ServerColors.Purple, retrievedServer.Color);
@@ -82,6 +83,7 @@ namespace Postmark.PCL.Tests
             Assert.AreNotEqual(existingServer.TrackOpens, retrievedServer.TrackOpens);
             Assert.AreEqual(10, retrievedServer.InboundSpamThreshold);
             Assert.AreNotEqual(existingServer.InboundSpamThreshold, retrievedServer.InboundSpamThreshold);
+            Assert.AreEqual(LinkTrackingOptions.HtmlOnly, retrievedServer.TrackLinks);
         }
 
 

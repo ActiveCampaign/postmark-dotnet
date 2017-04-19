@@ -85,7 +85,7 @@ namespace PostmarkDotNet.PCL
                     var content = new JsonContent<TRequestBody>(message);
                     request.Content = content;
                 }
-
+                
                 request.Headers.Add("Accept", "application/json");
                 request.Headers.Add(AuthHeaderName, _authToken);
                 request.Headers.Add("User-Agent", _agent);

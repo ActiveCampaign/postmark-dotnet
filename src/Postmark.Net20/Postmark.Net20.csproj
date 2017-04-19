@@ -76,6 +76,9 @@
     <Compile Include="..\Postmark\Model\InboundMessageStatus.cs">
       <Link>Model\InboundMessageStatus.cs</Link>
     </Compile>
+    <Compile Include="..\Postmark\Model\LinkTrackingOptions.cs">
+      <Link>Model\LinkTrackingOptions.cs</Link>
+    </Compile>
     <Compile Include="..\Postmark\Model\OutboundMessageStatus.cs">
       <Link>Model\OutboundMessageStatus.cs</Link>
     </Compile>

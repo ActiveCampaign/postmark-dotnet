@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using Newtonsoft.Json;
 using PostmarkDotNet.Model;
+using NetStandad16.Model;
 #if !WINDOWS_PHONE
 using System.Collections.Specialized;
 #else

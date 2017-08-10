@@ -17,10 +17,5 @@ namespace PostmarkDotNet.Webhooks
         /// <value>The type code</value>
         public int TypeCode { get; set; }
 
-        /// <summary>
-        ///   The friendly name for this bounce.
-        /// </summary>
-        /// <value>The friendly name of the bounce</value>
-        public string Name { get; set; }
     }
 }

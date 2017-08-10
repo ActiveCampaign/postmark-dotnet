@@ -1,593 +1,157 @@
-﻿using System;
+﻿using Newtonsoft.Json.Linq;
+using PostmarkDotNet.Model;
+using System;
 using System.Collections.Generic;
 using System.Linq;
-using Hammock;
-using Hammock.Web;
-using Newtonsoft.Json;
-using PostmarkDotNet.Converters;
-using PostmarkDotNet.Model;
-using PostmarkDotNet.Serializers;
-using PostmarkDotNet.Validation;
-
-#if !WINDOWS_PHONE
-using System.Net.Mail;
-using System.Collections.Specialized;
-#else
-using Hammock.Silverlight.Compat;
-#endif
+using System.Net.Http;
+using System.Threading.Tasks;
 
 namespace PostmarkDotNet
 {
     /// <summary>
-    ///   A client for the Postmark application. 
-    ///   Use this client in place of an <see cref = "SmtpClient" /> to send messages
-    ///   through this service.
+    /// The standard Postmark API, allows all interactions with a Postmark "Server" (send/recieve/process/analyze emails).
+    /// This client supports normal API interactions, for Administrative API interactions, use the PostmarkAdminClient.
     /// </summary>
-    public partial class PostmarkClient : IPostmarkClient
+    /// <remarks>
+    /// Make sure to include "using PostmarkDotNet;" in your class file, which will include extension methods on the base client.
+    /// </remarks>
+    public class PostmarkClient : PostmarkDotNet.PCL.PostmarkClientBase
     {
-        private static readonly JsonSerializerSettings _settings;
-        private static readonly PostmarkSerializer _serializer;
-        private readonly RestClient _client;
-
-        static PostmarkClient()
+        /// <summary>
+        /// The authorization header required, in this case, "X-Postmark-Server-Token"
+        /// </summary>
+        protected override string AuthHeaderName
         {
-            _settings = new JsonSerializerSettings
-            {
-                MissingMemberHandling = MissingMemberHandling.Ignore,
-                NullValueHandling = NullValueHandling.Include,
-                DefaultValueHandling = DefaultValueHandling.Include
-            };
-
-            _settings.Converters.Add(new UnicodeJsonStringConverter());
-            _settings.Converters.Add(new NameValueCollectionConverter());
-            _serializer = new PostmarkSerializer(_settings);
+            get { return "X-Postmark-Server-Token"; }
         }
 
         /// <summary>
-        ///   Initializes a new instance of the <see cref = "PostmarkClient" /> class.
-        ///   If you do not have a server token you can request one by signing up to
-        ///   use Postmark: http://postmarkapp.com.
+        /// Instantiate the client.
         /// </summary>
-        /// <param name = "serverToken">The server token.</param>
-        public PostmarkClient(string serverToken)
+        /// <param name="serverToken">Used for requests that require server level privileges. This token can be found on the Credentials tab under your Postmark server.</param>
+        public PostmarkClient(string serverToken, string apiBaseUri = "https://api.postmarkapp.com", int requestTimeoutInSeconds = 30)
+            : base(apiBaseUri, requestTimeoutInSeconds)
         {
-            ServerToken = serverToken;
-            _client = new RestClient
-            {
-                Authority = "https://api.postmarkapp.com"
-            };
+            _authToken = serverToken;
         }
 
+        #region Email Sending
         /// <summary>
-        ///   Initializes a new instance of the <see cref = "PostmarkClient" /> class.
-        ///   If you do not have a server token you can request one by signing up to
-        ///   use Postmark: http://postmarkapp.com.
+        /// Sends a message through the Postmark API.
+        /// All email addresses must be valid, and the sender must be
+        /// a valid sender signature according to Postmark. To obtain a valid
+        /// sender signature, log in to Postmark and navigate to:
+        /// http://postmarkapp.com/signatures.
         /// </summary>
-        /// <param name = "serverToken">The server token.</param>
-        /// <param name = "timeout">Time to wait for the API in seconds.</param>
-        public PostmarkClient(string serverToken, int timeout)
-        {
-            ServerToken = serverToken;
-
-            // Configure timespam from number of seconds the user wants to set the timeout for
-            TimeSpan timeoutInSeconds = DateTime.Now.AddSeconds(timeout).Subtract(DateTime.Now);
-
-            _client = new RestClient
-            {
-                Authority = "https://api.postmarkapp.com",
-                Timeout = timeoutInSeconds
-            };
-        }
-
-        /// <summary>
-        /// Initializes a new instance of the <see cref = "PostmarkClient" /> class.
-        /// If you do not have a server token you can request one by signing up to
-        /// use Postmark: http://postmarkapp.com.
-        /// Extra signature to override https
-        /// </summary>
-        /// <param name="serverToken">You can get a server token by signing up at http://www.postmarkapp.com</param>
-        /// <param name="noSSL">Skip https usage</param>
-        public PostmarkClient(string serverToken, bool noSSL)
-        {
-            ServerToken = serverToken;
-            _client = new RestClient();
-
-            _client.Authority = noSSL ? "http://api.postmarkapp.com" : "https://api.postmarkapp.com";
-        }
-
-        ///<summary>
-        ///  Override the REST API endpoint by specifying your own address, if necessary.
-        ///</summary>
-        public string Authority
-        {
-            get { return _client.Authority; }
-            set { _client.Authority = value; }
-        }
-
-        /// <summary>
-        ///   Gets the server token issued with your Postmark email server configuration.
-        /// </summary>
-        /// <value>The server token.</value>
-        public string ServerToken { get; private set; }
-
-#if !WINDOWS_PHONE
-
-        #region Mail API
-
-        /// <summary>
-        ///   Sends a message through the Postmark API.
-        ///   All email addresses must be valid, and the sender must be
-        ///   a valid sender signature according to Postmark. To obtain a valid
-        ///   sender signature, log in to Postmark and navigate to:
-        ///   http://postmarkapp.com/signatures.
-        /// </summary>
-        /// <param name = "from">An email address for a sender.</param>
-        /// <param name = "to">An email address for a recipient.</param>
-        /// <param name = "subject">The message subject line.</param>
-        /// <param name = "body">The message body.</param>
-        /// <returns>A <see cref = "PostmarkResponse" /> with details about the transaction.</returns>
-        public PostmarkResponse SendMessage(string from, string to, string subject, string body)
-        {
-            return SendMessage(from, to, subject, body, null);
-        }
-
-        /// <summary>
-        ///   Sends a message through the Postmark API.
-        ///   All email addresses must be valid, and the sender must be
-        ///   a valid sender signature according to Postmark. To obtain a valid
-        ///   sender signature, log in to Postmark and navigate to:
-        ///   http://postmarkapp.com/signatures.
-        /// </summary>
-        /// <param name = "from">An email address for a sender.</param>
-        /// <param name = "to">An email address for a recipient.</param>
-        /// <param name = "subject">The message subject line.</param>
-        /// <param name = "body">The message body.</param>
-        /// <param name = "headers">A collection of additional mail headers to send with the message.</param>
-        /// <returns>A <see cref = "PostmarkResponse" /> with details about the transaction.</returns>
-        public PostmarkResponse SendMessage(string from, string to, string subject, string body, NameValueCollection headers)
-        {
-            var message = new PostmarkMessage(from, to, subject, body, headers);
-
-            return SendMessage(message);
-        }
-
-        /// <summary>
-        ///   Sends a message through the Postmark API.
-        ///   All email addresses must be valid, and the sender must be
-        ///   a valid sender signature according to Postmark. To obtain a valid
-        ///   sender signature, log in to Postmark and navigate to:
-        ///   http://postmarkapp.com/signatures.
-        /// </summary>
-        /// <param name = "message">A prepared message instance.</param>
+        /// <param name="message">A prepared message.</param>
         /// <returns></returns>
-        public PostmarkResponse SendMessage(PostmarkMessage message)
+        public async Task<PostmarkResponse> SendMessageAsync(PostmarkMessage message)
         {
-            var request = NewEmailRequest();
-
-            CleanPostmarkMessage(message);
-
-            request.Entity = message;
-
-            return GetPostmarkResponse(request);
+            return await ProcessRequestAsync<PostmarkMessage, PostmarkResponse>("/email", HttpMethod.Post, message);
         }
 
         /// <summary>
-        /// Send an email using a template associated with your Server.
+        /// Sends a batch of up to 500 messages through the Postmark API.
+        /// All email addresses must be valid, and the sender must be
+        /// a valid sender signature according to Postmark. To obtain a valid
+        /// sender signature, log in to Postmark and navigate to:
+        /// http://postmarkapp.com/signatures.
         /// </summary>
-        /// <param name="message"></param>
-        /// <returns></returns>
-        public PostmarkResponse SendMessage(TemplatedPostmarkMessage message)
+        /// <param name="messages">A prepared batch of messages.</param>
+        /// <returns>The processed messages (Complete with system assigned message IDs)</returns>
+        public async Task<IEnumerable<PostmarkResponse>> SendMessagesAsync(params PostmarkMessage[] messages)
         {
-            var request = NewTemplatedEmailRequest();
-            request.Entity = message;
-            return GetPostmarkResponse(request);
+            return await ProcessRequestAsync<PostmarkMessage[], PostmarkResponse[]>("/email/batch", HttpMethod.Post, messages);
+        }
+        #endregion
+
+        #region Bounces
+
+        /// <summary>
+        /// Retrieves the bounce-related <see cref = "PostmarkDeliveryStats" /> results for the
+        /// associated mail server.
+        /// </summary>
+        /// <returns></returns>
+        public async Task<PostmarkDeliveryStats> GetDeliveryStatsAsync()
+        {
+            return await this.ProcessNoBodyRequestAsync<PostmarkDeliveryStats>("/deliverystats");
         }
 
         /// <summary>
-        ///   Sends a batch of messages through the Postmark API.
-        ///   All email addresses must be valid, and the sender must be
-        ///   a valid sender signature according to Postmark. To obtain a valid
-        ///   sender signature, log in to Postmark and navigate to:
-        ///   http://postmarkapp.com/signatures.
+        /// Retrieves a collection of <see cref = "PostmarkBounce" /> instances along
+        /// with a sum total of bounces recorded by the server, based on filter parameters.
         /// </summary>
-        /// <param name="messages">A prepared message batch.</param>
+        /// <param name="type">The type of bounces to filter on.</param>
+        /// <param name="inactive">Whether to return only inactive or active bounces; use null to return all bounces.</param>
+        /// <param name="emailFilter">Filters based on whether the filter value is contained in the bounce source's email.</param>
+        /// <param name="tag">Filters on the bounce tag.</param>
+        /// <param name="messageID">Filter by MessageID.</param>
+        /// <param name="offset">The page offset for the returned results; defaults to 0.</param>
+        /// <param name="count">The number of results to return by the page offset; defaults to 100.</param>
         /// <returns></returns>
-        public IEnumerable<PostmarkResponse> SendMessages(params PostmarkMessage[] messages)
+        /// <seealso href = "http://developer.postmarkapp.com/bounces" />
+        public async Task<PostmarkBounces> GetBouncesAsync(int offset = 0, int count = 100, PostmarkBounceType? type = null,
+            bool? inactive = null, string emailFilter = null, string tag = null, string messageID = null)
         {
-            if (messages.Count() > 500)
-            {
-                throw new ValidationException("You may only send up to 500 messages in a batched call");
-            }
-            return SendMessages(messages.ToList());
+            var parameters = new Dictionary<string, object>();
+            parameters["type"] = type;
+            parameters["inactive"] = inactive;
+            parameters["emailFilter"] = emailFilter;
+            parameters["tag"] = tag;
+            parameters["messageID"] = messageID;
+            parameters["offset"] = offset;
+            parameters["count"] = count;
+
+            return await ProcessNoBodyRequestAsync<PostmarkBounces>("/bounces", parameters);
         }
 
         /// <summary>
-        ///   Sends a batch of messages through the Postmark API.
-        ///   All email addresses must be valid, and the sender must be
-        ///   a valid sender signature according to Postmark. To obtain a valid
-        ///   sender signature, log in to Postmark and navigate to:
-        ///   http://postmarkapp.com/signatures.
+        /// Retrieves a single <see cref = "PostmarkBounce" /> based on a specified ID.
         /// </summary>
-        /// <param name="messages">A prepared message batch.</param>
+        /// <param name="bounceId">The bounce ID of the bounce to retrieve.</param>
         /// <returns></returns>
-        public IEnumerable<PostmarkResponse> SendMessages(IEnumerable<PostmarkMessage> messages)
+        /// <seealso href = "http://developer.postmarkapp.com/bounces" />
+        public async Task<PostmarkBounce> GetBounceAsync(int bounceId)
         {
-            var request = NewBatchedEmailRequest();
-            var batch = new List<PostmarkMessage>(messages.Count());
+            return await ProcessNoBodyRequestAsync<PostmarkBounce>("/bounces/" + bounceId);
+        }
 
-            foreach (var message in messages)
-            {
-                CleanPostmarkMessage(message);
-                batch.Add(message);
-            }
+        /// <summary>
+        /// Returns the raw source of the bounce we accepted. 
+        /// If Postmark does not have a dump for that bounce, it will return an empty string.
+        /// </summary>
+        /// <param name="bounceId">The bounce ID of the bounce dump to retrieve.</param>
+        /// <returns></returns>
+        /// <seealso href = "http://developer.postmarkapp.com/bounces" />
+        public async Task<PostmarkBounceDump> GetBounceDumpAsync(int bounceId)
+        {
+            return await ProcessNoBodyRequestAsync<PostmarkBounceDump>("/bounces/" + bounceId + "/dump");
+        }
 
-            request.Entity = messages;
-            return GetPostmarkResponses(request);
+        /// <summary>
+        /// Activates a deactivated bounce.
+        /// </summary>
+        /// <param name="bounceId">The bounce ID of the bounce to Activate</param>
+        /// <returns></returns>
+        /// <seealso href = "http://developer.postmarkapp.com/bounces" />
+        public async Task<PostmarkBounceActivation> ActivateBounceAsync(int bounceId)
+        {
+            return await ProcessNoBodyRequestAsync<PostmarkBounceActivation>("/bounces/" + bounceId + "/activate", verb: HttpMethod.Put);
+        }
+
+        /// <summary>
+        /// Returns a list of tags used for the current server.
+        /// </summary>
+        /// <returns></returns>
+        /// <seealso href = "http://developer.postmarkapp.com/bounces" />
+        public async Task<IEnumerable<string>> GetBounceTagsAsync()
+        {
+            return await ProcessNoBodyRequestAsync<String[]>("/bounces/tags");
         }
 
         #endregion
 
-        #region Bounce API
-
-        /// <summary>
-        ///   Retrieves the bounce-related <see cref = "PostmarkDeliveryStats" /> results for the
-        ///   associated mail server.
-        /// </summary>
-        /// <returns></returns>
-        public PostmarkDeliveryStats GetDeliveryStats()
-        {
-            var request = NewBouncesRequest();
-            request.Path = "deliverystats";
-
-            var response = _client.Request(request);
-
-            return JsonConvert.DeserializeObject<PostmarkDeliveryStats>(response.Content, _settings);
-        }
-
-        /// <summary>
-        /// Retrieves a collection of <see cref = "PostmarkBounce" /> instances along
-        /// with a sum total of bounces recorded by the server, based on filter parameters.
-        /// </summary>
-        /// <param name="inactive">Whether to return only inactive or active bounces; use null to return all bounces</param>
-        /// <param name="emailFilter">Filters based on whether the filter value is contained in the bounce source's email</param>
-        /// <param name="tag">Filters on the bounce tag</param>
-        /// <param name="offset">The page offset for the returned results; mandatory</param>
-        /// <param name="count">The number of results to return by the page offset; mandatory.</param>
-        /// <returns></returns>
-        /// <seealso href = "http://developer.postmarkapp.com/bounces" />
-        public PostmarkBounces GetBounces(bool? inactive, string emailFilter, string tag, int offset, int count)
-        {
-            return GetBouncesImpl(null, inactive, emailFilter, tag, offset, count);
-        }
-
-        /// <summary>
-        ///   Retrieves a collection of <see cref = "PostmarkBounce" /> instances along
-        ///   with a sum total of bounces recorded by the server, based on filter parameters.
-        /// </summary>
-        /// <param name = "type">The type of bounces to filter on</param>
-        /// <param name = "inactive">Whether to return only inactive or active bounces; use null to return all bounces</param>
-        /// <param name = "emailFilter">Filters based on whether the filter value is contained in the bounce source's email</param>
-        /// <param name = "tag">Filters on the bounce tag</param>
-        /// <param name = "offset">The page offset for the returned results; mandatory</param>
-        /// <param name = "count">The number of results to return by the page offset; mandatory.</param>
-        /// <returns></returns>
-        /// <seealso href = "http://developer.postmarkapp.com/bounces" />
-        public PostmarkBounces GetBounces(PostmarkBounceType type, bool? inactive, string emailFilter, string tag, int offset, int count)
-        {
-            return GetBouncesImpl(type, inactive, emailFilter, tag, offset, count);
-        }
-
-        /// <summary>
-        ///   Retrieves a collection of <see cref = "PostmarkBounce" /> instances along
-        ///   with a sum total of bounces recorded by the server, based on filter parameters.
-        /// </summary>
-        /// <param name = "type">The type of bounces to filter on</param>
-        /// <param name = "offset">The page offset for the returned results; mandatory</param>
-        /// <param name = "count">The number of results to return by the page offset; mandatory.</param>
-        /// <returns></returns>
-        /// <seealso href = "http://developer.postmarkapp.com/bounces" />
-        public PostmarkBounces GetBounces(PostmarkBounceType type, int offset, int count)
-        {
-            return GetBouncesImpl(type, null, null, null, offset, count);
-        }
-
-        /// <summary>
-        /// Retrieves a collection of <see cref = "PostmarkBounce" /> instances along
-        /// with a sum total of bounces recorded by the server, based on filter parameters.
-        /// </summary>
-        /// <param name="offset">The page offset for the returned results; mandatory</param>
-        /// <param name="count">The number of results to return by the page offset; mandatory.</param>
-        /// <returns></returns>
-        /// <seealso href = "http://developer.postmarkapp.com/bounces" />
-        public PostmarkBounces GetBounces(int offset, int count)
-        {
-            return GetBouncesImpl(null, null, null, null, offset, count);
-        }
-
-        /// <summary>
-        ///   Retrieves a collection of <see cref = "PostmarkBounce" /> instances along
-        ///   with a sum total of bounces recorded by the server, based on filter parameters.
-        /// </summary>
-        /// <param name = "type">The type of bounces to filter on</param>
-        /// <param name = "inactive">Whether to return only inactive or active bounces; use null to return all bounces</param>
-        /// <param name = "offset">The page offset for the returned results; mandatory</param>
-        /// <param name = "count">The number of results to return by the page offset; mandatory.</param>
-        /// <returns></returns>
-        /// <seealso href = "http://developer.postmarkapp.com/bounces" />
-        public PostmarkBounces GetBounces(PostmarkBounceType type, bool? inactive, int offset, int count)
-        {
-            return GetBouncesImpl(type, inactive, null, null, offset, count);
-        }
-
-        /// <summary>
-        /// Retrieves a collection of <see cref = "PostmarkBounce" /> instances along
-        /// with a sum total of bounces recorded by the server, based on filter parameters.
-        /// </summary>
-        /// <param name="inactive">Whether to return only inactive or active bounces; use null to return all bounces</param>
-        /// <param name="offset">The page offset for the returned results; mandatory</param>
-        /// <param name="count">The number of results to return by the page offset; mandatory.</param>
-        /// <returns></returns>
-        /// <seealso href = "http://developer.postmarkapp.com/bounces" />
-        public PostmarkBounces GetBounces(bool? inactive, int offset, int count)
-        {
-            return GetBouncesImpl(null, inactive, null, null, offset, count);
-        }
-
-        /// <summary>
-        ///   Retrieves a collection of <see cref = "PostmarkBounce" /> instances along
-        ///   with a sum total of bounces recorded by the server, based on filter parameters.
-        /// </summary>
-        /// <param name = "type">The type of bounces to filter on</param>
-        /// <param name = "emailFilter">Filters based on whether the filter value is contained in the bounce source's email</param>
-        /// <param name = "offset">The page offset for the returned results; mandatory</param>
-        /// <param name = "count">The number of results to return by the page offset; mandatory.</param>
-        /// <returns></returns>
-        /// <seealso href = "http://developer.postmarkapp.com/bounces" />
-        public PostmarkBounces GetBounces(PostmarkBounceType type, string emailFilter, int offset, int count)
-        {
-            return GetBouncesImpl(type, null, emailFilter, null, offset, count);
-        }
-
-        /// <summary>
-        /// Retrieves a collection of <see cref = "PostmarkBounce" /> instances along
-        /// with a sum total of bounces recorded by the server, based on filter parameters.
-        /// </summary>
-        /// <param name="emailFilter">Filters based on whether the filter value is contained in the bounce source's email</param>
-        /// <param name="offset">The page offset for the returned results; mandatory</param>
-        /// <param name="count">The number of results to return by the page offset; mandatory.</param>
-        /// <returns></returns>
-        /// <seealso href = "http://developer.postmarkapp.com/bounces" />
-        public PostmarkBounces GetBounces(string emailFilter, int offset, int count)
-        {
-            return GetBouncesImpl(null, null, emailFilter, null, offset, count);
-        }
-
-        /// <summary>
-        ///   Retrieves a collection of <see cref = "PostmarkBounce" /> instances along
-        ///   with a sum total of bounces recorded by the server, based on filter parameters.
-        /// </summary>
-        /// <param name = "type">The type of bounces to filter on</param>
-        /// <param name = "emailFilter">Filters based on whether the filter value is contained in the bounce source's email</param>
-        /// <param name = "tag">Filters on the bounce tag</param>
-        /// <param name = "offset">The page offset for the returned results; mandatory</param>
-        /// <param name = "count">The number of results to return by the page offset; mandatory.</param>
-        /// <returns></returns>
-        /// <seealso href = "http://developer.postmarkapp.com/bounces" />
-        public PostmarkBounces GetBounces(PostmarkBounceType type, string emailFilter, string tag, int offset, int count)
-        {
-            return GetBouncesImpl(type, null, emailFilter, tag, offset, count);
-        }
-
-        /// <summary>
-        /// Retrieves a collection of <see cref = "PostmarkBounce" /> instances along
-        /// with a sum total of bounces recorded by the server, based on filter parameters.
-        /// </summary>
-        /// <param name="emailFilter">Filters based on whether the filter value is contained in the bounce source's email</param>
-        /// <param name="tag">Filters on the bounce tag</param>
-        /// <param name="offset">The page offset for the returned results; mandatory</param>
-        /// <param name="count">The number of results to return by the page offset; mandatory.</param>
-        /// <returns></returns>
-        /// <seealso href = "http://developer.postmarkapp.com/bounces" />
-        public PostmarkBounces GetBounces(string emailFilter, string tag, int offset, int count)
-        {
-            return GetBouncesImpl(null, null, emailFilter, tag, offset, count);
-        }
-
-        /// <summary>
-        ///   Retrieves a collection of <see cref = "PostmarkBounce" /> instances along
-        ///   with a sum total of bounces recorded by the server, based on filter parameters.
-        /// </summary>
-        /// <param name = "type">The type of bounces to filter on</param>
-        /// <param name = "inactive">Whether to return only inactive or active bounces; use null to return all bounces</param>
-        /// <param name = "emailFilter">Filters based on whether the filter value is contained in the bounce source's email</param>
-        /// <param name = "offset">The page offset for the returned results; mandatory</param>
-        /// <param name = "count">The number of results to return by the page offset; mandatory.</param>
-        /// <returns></returns>
-        /// <seealso href = "http://developer.postmarkapp.com/bounces" />
-        public PostmarkBounces GetBounces(PostmarkBounceType type, bool? inactive, string emailFilter, int offset, int count)
-        {
-            return GetBouncesImpl(type, inactive, emailFilter, null, offset, count);
-        }
-
-        /// <summary>
-        /// Retrieves a collection of <see cref = "PostmarkBounce" /> instances along
-        /// with a sum total of bounces recorded by the server, based on filter parameters.
-        /// </summary>
-        /// <param name="inactive">Whether to return only inactive or active bounces; use null to return all bounces</param>
-        /// <param name="emailFilter">Filters based on whether the filter value is contained in the bounce source's email</param>
-        /// <param name="offset">The page offset for the returned results; mandatory</param>
-        /// <param name="count">The number of results to return by the page offset; mandatory.</param>
-        /// <returns></returns>
-        /// <seealso href = "http://developer.postmarkapp.com/bounces" />
-        public PostmarkBounces GetBounces(bool? inactive, string emailFilter, int offset, int count)
-        {
-            return GetBouncesImpl(null, inactive, emailFilter, null, offset, count);
-        }
-
-        private PostmarkBounces GetBouncesImpl(PostmarkBounceType? type, bool? inactive, string emailFilter, string tag, int offset, int count)
-        {
-            var request = NewBouncesRequest();
-            request.Path = "bounces";
-            if (inactive.HasValue) request.AddParameter("inactive", inactive.Value.ToString().ToLowerInvariant());
-            if (!string.IsNullOrEmpty(emailFilter)) request.AddParameter("emailFilter", emailFilter);
-            if (!string.IsNullOrEmpty(tag)) request.AddParameter("tag", tag);
-            if (type.HasValue)
-            {
-                request.AddParameter("type", type.ToString());
-            }
-            request.AddParameter("offset", offset.ToString());
-            request.AddParameter("count", count.ToString());
-
-            var response = _client.Request(request);
-            return JsonConvert.DeserializeObject<PostmarkBounces>(response.Content, _settings);
-        }
-
-        /// <summary>
-        ///   Retrieves a single <see cref = "PostmarkBounce" /> based on a specified ID.
-        /// </summary>
-        /// <param name = "bounceId">The bounce ID</param>
-        /// <returns></returns>
-        /// <seealso href = "http://developer.postmarkapp.com/bounces" />
-        public PostmarkBounce GetBounce(string bounceId)
-        {
-            var request = NewBouncesRequest();
-            request.Path = string.Format("bounces/{0}", bounceId);
-
-            var response = _client.Request(request);
-
-            return JsonConvert.DeserializeObject<PostmarkBounce>(response.Content, _settings);
-        }
-
-        /// <summary>
-        ///   Returns a list of tags used for the current server.
-        /// </summary>
-        /// <returns></returns>
-        /// <seealso href = "http://developer.postmarkapp.com/bounces" />
-        public IEnumerable<string> GetBounceTags()
-        {
-            var request = NewBouncesRequest();
-            request.Path = "bounces/tags";
-
-            var response = _client.Request(request);
-
-            return JsonConvert.DeserializeObject<IEnumerable<string>>(response.Content, _settings);
-        }
-
-        /// <summary>
-        ///   Returns the raw source of the bounce we accepted. 
-        ///   If Postmark does not have a dump for that bounce, it will return an empty string.
-        /// </summary>
-        /// <param name = "bounceId">The bounce ID</param>
-        /// <returns></returns>
-        /// <seealso href = "http://developer.postmarkapp.com/bounces" />
-        public PostmarkBounceDump GetBounceDump(string bounceId)
-        {
-            var request = NewBouncesRequest();
-            request.Path = string.Format("bounces/{0}/dump", bounceId.Trim());
-
-            var response = _client.Request(request);
-
-            return JsonConvert.DeserializeObject<PostmarkBounceDump>(response.Content, _settings);
-        }
-
-        /// <summary>
-        ///   Activates a deactivated bounce.
-        /// </summary>
-        /// <param name = "bounceId">The bounce ID</param>
-        /// <returns></returns>
-        /// <seealso href = "http://developer.postmarkapp.com/bounces" />
-        public PostmarkBounceActivation ActivateBounce(string bounceId)
-        {
-            var request = NewBouncesRequest();
-            request.Method = WebMethod.Put;
-            request.Path = string.Format("bounces/{0}/activate", bounceId.Trim());
-
-            var response = _client.Request(request);
-
-            return JsonConvert.DeserializeObject<PostmarkBounceActivation>(response.Content, _settings);
-        }
-
-        #endregion
-
-        #region Messages API
-
-        /// <summary>
-        /// Return a listing of Outbound sent messages using the filters supported by the API.
-        /// </summary>
-        /// <param name="count">Number of messages to return per call. (required)</param>
-        /// <param name="subject">Filter by message subject.</param>
-        /// <param name="offset">Number of messages to offset/page per call. (required)</param>
-        /// <returns>PostmarkOutboundMessageList</returns>
-        public PostmarkOutboundMessageList GetOutboundMessages(int count, string subject, int offset)
-        {
-            return GetOutboundMessagesImpl(null, null, null, subject, count, offset);
-        }
-
-
-        /// <summary>
-        /// Return a listing of Outbound sent messages using the filters supported by the API.
-        /// </summary>
-        /// <param name="count">Number of messages to return per call. (required)</param>
-        /// <param name="offset">Number of messages to offset/page per call. (required)</param>
-        /// <param name="recipient">Filter by the recipient(s) of the message.</param>
-        /// <returns>PostmarkOutboundMessageList</returns>
-        public PostmarkOutboundMessageList GetOutboundMessages(int count, int offset, string recipient)
-        {
-            return GetOutboundMessagesImpl(recipient, null, null, null, count, offset);
-        }
-
-
-        /// <summary>
-        /// Return a listing of Outbound sent messages using the filters supported by the API.
-        /// </summary>
-        /// <param name="count">Number of messages to return per call. (required)</param>
-        /// <param name="offset">Number of messages to offset/page per call. (required)</param>
-        /// <returns>PostmarkOutboundMessageList</returns>
-        public PostmarkOutboundMessageList GetOutboundMessages(int count, int offset)
-        {
-            return GetOutboundMessagesImpl(null, null, null, null, count, offset);
-        }
-
-        /// <summary>
-        /// Return a listing of Outbound sent messages using the filters supported by the API.
-        /// </summary>
-        /// <param name="recipient">Filter by the recipient(s) of the message.</param>
-        /// <param name="fromemail">Filter by the email address the message is sent from.</param>
-        /// <param name="count">Number of messages to return per call. (required)</param>
-        /// <param name="offset">Number of messages to offset/page per call. (required)</param>
-        /// <returns>PostmarkOutboundMessageList</returns>
-        public PostmarkOutboundMessageList GetOutboundMessages(string recipient, string fromemail,
-            int count, int offset)
-        {
-            return GetOutboundMessagesImpl(recipient, fromemail, null, null, count, offset);
-        }
-
-        /// <summary>
-        /// Return a listing of Outbound sent messages using the filters supported by the API.
-        /// </summary>
-        /// <param name="subject">Filter by message subject.</param>
-        /// <param name="count">Number of messages to return per call. (required)</param>
-        /// <param name="offset">Number of messages to offset/page per call. (required)</param>
-        /// <returns>PostmarkOutboundMessageList</returns>
-        public PostmarkOutboundMessageList GetOutboundMessages(string subject, int count, int offset)
-        {
-            return GetOutboundMessagesImpl(null, null, null, subject, count, offset);
-        }
-
-        /// <summary>
-        /// Return a listing of Outbound sent messages using the filters supported by the API.
-        /// </summary>
-        /// <param name="fromemail">Filter by the email address the message is sent from.</param>
-        /// <param name="tag">Filter by a tag used for the message (messages sent directly through the API only)</param>
-        /// <param name="subject">Filter by message subject.</param>
-        /// <param name="count">Number of messages to return per call. (required)</param>
-        /// <param name="offset">Number of messages to offset/page per call. (required)</param>
-        /// <returns>PostmarkOutboundMessageList</returns>
-        public PostmarkOutboundMessageList GetOutboundMessages(string fromemail, string tag,
-            string subject, int count, int offset)
-        {
-            return GetOutboundMessagesImpl(null, fromemail, tag, subject, count, offset);
-        }
+        #region Outbound Message Retrieval
 
         /// <summary>
         /// Return a listing of Outbound sent messages using the filters supported by the API.
@@ -598,37 +162,26 @@ namespace PostmarkDotNet
         /// <param name="subject">Filter by message subject.</param>
         /// <param name="count">Number of messages to return per call. (required)</param>
         /// <param name="offset">Number of messages to offset/page per call. (required)</param>
+        /// <param name="status">The status of the outbound message.</param>
+        /// <param name="fromDate">Get messages on or after YYYY-MM-DD.</param>
+        /// <param name="toDate">Get messages on or before YYYY-MM-DD.</param>
         /// <returns>PostmarkOutboundMessageList</returns>
-        public PostmarkOutboundMessageList GetOutboundMessages(string recipient, string fromemail, string tag,
-            string subject, int count, int offset)
+        public async Task<PostmarkOutboundMessageList> GetOutboundMessagesAsync(int offset = 0, int count = 100,
+            string recipient = null, string fromemail = null, string tag = null, string subject = null,
+            OutboundMessageStatus status = OutboundMessageStatus.Sent, string toDate = null, string fromDate = null)
         {
-            return GetOutboundMessagesImpl(recipient, fromemail, tag, subject, count, offset);
-        }
-
-
-        /// <summary>
-        /// Implementation called to do the actual messages call and return a <see cref="PostmarkOutboundMessageList"/>
-        /// </summary>s
-        private PostmarkOutboundMessageList GetOutboundMessagesImpl(string recipient, string fromemail, string tag, string subject, int count, int offset)
-        {
-            if (count > 500)
-            {
-                throw new ValidationException("You can only receive up to 500 messages per call.");
-            }
-
-            var request = NewMessagesRequest();
-            request.Path = "messages/outbound";
-
-            if (!string.IsNullOrEmpty(recipient)) request.AddParameter("recipient", recipient);
-            if (!string.IsNullOrEmpty(fromemail)) request.AddParameter("fromemail", fromemail);
-            if (!string.IsNullOrEmpty(tag)) request.AddParameter("tag", tag);
-            if (!string.IsNullOrEmpty(subject)) request.AddParameter("subject", subject);
-
-            request.AddParameter("count", count.ToString());
-            request.AddParameter("offset", offset.ToString());
-
-            var response = _client.Request(request);
-            return JsonConvert.DeserializeObject<PostmarkOutboundMessageList>(response.Content, _settings);
+            var parameters = new Dictionary<string, object>();
+            parameters["count"] = count;
+            parameters["offset"] = offset;
+            parameters["recipient"] = recipient;
+            parameters["fromemail"] = fromemail;
+            parameters["tag"] = tag;
+            parameters["subject"] = subject;
+            parameters["todate"] = toDate;
+            parameters["fromdate"] = fromDate;
+            parameters["status"] = status.ToString().ToLower();
+           
+            return await ProcessNoBodyRequestAsync<PostmarkOutboundMessageList>("/messages/outbound", parameters);
         }
 
         /// <summary>
@@ -636,13 +189,9 @@ namespace PostmarkDotNet
         /// </summary>
         /// <param name="messageID">The MessageID of a message which can be optained either from the initial API send call or a GetOutboundMessages call.</param>
         /// <returns>OutboundMessageDetail</returns>
-        public OutboundMessageDetail GetOutboundMessageDetail(string messageID)
+        public async Task<OutboundMessageDetail> GetOutboundMessageDetailsAsync(string messageID)
         {
-            var request = NewMessagesRequest();
-            request.Path = string.Format("messages/outbound/{0}/details", messageID.Trim());
-
-            var response = _client.Request(request);
-            return JsonConvert.DeserializeObject<OutboundMessageDetail>(response.Content, _settings);
+            return await ProcessNoBodyRequestAsync<OutboundMessageDetail>("/messages/outbound/" + messageID + "/details");
         }
 
         /// <summary>
@@ -650,68 +199,14 @@ namespace PostmarkDotNet
         /// </summary>
         /// <param name="messageID">The MessageID of a message which can be optained either from the initial API send call or a GetOutboundMessages call.</param>
         /// <returns>MessageDump</returns>
-        public MessageDump GetOutboundMessageDump(string messageID)
+        public async Task<MessageDump> GetOutboundMessageDumpAsync(string messageID)
         {
-            var request = NewMessagesRequest();
-            request.Path = string.Format("messages/outbound/{0}/dump", messageID.Trim());
-
-            var response = _client.Request(request);
-            return JsonConvert.DeserializeObject<MessageDump>(response.Content, _settings);
+            return await ProcessNoBodyRequestAsync<MessageDump>("/messages/outbound/" + messageID + "/dump");
         }
 
+        #endregion
 
-
-        /// <summary>
-        /// Return a listing of Inbound sent messages using the filters supported by the API.
-        /// </summary>
-        /// <param name="count">Number of messages to return per call. (required)</param>
-        /// <param name="offset">Number of messages to offset/page per call. (required)</param>
-        /// <returns>PostmarkInboundMessageList</returns>
-        public PostmarkInboundMessageList GetInboundMessages(int count, int offset)
-        {
-            return GetInboundMessagesImpl(null, null, null, null, count, offset);
-        }
-
-        /// <summary>
-        /// Return a listing of Inbound sent messages using the filters supported by the API.
-        /// </summary>
-        /// <param name="fromemail">Filter by the email address the message is sent from.</param>
-        /// <param name="count">Number of messages to return per call. (required)</param>
-        /// <param name="offset">Number of messages to offset/page per call. (required)</param>
-        /// <returns>PostmarkInboundMessageList</returns>
-        public PostmarkInboundMessageList GetInboundMessages(string fromemail, int count, int offset)
-        {
-            return GetInboundMessagesImpl(null, fromemail, null, null, count, offset);
-        }
-
-        /// <summary>
-        /// Return a listing of Inbound sent messages using the filters supported by the API.
-        /// </summary>
-        /// <param name="fromemail">Filter by the email address the message is sent from.</param>
-        /// <param name="subject">Filter by message subject.</param>
-        /// <param name="count">Number of messages to return per call. (required)</param>
-        /// <param name="offset">Number of messages to offset/page per call. (required)</param>
-        /// <returns>PostmarkInboundMessageList</returns>
-        public PostmarkInboundMessageList GetInboundMessages(string fromemail, string subject, int count, int offset)
-        {
-            return GetInboundMessagesImpl(null, fromemail, subject, null, count, offset);
-        }
-
-        /// <summary>
-        /// Return a listing of Inbound sent messages using the filters supported by the API.
-        /// </summary>
-        /// <param name="recipient">Filter by the recipient(s) of the message.</param>
-        /// <param name="fromemail">Filter by the email address the message is sent from.</param>
-        /// <param name="subject">Filter by message subject.</param>
-        /// <param name="count">Number of messages to return per call. (required)</param>
-        /// <param name="offset">Number of messages to offset/page per call. (required)</param>
-        /// <returns>PostmarkInboundMessageList</returns>
-        public PostmarkInboundMessageList GetInboundMessages(string recipient, string fromemail, string subject, int count, int offset)
-        {
-            return GetInboundMessagesImpl(recipient, fromemail, subject, null, count, offset);
-        }
-
-
+        #region Inbound Message Retrieval
         /// <summary>
         /// Return a listing of Inbound sent messages using the filters supported by the API.
         /// </summary>
@@ -721,35 +216,26 @@ namespace PostmarkDotNet
         /// <param name="mailboxhash">Filter by mailbox hash that was parsed from the inbound message.</param>
         /// <param name="count">Number of messages to return per call. (required)</param>
         /// <param name="offset">Number of messages to offset/page per call. (required)</param>
+        /// <param name="status">The status of the inbound message.</param>
+        /// <param name="fromDate">Get messages on or after YYYY-MM-DD.</param>
+        /// <param name="toDate">Get messages on or before YYYY-MM-DD.</param>
         /// <returns>PostmarkInboundMessageList</returns>
-        public PostmarkInboundMessageList GetInboundMessages(string recipient, string fromemail, string subject, string mailboxhash, int count, int offset)
+        public async Task<PostmarkInboundMessageList> GetInboundMessagesAsync(int offset = 0, int count = 100,
+            string recipient = null, string fromemail = null, string subject = null, 
+            string mailboxhash = null, InboundMessageStatus? status = InboundMessageStatus.Processed, String toDate = null, String fromDate = null)
         {
-            return GetInboundMessagesImpl(recipient, fromemail, subject, mailboxhash, count, offset);
-        }
-
-        /// <summary>
-        /// Implementation to get Inbound messages for the public search APIs
-        /// </summary>
-        private PostmarkInboundMessageList GetInboundMessagesImpl(string recipient, string fromemail, string subject, string mailboxhash, int count, int offset)
-        {
-            if (count > 500)
-            {
-                throw new ValidationException("You can only receive up to 500 messages per call.");
-            }
-
-            var request = NewMessagesRequest();
-            request.Path = "messages/inbound";
-
-            if (!string.IsNullOrEmpty(recipient)) request.AddParameter("recipient", recipient);
-            if (!string.IsNullOrEmpty(fromemail)) request.AddParameter("fromemail", fromemail);
-            if (!string.IsNullOrEmpty(subject)) request.AddParameter("subject", subject);
-            if (!string.IsNullOrEmpty(subject)) request.AddParameter("mailboxhash", mailboxhash);
-
-            request.AddParameter("count", count.ToString());
-            request.AddParameter("offset", offset.ToString());
-
-            var response = _client.Request(request);
-            return JsonConvert.DeserializeObject<PostmarkInboundMessageList>(response.Content, _settings);
+            var parameters = new Dictionary<string, object>();
+            parameters["count"] = count;
+            parameters["offset"] = offset;
+            parameters["recipient"] = recipient;
+            parameters["fromemail"] = fromemail;
+            parameters["subject"] = subject;
+            parameters["mailboxhash"] = mailboxhash;
+            parameters["todate"] = toDate;
+            parameters["fromdate"] = fromDate;
+            parameters["status"] = status.ToString().ToLower();
+        
+            return await ProcessNoBodyRequestAsync<PostmarkInboundMessageList>("/messages/inbound", parameters);
         }
 
         /// <summary>
@@ -757,213 +243,617 @@ namespace PostmarkDotNet
         /// </summary>
         /// <param name="messageID">The MessageID of a message which can be optained either from the initial API send call or a GetInboundMessages call.</param>
         /// <returns>InboundMessageDetail</returns>
-        public InboundMessageDetail GetInboundMessageDetail(string messageID)
+        public async Task<InboundMessageDetail> GetInboundMessageDetailsAsync(string messageID)
         {
-            var request = NewMessagesRequest();
-            request.Path = string.Format("messages/inbound/{0}/details", messageID.Trim());
+            return await ProcessNoBodyRequestAsync<InboundMessageDetail>("/messages/inbound/" + messageID + "/details");
+        }
 
-            var response = _client.Request(request);
-            return JsonConvert.DeserializeObject<InboundMessageDetail>(response.Content, _settings);
+        /// <summary>
+        /// Bypass rules for a blocked inbound message.
+        /// </summary>
+        /// <param name="messageid"></param>
+        /// <returns></returns>
+        public async Task<PostmarkResponse> BypassBlockedInboundMessage(string messageid)
+        {
+            return await this.ProcessNoBodyRequestAsync<PostmarkResponse>(String.Format("/messages/inbound/{0}/bypass", messageid), verb: HttpMethod.Put);
+        }
+
+        /// <summary>
+        /// Request that Postmark retries POSTing to your Inbound Hook for the specified inbound message.
+        /// </summary>
+        /// <param name="messageId"></param>
+        /// <returns></returns>
+        public async Task<PostmarkResponse> RetryInboundHookForMessage(string messageId)
+        {
+            return await this.ProcessNoBodyRequestAsync<PostmarkResponse>(String.Format("/messages/inbound/{0}/retry", messageId), verb: HttpMethod.Put);
+        }
+
+
+        #endregion
+
+        #region Servers
+
+        /// <summary>
+        /// Gets the server associated with this client based on 
+        /// the ServerToken supplied when the client was constructed.
+        /// </summary>
+        /// <returns></returns>
+        public async Task<PostmarkServer> GetServerAsync()
+        {
+            return await this.ProcessNoBodyRequestAsync<PostmarkServer>("/server");
+        }
+
+        /// <summary>
+        /// Updates the server associated with this client. Only parameters that are passed into this method are modified. 
+        /// Any parameters that are left null will use the current value for the server.
+        /// </summary>
+        /// <returns></returns>
+        public async Task<PostmarkServer> EditServerAsync(String name = null, string color = null,
+            bool? rawEmailEnabled = null, bool? smtpApiActivated = null, string inboundHookUrl = null,
+            string bounceHookUrl = null, string openHookUrl = null, bool? postFirstOpenOnly = null,
+            bool? trackOpens = null, string inboundDomain = null, int? inboundSpamThreshold = null, 
+            LinkTrackingOptions? trackLinks = null)
+        {
+            var body = new Dictionary<string, object>();
+            body["Name"] = name;
+            body["Color"] = color;
+            body["RawEmailEnabled"] = rawEmailEnabled;
+            body["SmtpApiActivated"] = smtpApiActivated;
+            body["InboundHookUrl"] = inboundHookUrl;
+            body["BounceHookUrl"] = bounceHookUrl;
+            body["OpenHookUrl"] = openHookUrl;
+            body["PostFirstOpenOnly"] = postFirstOpenOnly;
+            body["TrackOpens"] = trackOpens;
+            body["InboundDomain"] = inboundDomain;
+            body["InboundSpamThreshold"] = inboundSpamThreshold;
+            body["TrackLinks"] = trackLinks;
+
+            body = body.Where(kv => kv.Value != null).ToDictionary(k => k.Key, v => v.Value);
+
+            return await this.ProcessRequestAsync<Dictionary<string, object>, PostmarkServer>("/server", HttpMethod.Put, body);
         }
 
         #endregion
-#endif
 
-        private void SetPostmarkMeta(RestBase request)
-        {
-            request.AddHeader("Accept", "application/json");
-            request.AddHeader("Content-Type", "application/json; charset=utf-8");
-            request.AddHeader("X-Postmark-Server-Token", ServerToken);
-            request.AddHeader("User-Agent", "Postmark.NET 1.x (" + this.GetType().AssemblyQualifiedName + ")");
-        }
+        #region Stats
 
-        private static void CleanPostmarkMessage(PostmarkMessage message)
+        /// <summary>
+        /// Create parameters for the stats filtering from normal params.
+        /// </summary>
+        /// <param name="tag"></param>
+        /// <param name="fromDate"></param>
+        /// <param name="toDate"></param>
+        /// <returns></returns>
+        private IDictionary<string, object>
+           ConstructSentStatsFilter(string tag, DateTime? fromDate, DateTime? toDate)
         {
-            if (!string.IsNullOrEmpty(message.From))
+            var parameters = new Dictionary<string, object>();
+            if (!string.IsNullOrWhiteSpace(tag))
             {
-                message.From = message.From.Trim();
+                parameters["tag"] = tag;
             }
-            if (!string.IsNullOrEmpty(message.To))
+            if (fromDate.HasValue)
             {
-                message.To = message.To.Trim();
+                parameters["fromdate"] = fromDate.Value.ToString(DATE_FORMAT);
             }
-            message.Subject = message.Subject != null ? message.Subject.Trim() : "";
-        }
-
-#if !WINDOWS_PHONE
-        private PostmarkResponse GetPostmarkResponse(RestRequest request)
-        {
-            var response = _client.Request(request);
-
-            return GetPostmarkResponseImpl(response);
-        }
-
-        private IEnumerable<PostmarkResponse> GetPostmarkResponses(RestRequest request)
-        {
-            var response = _client.Request(request);
-
-            return GetPostmarkResponsesImpl(response);
-        }
-#endif
-
-        private static IEnumerable<PostmarkResponse> GetPostmarkResponsesImpl(RestResponseBase response)
-        {
-            var results = TryGetPostmarkResponses(response) ?? new List<PostmarkResponse>
-                        {
-                            new PostmarkResponse
-                                {
-                                    Status = PostmarkStatus.Unknown,
-                                    Message = response.StatusDescription
-                                }
-                        };
-
-            foreach (var result in results)
+            if (toDate.HasValue)
             {
-                switch ((int)response.StatusCode)
+                parameters["todate"] = toDate.Value.ToString(DATE_FORMAT);
+            }
+            return parameters;
+        }
+
+        /// <summary>
+        /// Get the Open Events for messages, optionally filtering by various
+        /// attributes of the Open Events and Messages.
+        /// </summary>
+        /// <param name="offset"></param>
+        /// <param name="count"></param>
+        /// <param name="recipient"></param>
+        /// <param name="tag"></param>
+        /// <param name="clientName"></param>
+        /// <param name="clientCompany"></param>
+        /// <param name="clientFamily"></param>
+        /// <param name="operatingSystemName"></param>
+        /// <param name="operatingSystemFamily"></param>
+        /// <param name="operatingSystemCompany"></param>
+        /// <param name="platform"></param>
+        /// <param name="country"></param>
+        /// <param name="region"></param>
+        /// <param name="city"></param>
+        /// <returns></returns>
+        public async Task<PostmarkOpensList> GetOpenEventsForMessagesAsync(
+            int offset = 0, int count = 100, string recipient = null, string tag = null,
+            string clientName = null, string clientCompany = null, string clientFamily = null,
+            string operatingSystemName = null, string operatingSystemFamily = null, string operatingSystemCompany = null,
+            string platform = null, string country = null, string region = null, string city = null)
+        {
+            var parameters = new Dictionary<string, object>();
+            parameters["offset"] = offset;
+            parameters["count"] = count;
+            parameters["recipient"] = recipient;
+            parameters["tag"] = tag;
+            parameters["client_name"] = clientName;
+            parameters["client_company"] = clientCompany;
+            parameters["client_family"] = clientFamily;
+            parameters["os_name"] = operatingSystemName;
+            parameters["os_family"] = operatingSystemFamily;
+            parameters["os_company"] = operatingSystemCompany;
+            parameters["platform"] = platform;
+            parameters["country"] = country;
+            parameters["region"] = region;
+            parameters["city"] = city;
+
+            return await this
+                .ProcessNoBodyRequestAsync<PostmarkOpensList>("/messages/outbound/opens", parameters);
+        }
+
+        /// <summary>
+        /// Get the Open events for a specific message.
+        /// </summary>
+        /// <param name="messageId"></param>
+        /// <param name="offset"></param>
+        /// <param name="count"></param>
+        /// <returns></returns>
+        public async Task<PostmarkOpensList> GetOpenEventsForMessageAsync(
+            string messageId, int offset = 0, int count = 100)
+        {
+
+            var parameters = new Dictionary<string, object>();
+            parameters["offset"] = offset;
+            parameters["count"] = count;
+
+            return await this.ProcessNoBodyRequestAsync<PostmarkOpensList>
+                (String.Format("/messages/outbound/opens/{0}", messageId), parameters);
+        }
+
+        /// <summary>
+        /// Get an overview of outbound statistics, optionally limiting by tag or time window.
+        /// </summary>
+        /// <param name="tag"></param>
+        /// <param name="fromDate"></param>
+        /// <param name="toDate"></param>
+        /// <returns></returns>
+        public async Task<PostmarkOutboundOverviewStats> GetOutboundOverviewStatsAsync(
+            string tag = null, DateTime? fromDate = null, DateTime? toDate = null)
+        {
+            var parameters = ConstructSentStatsFilter(tag, fromDate, toDate);
+            return await this.ProcessNoBodyRequestAsync<PostmarkOutboundOverviewStats>
+                ("/stats/outbound", parameters);
+        }
+
+        /// <summary>
+        /// Retrieve sent counts for outbound emails, optionally including a time or tag filter.
+        /// </summary>
+        /// <param name="tag"></param>
+        /// <param name="fromDate"></param>
+        /// <param name="toDate"></param>
+        /// <returns></returns>
+        public async Task<PostmarkOutboundSentStats>
+            GetOutboundSentCountsAsync(string tag = null, DateTime? fromDate = null, DateTime? toDate = null)
+        {
+            var parameters = ConstructSentStatsFilter(tag, fromDate, toDate);
+            return await this.ProcessNoBodyRequestAsync<PostmarkOutboundSentStats>
+                ("/stats/outbound/sends", parameters);
+        }
+
+        /// <summary>
+        /// Retrieve bounce counts for outbound emails, optionally including a time or tag filter.
+        /// </summary>
+        /// <param name="tag"></param>
+        /// <param name="fromDate"></param>
+        /// <param name="toDate"></param>
+        /// <returns></returns>
+        public async Task<PostmarkOutboundBounceStats>
+            GetOutboundBounceCountsAsync(string tag = null, DateTime? fromDate = null, DateTime? toDate = null)
+        {
+            var parameters = ConstructSentStatsFilter(tag, fromDate, toDate);
+            return await this.ProcessNoBodyRequestAsync<PostmarkOutboundBounceStats>
+                ("/stats/outbound/bounces", parameters);
+        }
+
+        /// <summary>
+        /// Retrieve SPAM complaint counts for outbound emails, optionally including a time or tag filter.
+        /// </summary>
+        /// <param name="tag"></param>
+        /// <param name="fromDate"></param>
+        /// <param name="toDate"></param>
+        /// <returns></returns>
+        public async Task<PostmarkOutboundSpamComplaintStats> GetOutboundSpamComplaintCountsAsync(string tag = null, DateTime? fromDate = null, DateTime? toDate = null)
+        {
+            var parameters = ConstructSentStatsFilter(tag, fromDate, toDate);
+            return await this.ProcessNoBodyRequestAsync<PostmarkOutboundSpamComplaintStats>
+                ("/stats/outbound/spam", parameters);
+        }
+
+        /// <summary>
+        /// Retrieve open tracking for outbound emails, optionally including a time or tag filter.
+        /// </summary>
+        /// <param name="tag"></param>
+        /// <param name="fromDate"></param>
+        /// <param name="toDate"></param>
+        /// <returns></returns>
+        public async Task<PostmarkOutboundTrackedStats> GetOutboundTrackingCountsAsync(string tag = null, DateTime? fromDate = null, DateTime? toDate = null)
+        {
+            var parameters = ConstructSentStatsFilter(tag, fromDate, toDate);
+            return await this.ProcessNoBodyRequestAsync<PostmarkOutboundTrackedStats>
+                ("/stats/outbound/tracked", parameters);
+        }
+
+        /// <summary>
+        /// Retrieve open counts for outbound emails, optionally including a time or tag filter.
+        /// </summary>
+        /// <param name="tag"></param>
+        /// <param name="fromDate"></param>
+        /// <param name="toDate"></param>
+        /// <returns></returns>
+        public async Task<PostmarkOutboundOpenStats> GetOutboundOpenCountsAsync(string tag = null, DateTime? fromDate = null, DateTime? toDate = null)
+        {
+            var parameters = ConstructSentStatsFilter(tag, fromDate, toDate);
+            return await this.ProcessNoBodyRequestAsync<PostmarkOutboundOpenStats>
+                ("/stats/outbound/opens", parameters);
+        }
+
+        /// <summary>
+        /// Retrieve platform statistics for outbound emails, optionally including a time or tag filter.
+        /// </summary>
+        /// <param name="tag"></param>
+        /// <param name="fromDate"></param>
+        /// <param name="toDate"></param>
+        /// <returns></returns>
+        public async Task<PostmarkOutboundPlatformStats> GetOutboundPlatformCountsAsync(string tag = null, DateTime? fromDate = null, DateTime? toDate = null)
+        {
+            var parameters = ConstructSentStatsFilter(tag, fromDate, toDate);
+            return await this.ProcessNoBodyRequestAsync<PostmarkOutboundPlatformStats>
+                ("/stats/outbound/opens/platforms", parameters);
+        }
+
+        /// <summary>
+        /// Retrieve client usage statistics for outbound emails, optionally including a time or tag filter.
+        /// </summary>
+        /// <param name="tag"></param>
+        /// <param name="fromDate"></param>
+        /// <param name="toDate"></param>
+        /// <returns></returns>
+        public async Task<PostmarkOutboundClientStats> GetOutboundClientUsageCountsAsync(string tag = null, DateTime? fromDate = null, DateTime? toDate = null)
+        {
+            var parameters = ConstructSentStatsFilter(tag, fromDate, toDate);
+            var result = await this.ProcessNoBodyRequestAsync<Dictionary<string, object>>("/stats/outbound/opens/emailclients", parameters);
+
+            var retval = new PostmarkOutboundClientStats();
+            var clientCounts = new Dictionary<string, int>();
+            foreach (var a in result)
+            {
+                if (a.Key != "Days")
                 {
-                    case 200:
-                        result.Status = PostmarkStatus.Success;
-                        break;
-                    case 401:
-                    case 422:
-                        result.Status = PostmarkStatus.UserError;
-                        break;
-                    case 500:
-                        result.Status = PostmarkStatus.ServerError;
-                        break;
+                    clientCounts[a.Key] = (int)(long)a.Value;
                 }
             }
+            retval.ClientCounts = clientCounts;
 
-            return results;
-        }
-
-        private static PostmarkResponse GetPostmarkResponseImpl(RestResponseBase response)
-        {
-            var result = TryGetPostmarkResponse(response) ?? new PostmarkResponse
+            var dayCount = (JArray)result["Days"];
+            var dayList = new List<PostmarkOutboundClientStats.DatedClientCount>();
+            foreach (var obj in dayCount)
             {
-                Status = PostmarkStatus.Unknown,
-                Message = response.StatusDescription
-            };
-
-            switch ((int)response.StatusCode)
-            {
-                case 200:
-                    result.Status = PostmarkStatus.Success;
-                    break;
-                case 401:
-                case 422:
-                    result.Status = PostmarkStatus.UserError;
-                    break;
-                case 500:
-                    result.Status = PostmarkStatus.ServerError;
-                    break;
+                var newCount = new PostmarkOutboundClientStats.DatedClientCount();
+                foreach (var i in (JObject)obj)
+                {
+                    if (i.Key == "Date")
+                    {
+                        newCount.Date = DateTime.Parse(i.Value.ToString());
+                    }
+                    else
+                    {
+                        newCount.ClientCounts[i.Key] = (int)(long)i.Value;
+                    }
+                }
+                dayList.Add(newCount);
             }
 
+            retval.Days = dayList;
+
+            return retval;
+        }
+
+        /// <summary>
+        /// Retrieve read time statistics for outbound emails, optionally including a time or tag filter.
+        /// </summary>
+        /// <param name="tag"></param>
+        /// <param name="fromDate"></param>
+        /// <param name="toDate"></param>
+        /// <returns></returns>
+        public async Task<PostmarkOutboundReadStats> GetOutboundReadtimeStatsAsync(string tag = null, DateTime? fromDate = null, DateTime? toDate = null)
+        {
+            var parameters = ConstructSentStatsFilter(tag, fromDate, toDate);
+            var result = await this.ProcessNoBodyRequestAsync<Dictionary<string, object>>("/stats/outbound/opens/readtimes", parameters);
+
+            var retval = new PostmarkOutboundReadStats();
+            var clientCounts = new Dictionary<string, int>();
+            foreach (var a in result)
+            {
+                if (a.Key != "Days")
+                {
+                    clientCounts[a.Key] = (int)(long)a.Value;
+                }
+            }
+            retval.ReadCounts = clientCounts;
+
+            var dayCount = (JArray)result["Days"];
+            var dayList = new List<PostmarkOutboundReadStats.DatedReadCount>();
+            foreach (var obj in dayCount)
+            {
+                var newCount = new PostmarkOutboundReadStats.DatedReadCount();
+                foreach (var i in (JObject)obj)
+                {
+                    if (i.Key == "Date")
+                    {
+                        newCount.Date = DateTime.Parse(i.Value.ToString());
+                    }
+                    else
+                    {
+                        newCount.ReadCounts[i.Key] = (int)(long)i.Value;
+                    }
+                }
+                dayList.Add(newCount);
+            }
+
+            retval.Days = dayList;
+
+            return retval;
+        }
+        #endregion
+
+        #region Triggers
+
+        /// <summary>
+        /// Create a new Tag Trigger.
+        /// </summary>
+        /// <param name="matchName"></param>
+        /// <param name="trackOpens"></param>
+        /// <returns></returns>
+        public async Task<PostmarkTaggedTriggerInfo> CreateTagTriggerAsync(string matchName, bool trackOpens = true)
+        {
+            var parameters = new Dictionary<string, object>();
+            parameters["MatchName"] = matchName;
+            parameters["TrackOpens"] = trackOpens;
+
+            return await this.ProcessRequestAsync<Dictionary<string, object>, PostmarkTaggedTriggerInfo>
+                ("/triggers/tags", HttpMethod.Post, parameters);
+        }
+
+        /// <summary>
+        /// Retrieve a tag trigger.
+        /// </summary>
+        /// <param name="triggerId"></param>
+        /// <returns></returns>
+        public async Task<PostmarkTaggedTriggerInfo> GetTagTriggerAsync(int triggerId)
+        {
+            var result = await this.ProcessNoBodyRequestAsync<PostmarkTaggedTriggerInfo>("/triggers/tags/" + triggerId);
+            result.ID = triggerId;
             return result;
         }
 
-        private static PostmarkResponse TryGetPostmarkResponse(RestResponseBase response)
+        /// <summary>
+        /// Modify a Tag Trigger.
+        /// </summary>
+        /// <param name="triggerId"></param>
+        /// <param name="matchName"></param>
+        /// <param name="trackOpens"></param>
+        /// <returns></returns>
+        public async Task<PostmarkTaggedTriggerInfo> UpdateTagTriggerAsync(int triggerId, string matchName = null, bool? trackOpens = null)
         {
-            PostmarkResponse result = null;
-            var statusCode = (int)response.StatusCode;
-            if (statusCode == 200 || statusCode == 401 || statusCode == 422 || statusCode == 500)
-            {
-                try
-                {
-                    result = JsonConvert.DeserializeObject<PostmarkResponse>(response.Content, _settings);
-                }
-                catch (JsonReaderException)
-                {
-                    result = null;
-                }
-            }
+            var parameters = new Dictionary<string, object>();
+            parameters["MatchName"] = matchName;
+            parameters["TrackOpens"] = trackOpens;
+
+            var result = await this
+                .ProcessRequestAsync<Dictionary<string, object>, PostmarkTaggedTriggerInfo>("/triggers/tags/" + triggerId,
+                HttpMethod.Put, parameters);
+
+            result.ID = triggerId;
             return result;
         }
 
-        private static IEnumerable<PostmarkResponse> TryGetPostmarkResponses(RestResponseBase response)
+        /// <summary>
+        /// Delete a Tag Trigger based on the ID.
+        /// </summary>
+        /// <param name="triggerId"></param>
+        /// <returns></returns>
+        public async Task<PostmarkResponse> DeleteTagTrigger(int triggerId)
         {
-            IEnumerable<PostmarkResponse> result = null;
-            var statusCode = (int)response.StatusCode;
-            if (statusCode == 200 || statusCode == 401 || statusCode == 422 || statusCode == 500)
+            return await this
+                .ProcessNoBodyRequestAsync<PostmarkResponse>("/triggers/tags/" + triggerId,
+                verb: HttpMethod.Delete);
+        }
+
+        /// <summary>
+        /// Find all tag triggers, optionall filtering by "matchName".
+        /// </summary>
+        /// <param name="offset"></param>
+        /// <param name="count"></param>
+        /// <param name="matchName"></param>
+        /// <returns></returns>
+        public async Task<PostmarkTaggedTriggerList> SearchTaggedTriggers(int offset = 0, int count = 100, string matchName = null)
+        {
+            var parameters = new Dictionary<string, object>();
+            parameters["offset"] = offset;
+            parameters["count"] = count;
+            parameters["match_name"] = matchName;
+
+            return await this.ProcessNoBodyRequestAsync<PostmarkTaggedTriggerList>("/triggers/tags/", parameters);
+        }
+
+        /// <summary>
+        /// Define a new Inbound Rule Trigger
+        /// </summary>
+        /// <param name="rule"></param>
+        /// <returns></returns>
+        public async Task<PostmarkInboundRuleTriggerInfo> CreateInboundRuleTriggerAsync(string rule)
+        {
+            var parameters = new Dictionary<string, object>();
+            parameters["Rule"] = rule;
+
+            return await this.ProcessRequestAsync<Dictionary<string, object>, PostmarkInboundRuleTriggerInfo>
+                ("/triggers/inboundrules", HttpMethod.Post, parameters);
+        }
+
+        /// <summary>
+        /// Delete an Inbound Rule Trigger
+        /// </summary>
+        /// <param name="triggerId"></param>
+        /// <returns></returns>
+        public async Task<PostmarkResponse> DeleteInboundRuleTrigger(int triggerId)
+        {
+            return await this
+                .ProcessNoBodyRequestAsync<PostmarkResponse>("/triggers/inboundrules/" + triggerId,
+                verb: HttpMethod.Delete);
+        }
+
+        /// <summary>
+        /// List Inbound Rule Triggers.
+        /// </summary>
+        /// <param name="offset"></param>
+        /// <param name="count"></param>
+        /// <returns></returns>
+        public async Task<PostmarkInboundRuleTriggerList> GetAllInboundRuleTriggers(int offset = 0, int count = 100)
+        {
+            var parameters = new Dictionary<string, object>();
+            parameters["offset"] = offset;
+            parameters["count"] = count;
+
+            return await this.ProcessNoBodyRequestAsync<PostmarkInboundRuleTriggerList>("/triggers/inboundrules", parameters);
+        }
+
+        #endregion
+
+        #region Templates
+
+        /// <summary>
+        /// Get basic info associated with the specified ID.
+        /// </summary>
+        /// <param name="templateId">The ID of the template you wish to retrive.</param>
+        /// <returns></returns>
+        public async Task<PostmarkTemplate> GetTemplateAsync(long templateId)
+        {
+            return await ProcessNoBodyRequestAsync<PostmarkTemplate>("/templates/" + templateId, null, HttpMethod.Get);
+        }
+
+        /// <summary>
+        /// Get a listing of templates, optionally including deleted templates.
+        /// </summary>
+        /// <param name="count"></param>
+        /// <param name="offset"></param>
+        /// <param name="includeDeletedTemplates"></param>
+        /// <returns></returns>
+        public async Task<PostmarkTemplateListingResponse> GetTemplatesAsync(int offset = 0, int count = 100)
+        {
+            var query = new Dictionary<string, object>();
+            query["Count"] = count;
+            query["Offset"] = offset;
+
+            return await ProcessNoBodyRequestAsync<PostmarkTemplateListingResponse>("/templates/", query, HttpMethod.Get);
+        }
+
+
+        /// <summary>
+        /// Store a new template associated with this server.
+        /// </summary>
+        /// <param name="name">A display name for this template.</param>
+        /// <param name="subject">The subject to be used when sending with this template.</param>
+        /// <param name="htmlBody">The HTMLBody to be used when sending with this template. Optional if TextBody is specified.</param>
+        /// <param name="textBody">The TextBody to be used when sending with this template. Optional if HtmlBody is specified.</param>
+        /// <returns></returns>
+        public async Task<BasicTemplateInformation> CreateTemplateAsync(string name, string subject, string htmlBody = null, string textBody = null)
+        {
+            var body = new Dictionary<string, object>();
+            body["Name"] = name;
+            body["HTMLBody"] = htmlBody;
+            body["TextBody"] = textBody;
+            body["Subject"] = subject;
+
+            return await ProcessRequestAsync<Dictionary<string, object>, BasicTemplateInformation>("/templates/", HttpMethod.Post, body);
+        }
+
+        public async Task<BasicTemplateInformation> EditTemplateAsync(long templateId, string name = null, string subject = null, string htmlBody = null, string textBody = null)
+        {
+            var body = new Dictionary<string, object>();
+            body["Name"] = name;
+            body["HTMLBody"] = htmlBody;
+            body["TextBody"] = textBody;
+            body["Subject"] = subject;
+
+            return await ProcessRequestAsync<Dictionary<string, object>, BasicTemplateInformation>("/templates/" + templateId, HttpMethod.Put, body);
+        }
+
+        /// <summary>
+        /// Delete a template from the server.
+        /// </summary>
+        /// <param name="templateId">The ID of the template you wish to delete from the server.</param>
+        /// <returns></returns>
+        public async Task<PostmarkResponse> DeleteTemplateAsync(long templateId)
+        {
+            return await ProcessNoBodyRequestAsync<PostmarkResponse>("/templates/" + templateId, null, HttpMethod.Delete);
+        }
+
+        public async Task<PostmarkResponse> SendMessageAsync(TemplatedPostmarkMessage emailToSend)
+        {
+            return await SendEmailWithTemplateAsync(emailToSend);
+        }
+
+        public async Task<PostmarkResponse> SendEmailWithTemplateAsync(TemplatedPostmarkMessage emailToSend)
+        {
+            return await ProcessRequestAsync<TemplatedPostmarkMessage, PostmarkResponse>("/email/withTemplate", HttpMethod.Post, emailToSend);
+        }
+
+        public async Task<PostmarkResponse> SendEmailWithTemplateAsync<T>(long templateId, T templateModel,
+            string to, string from,
+            bool? inlineCss = null, string cc = null,
+            string bcc = null, string replyTo = null,
+            bool? trackOpens = null,
+            IDictionary<string, string> headers = null,
+            params PostmarkMessageAttachment[] attachments)
+        {
+            var email = new TemplatedPostmarkMessage();
+            email.TemplateId = templateId;
+            email.TemplateModel = templateModel;
+            email.To = to;
+            email.From = from;
+            if (inlineCss.HasValue)
             {
-                try
-                {
-                    result = JsonConvert.DeserializeObject<IEnumerable<PostmarkResponse>>(response.Content, _settings);
-                }
-                catch (JsonReaderException)
-                {
-                    result = null;
-                }
+                email.InlineCss = inlineCss.Value;
             }
-            return result;
-        }
-
-        private RestRequest NewBouncesRequest()
-        {
-            var request = new RestRequest
+            email.Cc = cc;
+            email.Bcc = bcc;
+            if (trackOpens.HasValue)
             {
-                Serializer = _serializer
-            };
-
-            SetPostmarkMeta(request);
-
-            return request;
-        }
-
-        private RestRequest NewEmailRequest()
-        {
-            var request = new RestRequest
+                email.TrackOpens = trackOpens.Value;
+            }
+            email.ReplyTo = replyTo;
+            if (headers != null)
             {
-                Path = "email",
-                Method = WebMethod.Post,
-                Serializer = _serializer
-            };
-
-            SetPostmarkMeta(request);
-
-            return request;
-        }
-
-        private RestRequest NewTemplatedEmailRequest()
-        {
-            var request = new RestRequest
+                email.Headers = new HeaderCollection(headers);
+            }
+            if (attachments != null)
             {
-                Path = "email/withTemplate",
-                Method = WebMethod.Post,
-                Serializer = _serializer
-            };
-
-            SetPostmarkMeta(request);
-
-            return request;
+                email.Attachments = attachments;
+            }
+            return await SendEmailWithTemplateAsync(email);
         }
 
-
-        private RestRequest NewBatchedEmailRequest()
+        public async Task<TemplateValidationResponse> ValidateTemplateAsync<T>(string subject = null, string htmlbody = null,
+            string textBody = null, T testRenderModel = default(T), bool inlineCssForHtmlTestRender = true)
         {
-            var request = new RestRequest
-            {
-                Path = "email/batch",
-                Method = WebMethod.Post,
-                Serializer = _serializer
-            };
+            var body = new Dictionary<string, object>();
+            body["TestRenderModel"] = testRenderModel;
+            body["Subject"] = subject;
+            body["HtmlBody"] = htmlbody;
+            body["TextBody"] = textBody;
+            body["InlineCssForHtmlTestRender"] = inlineCssForHtmlTestRender;
 
-            SetPostmarkMeta(request);
-
-            return request;
+            return await ProcessRequestAsync<Dictionary<string, object>, TemplateValidationResponse>("/templates/validate", HttpMethod.Post, body);
         }
 
-        private RestRequest NewMessagesRequest()
-        {
-            var request = new RestRequest
-            {
-                Method = WebMethod.Get,
-                Serializer = _serializer
-            };
 
-            SetPostmarkMeta(request);
-
-            return request;
-        }
+        #endregion
     }
 }

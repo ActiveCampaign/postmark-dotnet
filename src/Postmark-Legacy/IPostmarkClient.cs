@@ -1,6 +1,5 @@
 ﻿using System.Collections.Generic;
 using PostmarkDotNet.Model;
-using NetStandad16.Model;
 #if !SILVERLIGHT
 using System.Collections.Specialized;
 #else

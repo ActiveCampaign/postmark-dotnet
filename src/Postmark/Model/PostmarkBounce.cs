@@ -14,11 +14,8 @@ namespace PostmarkDotNet
         ///   This is used for other API calls that require the ID.
         /// </summary>
         /// <value>The ID</value>
-#if LEGACY
-        public string ID { get; set; }
-#else
         public int ID { get; set; }
-#endif
+
         /// <summary>
         ///   The <see cref = "PostmarkBounceType" /> for this bounce.
         /// </summary>

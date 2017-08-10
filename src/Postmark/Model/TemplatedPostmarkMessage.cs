@@ -1,4 +1,6 @@
-﻿using Newtonsoft.Json.Linq;
+﻿using System;
+using Newtonsoft.Json.Linq;
+using PostmarkDotNet.Exceptions;
 
 namespace PostmarkDotNet
 {
@@ -50,21 +52,21 @@ namespace PostmarkDotNet
         /// </remarks>
         public object TemplateModel {
             get
-            {
-                if (_templateModel is JRaw)
-                {
-                    return ((JRaw)_templateModel).Value;
-                }
-                else
-                {
-                    return _templateModel;
-                }
+            {   
+                return _templateModel;
             }
             set
             {
                 if(value is string)
                 {
-                    _templateModel = new JRaw(value);
+                    try
+                    {
+                        _templateModel = JObject.Parse(value as string);
+                    }catch{
+                        throw new FormatException(@"The specified string is not a valid JSON object." +
+                        "The root TemplateModel must be a JSON object, scalars and arrays may not be " +
+                        "used as the root model for Postmark Templates.");
+                    }
                 }
                 else
                 {

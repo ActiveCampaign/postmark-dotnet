@@ -6,14 +6,14 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Postmark.PCL.Tests
+namespace Postmark.Tests
 {
     public class ClientTemplateTests : ClientBaseFixture, IDisposable
     {
         protected override async Task SetupAsync()
         {
             _client = new PostmarkClient(WRITE_TEST_SERVER_TOKEN, BASE_URL);
-            await CompletionSource;
+            await Task.CompletedTask;
         }
 
         [Fact]

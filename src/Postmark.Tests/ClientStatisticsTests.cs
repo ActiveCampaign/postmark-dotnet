@@ -4,7 +4,7 @@ using System;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace Postmark.PCL.Tests
+namespace Postmark.Tests
 {
     public class ClientStatisticsTests : ClientBaseFixture
     {
@@ -16,7 +16,7 @@ namespace Postmark.PCL.Tests
             _client = new PostmarkClient(READ_SELENIUM_TEST_SERVER_TOKEN);
             _lastMonth = TESTING_DATE - TimeSpan.FromDays(30);
             _windowStartDate = TESTING_DATE - TimeSpan.FromDays(35);
-            await CompletionSource;
+            await Task.CompletedTask;
         }
 
 

@@ -7,7 +7,7 @@ using System.Linq;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 
-namespace Postmark.PCL.Tests
+namespace Postmark.Tests
 {
     public class AdminClientSenderSignatureTests : ClientBaseFixture
     {
@@ -27,7 +27,7 @@ namespace Postmark.PCL.Tests
             _senderEmail = WRITE_TEST_SENDER_SIGNATURE_PROTOTYPE.Replace("[TOKEN]", String.Format(_senderprefix + "{0:n}", id));
             _replyToAddress = WRITE_TEST_SENDER_SIGNATURE_PROTOTYPE.Replace("[TOKEN]", String.Format(_senderprefix + "replyto-{0:n}", id));
             _senderName = String.Format("Test Sender {0}", TESTING_DATE);
-            await CompletionSource;
+            await Task.CompletedTask;
         }
 
 

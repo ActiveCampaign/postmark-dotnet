@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 using System.Linq;
 using PostmarkDotNet.Model;
 
-namespace Postmark.PCL.Tests
+namespace Postmark.Tests
 {
     public class ClientServerInformationTests : ClientBaseFixture
     {
@@ -30,7 +30,7 @@ namespace Postmark.PCL.Tests
             _bounceHookUrl = "http://www.example.com/bounce/" + id;
             _openHookUrl = "http://www.example.com/opened/" + id;
             //_inboundDomain = "inbound-" + id + ".exmaple.com";
-            await CompletionSource;
+            await Task.CompletedTask;
         }
 
         [Fact]

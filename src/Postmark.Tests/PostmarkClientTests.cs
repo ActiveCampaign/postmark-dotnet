@@ -4,14 +4,14 @@ using System;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace Postmark.PCL.Tests
+namespace Postmark.Tests
 {
     public class PostmarkClientTests : ClientBaseFixture
     {
         protected override async Task SetupAsync()
         {
             //no setup needed.
-            await CompletionSource;
+            await Task.CompletedTask;
         }
 
         [Fact]

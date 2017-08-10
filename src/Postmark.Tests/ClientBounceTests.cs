@@ -4,14 +4,14 @@ using System;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace Postmark.PCL.Tests
+namespace Postmark.Tests
 {
     public class ClientBounceTests : ClientBaseFixture
     {
         protected async override Task SetupAsync()
         {
             _client = new PostmarkClient(READ_SELENIUM_TEST_SERVER_TOKEN);
-            await CompletionSource;
+            await Task.CompletedTask;
         }
 
         [Fact]

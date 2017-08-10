@@ -6,22 +6,10 @@ using System.Threading.Tasks;
 using Newtonsoft.Json;
 using System.Collections.Generic;
 
-namespace Postmark.PCL.Tests
+namespace Postmark.Tests
 {
     public abstract class ClientBaseFixture
     {
-
-        /// <summary>
-        /// This is just a hook to avoid await compiler warnings.
-        /// </summary>
-        protected static Task CompletionSource { get; set; }
-
-        static ClientBaseFixture()
-        {
-            var t = new TaskCompletionSource<int>();
-            t.SetResult(1);
-            CompletionSource = t.Task;
-        }
 
         private static void AssertSettingsAvailable()
         {

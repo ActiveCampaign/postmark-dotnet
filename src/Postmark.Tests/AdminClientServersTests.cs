@@ -7,7 +7,7 @@ using System.Linq;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 
-namespace Postmark.PCL.Tests
+namespace Postmark.Tests
 {
     public class AdminClientServersTests : ClientBaseFixture, IDisposable
     {
@@ -40,7 +40,7 @@ namespace Postmark.PCL.Tests
             _postFirstOpenOpenOnly = true;
             _trackOpens = true;
             _inboundSpamThreshold = 30;
-            await CompletionSource;
+            await Task.CompletedTask;
         }
 
         

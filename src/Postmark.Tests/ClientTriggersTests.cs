@@ -5,7 +5,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace Postmark.PCL.Tests
+namespace Postmark.Tests
 {
     public class ClientTriggersTests : ClientBaseFixture, IDisposable
     {
@@ -15,7 +15,7 @@ namespace Postmark.PCL.Tests
         protected override async Task SetupAsync()
         {
             _client = new PostmarkClient(WRITE_TEST_SERVER_TOKEN);
-            await CompletionSource;
+            await Task.CompletedTask;
         }
 
         public ClientTriggersTests(): base(){

@@ -5,11 +5,14 @@ using System.IO;
 using System.Threading.Tasks;
 using Newtonsoft.Json;
 using System.Collections.Generic;
+using System.Reflection;
+using System.Linq;
 
 namespace Postmark.Tests
 {
     public abstract class ClientBaseFixture
     {
+        private static string AssemblyLocation = typeof(ClientBaseFixture).GetTypeInfo().Assembly.Location;
 
         private static void AssertSettingsAvailable()
         {
@@ -34,13 +37,23 @@ namespace Postmark.Tests
             string retval = null;
             //this is here to allow us to have a config that isn't committed to source control, but still allows the project to build
             try
-            {
-                throw new NotImplementedException();
-                // var json_parameters = File.ReadAllText(AppDomain.CurrentDomain.BaseDirectory + "/../../../../testing_keys.json");
+            {   
+                var location = Path.GetFullPath(AssemblyLocation);
+                var pathComponents = location.Split(Path.DirectorySeparatorChar).ToList();
+                var componentsCount = pathComponents.Count;
+                var keyPath = "";
+                while(componentsCount > 0){
+                    keyPath = Path.Combine(new string[]{ Path.DirectorySeparatorChar.ToString() }
+                        .Concat(pathComponents.Take(componentsCount)
+                        .Concat(new string[] { "testing_keys.json" })).ToArray());
+                    if(File.Exists(keyPath)){
+                        break;
+                    }
+                    componentsCount--;
+                }
 
-                // var values = JsonConvert.DeserializeObject<Dictionary<String, String>>(json_parameters);
-
-                // retval = values[variableName];
+                var values = JsonConvert.DeserializeObject<Dictionary<String, String>>(File.ReadAllText(keyPath));
+                retval = values[variableName];
             }
             catch
             {

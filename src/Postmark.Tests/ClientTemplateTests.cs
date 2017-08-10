@@ -10,14 +10,13 @@ namespace Postmark.Tests
 {
     public class ClientTemplateTests : ClientBaseFixture, IDisposable
     {
-        protected override async Task SetupAsync()
+        protected override void Setup()
         {
             _client = new PostmarkClient(WRITE_TEST_SERVER_TOKEN, BASE_URL);
-            await Task.CompletedTask;
         }
 
         [Fact]
-        public async Task ClientCanCreateTemplate()
+        public async void ClientCanCreateTemplate()
         {
             var name = Guid.NewGuid().ToString();
             var subject = "A subject: " + Guid.NewGuid();
@@ -30,7 +29,7 @@ namespace Postmark.Tests
         }
 
         [Fact]
-        public async Task ClientCanEditTemplate()
+        public async void ClientCanEditTemplate()
         {
             var name = Guid.NewGuid().ToString();
             var subject = "A subject: " + Guid.NewGuid();
@@ -52,7 +51,7 @@ namespace Postmark.Tests
         }
 
         [Fact]
-        public async Task ClientCanDeleteTemplate()
+        public async void ClientCanDeleteTemplate()
         {
             var name = Guid.NewGuid().ToString();
             var subject = "A subject: " + Guid.NewGuid();
@@ -67,7 +66,7 @@ namespace Postmark.Tests
         }
 
         [Fact]
-        public async Task ClientCanGetTemplate()
+        public async void ClientCanGetTemplate()
         {
             var name = Guid.NewGuid().ToString();
             var subject = "A subject: " + Guid.NewGuid();
@@ -88,7 +87,7 @@ namespace Postmark.Tests
         }
 
         [Fact]
-        public async Task ClientCanGetListTemplates()
+        public async void ClientCanGetListTemplates()
         {
             for (var i = 0; i < 10; i++)
             {
@@ -108,7 +107,7 @@ namespace Postmark.Tests
         }
 
         [Fact]
-        public async Task ClientCanValidateTemplate()
+        public async void ClientCanValidateTemplate()
         {
             var result = await _client.ValidateTemplateAsync("{{name}}", "<html><body>{{content}}{{company.address}}{{#each products}}{{/each}}{{^competitors}}There are no substitutes.{{/competitors}}</body></html>", "{{content}}", new { name = "Johnny", content = "hello, world!" });
 
@@ -123,7 +122,7 @@ namespace Postmark.Tests
         }
 
         [Fact]
-        public async Task ClientCanSendWithTemplate()
+        public async void ClientCanSendWithTemplate()
         {
             var template = await _client.CreateTemplateAsync("test template name", "test subject", "test html body");
             var sendResult = await _client.SendEmailWithTemplateAsync(template.TemplateId, new { name = "Andrew" }, WRITE_TEST_SENDER_EMAIL_ADDRESS, WRITE_TEST_SENDER_EMAIL_ADDRESS, false);
@@ -131,23 +130,34 @@ namespace Postmark.Tests
         }
 
         [Fact]
-        public async Task ClientCanSendTemplateWithStringModel()
+        public async void ClientCanSendTemplateWithStringModel()
         {
             var template = await _client.CreateTemplateAsync("test template name", "test subject", "test html body");
             var sendResult = await _client.SendEmailWithTemplateAsync(template.TemplateId, "{ \"name\" : \"Andrew\" }", WRITE_TEST_SENDER_EMAIL_ADDRESS, WRITE_TEST_SENDER_EMAIL_ADDRESS, false);
             Assert.NotEqual(Guid.Empty, sendResult.MessageID);
         }
 
-        public void Dispose()
-        {   
-            var tasks = new List<Task>();
-            var task = _client.GetTemplatesAsync();
-            task.Wait();
-            foreach (var t in task.Result.Templates)
+        private Task Cleanup(){
+            return Task.Run(async () =>
             {
-                tasks.Add(_client.DeleteTemplateAsync(t.TemplateId));
-            }
-            Task.WhenAll(tasks).Wait();
+                try
+                {
+                    var tasks = new List<Task>();
+                    var templates = await _client.GetTemplatesAsync();
+
+                    foreach (var t in templates.Templates)
+                    {
+                        tasks.Add(_client.DeleteTemplateAsync(t.TemplateId));
+                    }
+                    await Task.WhenAll(tasks);
+                }
+                catch { }
+            });
+        }
+
+        public void Dispose()
+        {
+            Cleanup().Wait();
         }
     }
 }

@@ -12,46 +12,48 @@ namespace Postmark.Tests
         private string _triggerPrefix = "integration-testing-";
         private string _inboundRulePrefix = "integration-test";
 
-        protected override async Task SetupAsync()
+        protected override void Setup()
         {
             _client = new PostmarkClient(WRITE_TEST_SERVER_TOKEN);
-            await Task.CompletedTask;
         }
 
         public ClientTriggersTests(): base(){
             this.Cleanup().Wait();
         }
 
-        public async Task Cleanup()
+        public Task Cleanup()
         {
-            try
+            return Task.Run(async() =>
             {
-                var triggers = await _client.SearchTaggedTriggers();
-                var tasks = new List<Task>();
-                foreach (var trigger in triggers.Tags)
+                try
                 {
-                    if (trigger.MatchName.StartsWith(_triggerPrefix))
+                    var triggers = await _client.SearchTaggedTriggers();
+                    var tasks = new List<Task>();
+                    foreach (var trigger in triggers.Tags)
                     {
-                        var dt = _client.DeleteTagTrigger(trigger.ID);
-                        tasks.Add(dt);
+                        if (trigger.MatchName.StartsWith(_triggerPrefix))
+                        {
+                            var dt = _client.DeleteTagTrigger(trigger.ID);
+                            tasks.Add(dt);
+                        }
                     }
-                }
-                var inboundTriggers = await _client.GetAllInboundRuleTriggers();
-                foreach (var inboundRule in inboundTriggers.InboundRules)
-                {
-                    if (inboundRule.Rule.StartsWith(_inboundRulePrefix))
+                    var inboundTriggers = await _client.GetAllInboundRuleTriggers();
+                    foreach (var inboundRule in inboundTriggers.InboundRules)
                     {
-                        var dt = _client.DeleteInboundRuleTrigger(inboundRule.ID);
-                        tasks.Add(dt);
+                        if (inboundRule.Rule.StartsWith(_inboundRulePrefix))
+                        {
+                            var dt = _client.DeleteInboundRuleTrigger(inboundRule.ID);
+                            tasks.Add(dt);
+                        }
                     }
-                }
 
-                await Task.WhenAll(tasks);
-            }
-            catch
-            {
-                //don't fail the tests because cleanup didn't happen.
-            }
+                    await Task.WhenAll(tasks);
+                }
+                catch
+                {
+                    //don't fail the tests because cleanup didn't happen.
+                }
+            });
         }
 
         [Theory]

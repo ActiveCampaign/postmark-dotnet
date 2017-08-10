@@ -18,6 +18,7 @@ namespace Postmark.Tests
         {
             Assert.NotNull(READ_INBOUND_TEST_SERVER_TOKEN);
             Assert.NotNull(READ_SELENIUM_TEST_SERVER_TOKEN);
+            Assert.NotNull(READ_SELENIUM_OPEN_TRACKING_TOKEN);
             Assert.NotNull(WRITE_ACCOUNT_TOKEN);
             Assert.NotNull(WRITE_TEST_SERVER_TOKEN);
             Assert.NotNull(WRITE_TEST_SENDER_EMAIL_ADDRESS);
@@ -72,6 +73,7 @@ namespace Postmark.Tests
         public static readonly string WRITE_TEST_SENDER_EMAIL_ADDRESS = ConfigVariable("WRITE_TEST_SENDER_EMAIL_ADDRESS");
         public static readonly string WRITE_TEST_EMAIL_RECIPIENT_ADDRESS = ConfigVariable("WRITE_TEST_EMAIL_RECIPIENT_ADDRESS");
         public static readonly string WRITE_TEST_SENDER_SIGNATURE_PROTOTYPE = ConfigVariable("WRITE_TEST_SENDER_SIGNATURE_PROTOTYPE");
+        public static readonly string READ_SELENIUM_OPEN_TRACKING_TOKEN = ConfigVariable("READ_SELENIUM_OPEN_TRACKING_TOKEN");
 
         public static readonly string BASE_URL = ConfigVariable("BASE_URL");
 
@@ -80,10 +82,9 @@ namespace Postmark.Tests
         public ClientBaseFixture()
         {
             AssertSettingsAvailable();
-            SetupAsync().Wait();
-
+            Setup();
         }
 
-        protected abstract Task SetupAsync();
+        protected abstract void Setup();
     }
 }

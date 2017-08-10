@@ -18,7 +18,7 @@ namespace Postmark.Tests
         private string _senderprefix;
         private string _returnPath;
 
-        protected override async Task SetupAsync()
+        protected override void Setup()
         {
             _adminClient = new PostmarkAdminClient(WRITE_ACCOUNT_TOKEN);
             var id = Guid.NewGuid();
@@ -27,30 +27,33 @@ namespace Postmark.Tests
             _senderEmail = WRITE_TEST_SENDER_SIGNATURE_PROTOTYPE.Replace("[TOKEN]", String.Format(_senderprefix + "{0:n}", id));
             _replyToAddress = WRITE_TEST_SENDER_SIGNATURE_PROTOTYPE.Replace("[TOKEN]", String.Format(_senderprefix + "replyto-{0:n}", id));
             _senderName = String.Format("Test Sender {0}", TESTING_DATE);
-            await Task.CompletedTask;
         }
 
 
         public AdminClientSenderSignatureTests():base()
         {
-            try
+            this.Cleanup().Wait();
+        }
+
+        private Task Cleanup(){
+            return Task.Run(async () =>
             {
-                var signatures = Task.Run(async () => await _adminClient.GetSenderSignaturesAsync()).Result;
-                var pendingDeletes = new List<Task>();
-                foreach (var f in signatures.SenderSignatures)
+                try
                 {
-                    if (Regex.IsMatch(f.EmailAddress, _senderprefix))
+                    var signatures = await _adminClient.GetSenderSignaturesAsync();
+                    var pendingDeletes = new List<Task>();
+                    foreach (var f in signatures.SenderSignatures)
                     {
-                        var deleteTask = _adminClient.DeleteSignatureAsync(f.ID);
-                        pendingDeletes.Add(deleteTask);
+                        if (Regex.IsMatch(f.EmailAddress, _senderprefix))
+                        {
+                            var deleteTask = _adminClient.DeleteSignatureAsync(f.ID);
+                            pendingDeletes.Add(deleteTask);
+                        }
                     }
+                    Task.WaitAll(pendingDeletes.ToArray());
                 }
-                Task.WaitAll(pendingDeletes.ToArray());
-            }
-            catch
-            {
-                //don't fail the test run if deleting all these wasn't possible.
-            }
+                catch{}
+            });
         }
 
         [Fact]

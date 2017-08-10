@@ -24,11 +24,11 @@ namespace Postmark.Tests
         private bool? _rawEmailEnabled;
         private string _bounceHookUrl;
 
-        protected override async Task SetupAsync()
+        protected override void Setup()
         {
             _adminClient = new PostmarkAdminClient(WRITE_ACCOUNT_TOKEN);
             var id = Guid.NewGuid().ToString("n");
-            _serverPrefix = "integration-test-server-";
+            _serverPrefix = "admin-client-integration-test-server-";
 
             _name = _serverPrefix + id;
             _color = ServerColors.Purple;
@@ -40,23 +40,28 @@ namespace Postmark.Tests
             _postFirstOpenOpenOnly = true;
             _trackOpens = true;
             _inboundSpamThreshold = 30;
-            await Task.CompletedTask;
         }
 
-        
-        public void Cleanup()
+
+        public Task Cleanup()
         {
-            var servers = Task.Run(async () => await _adminClient.GetServersAsync()).Result;
-            var pendingDeletes = new List<Task>();
-            foreach (var server in servers.Servers)
+            return Task.Run(async () =>
             {
-                if (Regex.IsMatch(server.Name, _serverPrefix))
+                try
                 {
-                    var deleteTask = _adminClient.DeleteServerAsync(server.ID);
-                    pendingDeletes.Add(deleteTask);
-                }
-            }
-            Task.WaitAll(pendingDeletes.ToArray());
+                    var servers = await _adminClient.GetServersAsync();
+                    var pendingDeletes = new List<Task>();
+                    foreach (var server in servers.Servers)
+                    {
+                        if (Regex.IsMatch(server.Name, _serverPrefix))
+                        {
+                            var deleteTask = _adminClient.DeleteServerAsync(server.ID);
+                            pendingDeletes.Add(deleteTask);
+                        }
+                    }
+                    Task.WaitAll(pendingDeletes.ToArray());
+                }catch{}
+            });
         }
 
         [Fact]
@@ -141,7 +146,7 @@ namespace Postmark.Tests
 
         public void Dispose()
         {
-            this.Cleanup();
+            this.Cleanup().Wait();
         }
     }
 }

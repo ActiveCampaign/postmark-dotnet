@@ -9,7 +9,7 @@ namespace Postmark.Tests
 {
     public class ClientServerInformationTests : ClientBaseFixture
     {
-        private string _serverPrefix;
+        private string _serverBaseName;
         private string _name;
         private string _color;
 
@@ -17,20 +17,19 @@ namespace Postmark.Tests
         private string _bounceHookUrl;
         private string _openHookUrl;
 
-        protected override async Task SetupAsync()
+        protected override void Setup()
         {
             _client = new PostmarkClient(WRITE_TEST_SERVER_TOKEN);
             var id = Guid.NewGuid().ToString("n");
-            _serverPrefix = "integration-test-server-";
+            _serverBaseName = "dotnet-integration-test-server";
 
-            _name = _serverPrefix + id;
+            _name = $"{_serverBaseName}-{id}";
             _color = ServerColors.Purple;
 
             _inboundHookUrl = "http://www.example.com/inbound/" + id;
             _bounceHookUrl = "http://www.example.com/bounce/" + id;
             _openHookUrl = "http://www.example.com/opened/" + id;
             //_inboundDomain = "inbound-" + id + ".exmaple.com";
-            await Task.CompletedTask;
         }
 
         [Fact]
@@ -42,6 +41,20 @@ namespace Postmark.Tests
             Assert.NotNull(server.Name);
             Assert.True(server.ID > 0);
             Assert.NotNull(server.Color);
+        }
+
+        [Fact]
+        public async void ClientCanUpdateServerName()
+        {
+            var client = new PostmarkClient(WRITE_TEST_SERVER_TOKEN);
+            var serverName = _serverBaseName + DateTime.Now.ToString("o");
+            var nonModifiedServer = await client.GetServerAsync();
+            var updatedServer = await client.EditServerAsync(name: serverName);
+            var modifiedServer = await client.GetServerAsync();
+
+            Assert.False(nonModifiedServer.Name == updatedServer.Name, "Updated server name should be different than current name");
+            Assert.True(serverName == updatedServer.Name, "Updated server name returned from EditServer should be the same as the value passed in.");
+            Assert.True(serverName == modifiedServer.Name, "Updated server name returned from subsequent call to GetServer should show new name.");
         }
 
         [Fact]
@@ -85,6 +98,15 @@ namespace Postmark.Tests
             Assert.Equal(LinkTrackingOptions.HtmlOnly, retrievedServer.TrackLinks);
         }
 
+        void Dispose(){
+            Task.Run(async () =>
+            {
+                try
+                {
+                    await _client.EditServerAsync(name: _serverBaseName);
+                }catch{}
+            }).Wait();
+        }
 
     }
 }

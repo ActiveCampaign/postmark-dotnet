@@ -8,14 +8,13 @@ namespace Postmark.Tests
 {
     public class PostmarkClientTests : ClientBaseFixture
     {
-        protected override async Task SetupAsync()
+        protected override void Setup()
         {
             //no setup needed.
-            await Task.CompletedTask;
         }
 
         [Fact]
-        public async Task ClientCanSendMessage()
+        public async void ClientCanSendMessage()
         {
             var client = new PostmarkClient(WRITE_TEST_SERVER_TOKEN);
             var response = await client
@@ -28,7 +27,7 @@ namespace Postmark.Tests
         }
 
         [Fact]
-        public async Task ClientProducesDeliveryStats()
+        public async void ClientProducesDeliveryStats()
         {
             var client = new PostmarkClient(WRITE_TEST_SERVER_TOKEN);
             var stats = await client.GetDeliveryStatsAsync();
@@ -36,7 +35,7 @@ namespace Postmark.Tests
         }
 
         [Fact]
-        public async Task ClientCanRetrieveBounces()
+        public async void ClientCanRetrieveBounces()
         {
             var client = new PostmarkClient(WRITE_TEST_SERVER_TOKEN);
             var bounces = await client.GetBouncesAsync();
@@ -44,7 +43,7 @@ namespace Postmark.Tests
         }
 
         [Fact]
-        public async Task ClientCanRetrieveServerInformation()
+        public async void ClientCanRetrieveServerInformation()
         {
             var client = new PostmarkClient(WRITE_TEST_SERVER_TOKEN);
             var server = await client.GetServerAsync();
@@ -55,21 +54,7 @@ namespace Postmark.Tests
 
 
         [Fact]
-        public async Task ClientCanUpdateServerName()
-        {
-            var client = new PostmarkClient(WRITE_TEST_SERVER_TOKEN);
-            var serverName = "test-server " + DateTime.Now.ToString("o");
-            var nonModifiedServer = await client.GetServerAsync();
-            var updatedServer = await client.EditServerAsync(name: serverName);
-            var modifiedServer = await client.GetServerAsync();
-
-            Assert.False(nonModifiedServer.Name == updatedServer.Name, "Updated server name should be different than current name");
-            Assert.True(serverName == updatedServer.Name, "Updated server name returned from EditServer should be the same as the value passed in.");
-            Assert.True(serverName == modifiedServer.Name, "Updated server name returned from subsequent call to GetServer should show new name.");
-        }
-
-        [Fact]
-        public async Task ClientCanGetClientUsageStats()
+        public async void ClientCanGetClientUsageStats()
         {
             var client = new PostmarkClient(WRITE_TEST_SERVER_TOKEN);
             var stats = await client.GetOutboundClientUsageCountsAsync();
@@ -77,7 +62,7 @@ namespace Postmark.Tests
         }
 
         [Fact]
-        public async Task ClientCanGetReadtimeStats()
+        public async void ClientCanGetReadtimeStats()
         {
             var client = new PostmarkClient(WRITE_TEST_SERVER_TOKEN);
             var stats = await client.GetOutboundReadtimeStatsAsync();

@@ -8,10 +8,9 @@ namespace Postmark.Tests
 {
     public class ClientBounceTests : ClientBaseFixture
     {
-        protected async override Task SetupAsync()
+        protected override void Setup()
         {
             _client = new PostmarkClient(READ_SELENIUM_TEST_SERVER_TOKEN);
-            await Task.CompletedTask;
         }
 
         [Fact]

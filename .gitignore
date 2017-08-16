@@ -40,3 +40,4 @@ src/packages/
 Postmark.dll
 testconfig.config
 testing_keys.json
+.DS_Store

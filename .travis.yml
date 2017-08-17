@@ -5,3 +5,4 @@ install:
   - dotnet restore ./src/postmark-dotnet.sln
 script:
   - msbuild ./src/postmark-dotnet.sln
+  - dotnet test ./src/Postmark.Tests/Postmark.Tests.csproj

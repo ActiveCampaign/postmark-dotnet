@@ -110,7 +110,7 @@ namespace PostmarkDotNet
                 Content = payload
             };
 
-            if (!String.IsNullOrWhiteSpace(contentId))
+            if ((contentId?.Trim() ?? "") != null)
             {
                 attachment.ContentId = contentId;
             }

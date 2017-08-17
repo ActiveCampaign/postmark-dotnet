@@ -2,7 +2,6 @@
 using PostmarkDotNet;
 using System;
 using System.Linq;
-using System.Threading.Tasks;
 
 namespace Postmark.Tests
 {
@@ -19,7 +18,7 @@ namespace Postmark.Tests
             var client = new PostmarkClient(WRITE_TEST_SERVER_TOKEN);
             var response = await client
                 .SendMessageAsync(WRITE_TEST_SENDER_EMAIL_ADDRESS, WRITE_TEST_EMAIL_RECIPIENT_ADDRESS,
-                "Testing the postmark client: " + DateTime.Now, "<b>This is only a test!</b>");
+                "Testing the postmark client: " + DateTime.Now, "Plain text body", "<b>This is only a test!</b>");
 
             // This should successfully send.
             Assert.Equal(0, response.ErrorCode);

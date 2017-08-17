@@ -1,6 +1,6 @@
 using System.Collections.Generic;
 
-namespace NetStandad16.Model
+namespace PostmarkDotNet.Model
 {
     public class NameValuePair{
         public string Name { get; set; }

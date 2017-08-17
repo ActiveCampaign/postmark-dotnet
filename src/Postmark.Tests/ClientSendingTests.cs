@@ -5,7 +5,6 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using System.Threading.Tasks;
 
 namespace Postmark.Tests
 {
@@ -22,8 +21,9 @@ namespace Postmark.Tests
             var result = await _client.SendMessageAsync(WRITE_TEST_SENDER_EMAIL_ADDRESS,
                 WRITE_TEST_EMAIL_RECIPIENT_ADDRESS,
                 String.Format("Integration Test - {0}", TESTING_DATE),
-                String.Format("Testing the Postmark .net client, <b>{0}</b>", TESTING_DATE)
-                , new Dictionary<string, string>()
+                String.Format("Plain text body, {0}", TESTING_DATE),
+                String.Format("Testing the Postmark .net client, <b>{0}</b>", TESTING_DATE),
+                new Dictionary<string, string>()
                 {
                   {  "X-Integration-Testing" , TESTING_DATE.ToString("o")}
                 });

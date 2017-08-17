@@ -1,4 +1,5 @@
-﻿using Newtonsoft.Json.Linq;
+﻿#if NETSTANDARD1_2
+using Newtonsoft.Json.Linq;
 using PostmarkDotNet.Model;
 using System;
 using System.Collections.Generic;
@@ -15,7 +16,7 @@ namespace PostmarkDotNet
     /// <remarks>
     /// Make sure to include "using PostmarkDotNet;" in your class file, which will include extension methods on the base client.
     /// </remarks>
-    public class PostmarkClient : PostmarkDotNet.PCL.PostmarkClientBase
+    public class PostmarkClient : PostmarkDotNet.PostmarkClientBase
     {
         /// <summary>
         /// The authorization header required, in this case, "X-Postmark-Server-Token"
@@ -857,3 +858,4 @@ namespace PostmarkDotNet
         #endregion
     }
 }
+#endif

@@ -1,8 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
+﻿#if NETSTANDARD1_2
+using System;
 using System.Net.Http;
-using System.Text;
 using System.Threading.Tasks;
 
 namespace PostmarkDotNet
@@ -11,6 +9,7 @@ namespace PostmarkDotNet
     {
         TimeSpan Timeout { get; set; }
 
-        Task<HttpResponseMessage> SendAsync(System.Net.Http.HttpRequestMessage request);
+        Task<HttpResponseMessage> SendAsync(HttpRequestMessage request);
     }
 }
+#endif

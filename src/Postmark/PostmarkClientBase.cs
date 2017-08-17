@@ -1,4 +1,5 @@
-﻿using PostmarkDotNet.Converters;
+﻿#if NETSTANDARD1_2
+using PostmarkDotNet.Converters;
 using PostmarkDotNet.Exceptions;
 using PostmarkDotNet.Utility;
 using System;
@@ -7,10 +8,10 @@ using System.Net;
 using System.Net.Http;
 using System.Threading.Tasks;
 
-namespace PostmarkDotNet.PCL
+namespace PostmarkDotNet
 {
     /// <summary>
-    /// 
+    /// The core postmark client code.
     /// </summary>
     public abstract class PostmarkClientBase
     {
@@ -159,3 +160,4 @@ namespace PostmarkDotNet.PCL
 
     }
 }
+#endif

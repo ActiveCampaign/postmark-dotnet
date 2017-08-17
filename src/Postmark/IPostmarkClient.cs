@@ -1,11 +1,5 @@
 ﻿using System.Collections.Generic;
 using PostmarkDotNet.Model;
-using NetStandad16.Model;
-#if !SILVERLIGHT
-using System.Collections.Specialized;
-#else
-using Hammock.Silverlight.Compat;
-#endif
 
 namespace PostmarkDotNet
 {
@@ -24,8 +18,7 @@ namespace PostmarkDotNet
         /// </summary>
         /// <value>The server token.</value>
         string ServerToken { get; }
-
-#if !WINDOWS_PHONE
+        
         /// <summary>
         /// Sends a message through the Postmark API.
         /// All email addresses must be valid, and the sender must be
@@ -420,6 +413,5 @@ namespace PostmarkDotNet
         /// <param name="messageID">The MessageID of a message which can be optained either from the initial API send call or a GetInboundMessages call.</param>
         /// <returns>InboundMessageDetail</returns>
         InboundMessageDetail GetInboundMessageDetail(string messageID);
-#endif
     }
 }

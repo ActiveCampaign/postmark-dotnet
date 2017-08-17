@@ -1,19 +1,12 @@
 using System;
 using System.Collections.Generic;
-using Newtonsoft.Json;
 using PostmarkDotNet.Model;
-using NetStandad16.Model;
-#if !WINDOWS_PHONE
-using System.Collections.Specialized;
-#else
-using Hammock.Silverlight.Compat;
-#endif
 
 namespace PostmarkDotNet
 {
     public partial interface IPostmarkClient
     {
-#if !WINDOWS_PHONE
+#if NET35
         /// <summary>
         /// Sends a message through the Postmark API.
         /// All email addresses must be valid, and the sender must be

@@ -1,4 +1,5 @@
-﻿using Newtonsoft.Json;
+﻿#if NETSTANDARD1_2
+using Newtonsoft.Json;
 using PostmarkDotNet.Converters;
 using System;
 using System.Net.Http;
@@ -32,3 +33,4 @@ namespace PostmarkDotNet.Utility
         }
     }
 }
+#endif

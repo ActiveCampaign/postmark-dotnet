@@ -1,4 +1,5 @@
-﻿using Newtonsoft.Json.Linq;
+﻿#if NETSTANDARD1_2
+using Newtonsoft.Json.Linq;
 using System.Collections.Generic;
 using System.Dynamic;
 using System.Linq;
@@ -87,3 +88,4 @@ namespace PostmarkDotNet
 
     }
 }
+#endif

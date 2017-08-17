@@ -1,9 +1,7 @@
-﻿using System;
+﻿#if NETSTANDARD1_2
+using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
-using PostmarkDotNet;
 using PostmarkDotNet.Model;
 
 namespace PostmarkDotNet.Legacy
@@ -17,9 +15,9 @@ namespace PostmarkDotNet.Legacy
         "It is recommended that consumers use the 2.0 Task-based methods instead of these extensions.")]
     public static class LegacyClientExtensions
     {
-        public static IAsyncResult BeginSendMessage(this PostmarkClient client, string from, string to, string subject, string body)
+        public static IAsyncResult BeginSendMessage(this PostmarkClient client, string from, string to, string subject, string textBody, string htmlBody)
         {
-            return client.SendMessageAsync(from, to, subject, body);
+            return client.SendMessageAsync(from, to, subject, textBody, htmlBody);
         }
 
         public static IAsyncResult BeginSendMessage(this PostmarkClient client, PostmarkMessage message)
@@ -305,9 +303,9 @@ namespace PostmarkDotNet.Legacy
         //    get { throw new NotImplementedException(); }
         //}
 
-        public static PostmarkResponse SendMessage(this PostmarkClient client, string from, string to, string subject, string body)
+        public static PostmarkResponse SendMessage(this PostmarkClient client, string from, string to, string subject, string textBody, string htmlBody)
         {
-            return Task.Run(async () => await client.SendMessageAsync(from, to, subject, body)).Result;
+            return Task.Run(async () => await client.SendMessageAsync(from, to, subject, textBody, htmlBody)).Result;
         }
 
         public static PostmarkResponse SendMessage(this PostmarkClient client, PostmarkMessage message)
@@ -507,3 +505,4 @@ namespace PostmarkDotNet.Legacy
         }
     }
 }
+#endif

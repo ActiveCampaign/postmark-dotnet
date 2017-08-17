@@ -131,6 +131,7 @@ namespace PostmarkDotNet
         /// <typeparam name="TResponse"></typeparam>
         /// <param name="apiPath"></param>
         /// <param name="parameters"></param>
+        /// <param name="verb">The http verb to use for the request.</param>
         /// <returns></returns>
         protected async Task<TResponse> ProcessNoBodyRequestAsync<TResponse>
             (string apiPath, IDictionary<string, object> parameters = null, HttpMethod verb = null)

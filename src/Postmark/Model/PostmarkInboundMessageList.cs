@@ -1,4 +1,4 @@
-﻿using PostmarkDotNet;
+﻿#pragma warning disable CS1591
 using System;
 using System.Collections.Generic;
 
@@ -81,3 +81,4 @@ namespace PostmarkDotNet.Model
         public List<InboundMessage> InboundMessages { get; set; }
     }
 }
+#pragma warning restore CS1591

@@ -1,4 +1,5 @@
 ﻿#if NETSTANDARD1_2
+#pragma warning disable CS1591
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
@@ -488,4 +489,5 @@ namespace PostmarkDotNet.Legacy
         }
     }
 }
+#pragma warning restore CS1591
 #endif

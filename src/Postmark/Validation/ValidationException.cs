@@ -3,7 +3,7 @@
 namespace PostmarkDotNet.Validation
 {
     /// <summary>
-    ///   An exception thrown when request inputs fail an <see cref = "ISpecification" /> or other test.
+    /// An exception thrown when requests fail to validate against the API.
     /// </summary>
     public class ValidationException : Exception
     {

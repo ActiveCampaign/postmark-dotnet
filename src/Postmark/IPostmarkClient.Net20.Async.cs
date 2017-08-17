@@ -1,4 +1,4 @@
-#if false && NET20
+#if NET20
 using System;
 using System.Collections.Generic;
 using PostmarkDotNet.Model;
@@ -17,24 +17,11 @@ namespace PostmarkDotNet
         /// <param name="from">An email address for a sender.</param>
         /// <param name="to">An email address for a recipient.</param>
         /// <param name="subject">The message subject line.</param>
-        /// <param name="body">The message body.</param>
-        /// <returns>A <see cref = "PostmarkResponse" /> with details about the transaction.</returns>
-        IAsyncResult BeginSendMessage(string from, string to, string subject, string body);
-
-        /// <summary>
-        /// Sends a message through the Postmark API.
-        /// All email addresses must be valid, and the sender must be
-        /// a valid sender signature according to Postmark. To obtain a valid
-        /// sender signature, log in to Postmark and navigate to:
-        /// http://postmarkapp.com/signatures.
-        /// </summary>
-        /// <param name="from">An email address for a sender</param>
-        /// <param name="to">An email address for a recipient</param>
-        /// <param name="subject">The message subject line</param>
-        /// <param name="body">The message body</param>
+        /// <param name="textBody">The plain text message body. May be null if htmlBody is set.</param>
+        /// <param name="htmlBody">The html text message body. May be null if textBody is set.</param>
         /// <param name="headers">A collection of additional mail headers to send with the message</param>
-        /// <returns>A <see cref = "PostmarkResponse" /> with details about the transaction</returns>
-        IAsyncResult BeginSendMessage(string from, string to, string subject, string body, NameValueCollection headers);
+        /// <returns>A <see cref = "PostmarkResponse" /> with details about the transaction.</returns>
+        IAsyncResult BeginSendMessage(string from, string to, string subject, string textBody, string htmlBody, HeaderCollection headers = null);
 
         /// <summary>
         /// Sends a message through the Postmark API.
@@ -533,9 +520,10 @@ namespace PostmarkDotNet
         /// <param name="from">An email address for a sender.</param>
         /// <param name="to">An email address for a recipient.</param>
         /// <param name="subject">The message subject line.</param>
-        /// <param name="body">The message body.</param>
+        /// <param name="textBody">The plain text message body. May be null if htmlBody is set.</param>
+        /// <param name="htmlBody">The html text message body. May be null if textBody is set.</param>
         /// <param name="callback">The callback invoked when a <see cref = "PostmarkResponse" /> is received from the API</param>
-        void SendMessage(string from, string to, string subject, string body, Action<PostmarkResponse> callback);
+        void SendMessage(string from, string to, string subject, string textBody, string htmlBody, Action<PostmarkResponse> callback);
 
         /// <summary>
         /// Sends a message through the Postmark API.
@@ -547,11 +535,12 @@ namespace PostmarkDotNet
         /// <param name="from">An email address for a sender</param>
         /// <param name="to">An email address for a recipient</param>
         /// <param name="subject">The message subject line</param>
-        /// <param name="body">The message body</param>
+        /// <param name="textBody">The plain text message body. May be null if htmlBody is set.</param>
+        /// <param name="htmlBody">The html text message body. May be null if textBody is set.</param>
         /// <param name="headers">A collection of additional mail headers to send with the message</param>
         /// <param name="callback">The callback invoked when a response is received from the API</param>
         /// <returns>A <see cref = "PostmarkResponse" /> with details about the transaction</returns>
-        void SendMessage(string from, string to, string subject, string body, NameValueCollection headers, Action<PostmarkResponse> callback);
+        void SendMessage(string from, string to, string subject, string textBody, string htmlBody, HeaderCollection headers, Action<PostmarkResponse> callback);
 
         /// <summary>
         /// Sends a message through the Postmark API.

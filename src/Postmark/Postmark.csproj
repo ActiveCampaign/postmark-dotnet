@@ -11,6 +11,15 @@
     <Company>Wildbit, LLC.</Company>
     <Description>The official .net client for Postmark.</Description>
   </PropertyGroup>
+  
+  <PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Release|netstandard1.2|AnyCPU'">
+    <DocumentationFile>bin\Release\netstandard1.2\Postmark.xml</DocumentationFile>
+    <NoWarn>1701;1702;1705;1591</NoWarn>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Release|net20|AnyCPU'">
+    <DocumentationFile>bin\Release\net20\Postmark.xml</DocumentationFile>
+    <NoWarn>1591</NoWarn>
+  </PropertyGroup>
 
   <ItemGroup Condition="'$(TargetFramework)' == 'net20'">
     <PackageReference Include="Hammock">

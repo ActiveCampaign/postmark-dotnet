@@ -63,7 +63,6 @@ namespace PostmarkDotNet
         /// <summary>
         /// Create a new Server.
         /// </summary>
-        /// <param name="serverId"></param>
         /// <returns></returns>
         public async Task<PostmarkServer> CreateServerAsync(String name, string color = null,
             bool? rawEmailEnabled = null, bool? smtpApiActivated = null, string inboundHookUrl = null,
@@ -91,6 +90,17 @@ namespace PostmarkDotNet
         /// Update a Server.
         /// </summary>
         /// <param name="serverId"></param>
+        /// <param name="bounceHookUrl"></param>
+        /// <param name="color"></param>
+        /// <param name="inboundDomain"></param>
+        /// <param name="inboundHookUrl"></param>
+        /// <param name="inboundSpamThreshold"></param>
+        /// <param name="name"></param>
+        /// <param name="openHookUrl"></param>
+        /// <param name="postFirstOpenOnly"></param>
+        /// <param name="rawEmailEnabled"></param>
+        /// <param name="smtpApiActivated"></param>
+        /// <param name="trackOpens"></param>
         /// <returns></returns>
         public async Task<PostmarkServer> EditServerAsync(int serverId, String name = null, string color = null,
             bool? rawEmailEnabled = null, bool? smtpApiActivated = null, string inboundHookUrl = null,

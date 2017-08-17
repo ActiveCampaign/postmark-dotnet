@@ -41,6 +41,7 @@ namespace PostmarkDotNet
         /// sender signature, log in to Postmark and navigate to:
         /// http://postmarkapp.com/signatures.
         /// </summary>
+        /// <param name="client">The client to use when sending the batch.</param>
         /// <param name="messages">A prepared message batch.</param>
         /// <returns></returns>
         public static async Task<IEnumerable<PostmarkResponse>> SendMessagesAsync(this PostmarkClient client, IEnumerable<PostmarkMessage> messages)

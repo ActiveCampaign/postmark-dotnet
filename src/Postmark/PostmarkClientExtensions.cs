@@ -1,4 +1,5 @@
 ﻿#if NETSTANDARD1_2
+using PostmarkDotNet.Model;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -29,7 +30,7 @@ namespace PostmarkDotNet
         public static async Task<PostmarkResponse> SendMessageAsync(this PostmarkClient client,
             string from, string to, string subject, string textBody, string htmlBody, IDictionary<string, string> headers = null)
         {
-            var message = new PostmarkMessage(from, to, subject, textBody, htmlBody, headers);
+            var message = new PostmarkMessage(from, to, subject, textBody, htmlBody, new HeaderCollection(headers));
             return await client.SendMessageAsync(message);
         }
 

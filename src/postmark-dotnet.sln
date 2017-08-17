@@ -2,8 +2,6 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 15
 VisualStudioVersion = 15.0.26430.16
 MinimumVisualStudioVersion = 15.0.26124.0
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{095F7A22-6E04-47B9-9C4E-4D642F1225D1}"
-EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Postmark.Tests", "Postmark.Tests\Postmark.Tests.csproj", "{C85239B1-9A60-4E22-893F-EDCE3486BB0C}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Postmark", "Postmark\Postmark.csproj", "{AF380AB6-152E-4869-93BB-42DE7BDCCAE3}"

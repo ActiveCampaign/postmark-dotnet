@@ -2,17 +2,16 @@
 
 namespace PostmarkDotNet.Model
 {
-
-    /// <summary>
-    /// 
-    /// </summary>
-    public class HeaderCollection : Dictionary<string, string>
+    public class HeaderCollection : NameValueCollection
     {
-        public HeaderCollection() : base(0) { }
+        public HeaderCollection() : base() { }
 
-        public HeaderCollection(IDictionary<string, string> baseCollection)
-            : base(baseCollection)
+        public HeaderCollection(IDictionary<string, string> baseCollection) : base(baseCollection)
         {
+        }
+
+        public static implicit operator HeaderCollection(Dictionary<string, string> value){
+            return new HeaderCollection(value);
         }
     }
 }

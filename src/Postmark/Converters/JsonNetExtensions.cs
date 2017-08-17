@@ -11,7 +11,7 @@ namespace PostmarkDotNet.Converters
         /// <param name="json">The source JSON to attempt to deserialize.</param>
         /// <param name="result">The object that is created, if successful.</param>
         /// <returns>True if deserialization is successful, false otherwise.</returns>
-        internal static bool TryDeserializeObject<T>(this string json, out T result)
+        internal static bool TryDeserializeObject<T>(string json, out T result)
         {
             var retval = false;
             result = default(T);
@@ -25,9 +25,6 @@ namespace PostmarkDotNet.Converters
                };
 
                 settings.Converters.Add(new UnicodeJsonStringConverter());
-                settings.Converters.Add(new HeaderCollectionConverter());
-
-                //result = JsonConvert.DeserializeObject<T>(json, settings);
                 result = JsonConvert.DeserializeObject<T>(json);
                 retval = true;
             }

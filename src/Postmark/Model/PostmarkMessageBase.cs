@@ -15,7 +15,6 @@ namespace PostmarkDotNet
         /// </summary>
         public PostmarkMessageBase()
         {
-            Headers = new HeaderCollection();
             Attachments = new List<PostmarkMessageAttachment>(0);
             TrackLinks = LinkTrackingOptions.None;
         }
@@ -67,7 +66,7 @@ namespace PostmarkDotNet
         /// <summary>
         ///   A collection of optional message headers.
         /// </summary>
-        public HeaderCollection Headers { get; set; }
+        public HeaderCollection Headers { get; set; } = new HeaderCollection();
 
         /// <summary>
         ///   A collection of optional file attachments.

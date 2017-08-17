@@ -97,10 +97,10 @@ namespace PostmarkDotNet
 
                 var body = await result.Content.ReadAsStringAsync();
 
-                if (!body.TryDeserializeObject<TResponse>(out retval) || result.StatusCode != HttpStatusCode.OK)
+                if (!JsonNetExtensions.TryDeserializeObject<TResponse>(body, out retval) || result.StatusCode != HttpStatusCode.OK)
                 {
                     PostmarkResponse error;
-                    if (body.TryDeserializeObject<PostmarkResponse>(out error))
+                    if (JsonNetExtensions.TryDeserializeObject<PostmarkResponse>(body, out error))
                     {
                         switch ((int)result.StatusCode)
                         {

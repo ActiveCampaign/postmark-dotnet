@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
 
 namespace PostmarkDotNet.Model
 {
@@ -18,7 +17,12 @@ namespace PostmarkDotNet.Model
 
         public int Total()
         {
-            return this.ClientCounts.Sum(k => k.Value);
+            var retval = 0;
+            foreach(var f in ClientCounts.Values)
+            {
+                retval += f;
+            }
+            return retval;
         }
 
         /// <summary>
@@ -49,7 +53,12 @@ namespace PostmarkDotNet.Model
 
             public int Total()
             {
-                return this.ClientCounts.Sum(k => k.Value);
+                var retval = 0;
+                foreach (var f in ClientCounts.Values)
+                {
+                    retval += f;
+                }
+                return retval;
             }
         }
     }

@@ -1,6 +1,5 @@
 ﻿using PostmarkDotNet.Model;
 using System.Collections.Generic;
-using System.Net;
 
 namespace PostmarkDotNet
 {
@@ -22,7 +21,7 @@ namespace PostmarkDotNet
         /// <param name="textBody">The Plain Text Body to be used for the message, this may be null if HtmlBody is set.</param>
         /// <param name="htmlBody">The HTML Body to be used for the message, this may be null if TextBody is set.</param>
         /// <param name = "headers">A collection of additional mail headers to send with the message. (optional)</param>
-        public PostmarkMessage(string from, string to, string subject, string textBody, string htmlBody, IDictionary<string, string> headers = null)
+        public PostmarkMessage(string from, string to, string subject, string textBody, string htmlBody, HeaderCollection headers = null)
             : base()
         {
             
@@ -31,7 +30,7 @@ namespace PostmarkDotNet
             Subject = subject;
             TextBody = textBody;
             HtmlBody = htmlBody;
-            Headers = new HeaderCollection(headers ?? new Dictionary<string, string>());
+            Headers = headers = new HeaderCollection();
         }
 
         /// <summary>

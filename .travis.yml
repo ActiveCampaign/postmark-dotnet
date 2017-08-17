@@ -1,0 +1,5 @@
+language: csharp
+install:
+  - nuget restore ./src/postmark-dotnet.sln
+script:
+  - msbuild ./src/postmark-dotnet.sln

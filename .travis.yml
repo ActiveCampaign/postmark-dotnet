@@ -1,6 +1,6 @@
 language: csharp
 mono: latest
-dotnet: latest
+dotnet: 2.0.0
 install:
   - dotnet restore ./src/postmark-dotnet.sln
 script:

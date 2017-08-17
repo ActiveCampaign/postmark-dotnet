@@ -12,7 +12,7 @@
     <StartupObject />
   </PropertyGroup>
   <ItemGroup>
-    <PackageReference Include="Microsoft.NETCore.App" Version="2.0.0" />
+    <!--<PackageReference Include="Microsoft.NETCore.App" Version="2.0.0" />-->
     <PackageReference Include="Microsoft.NET.Test.Sdk" Version="15.3.0" />
     <PackageReference Include="microsoft.testplatform.testhost" Version="15.3.0" />
     <PackageReference Include="xunit" Version="2.2.0" />
@@ -20,10 +20,5 @@
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Postmark\Postmark.csproj" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Update=".dockerignore">
-      <DependentUpon>Dockerfile</DependentUpon>
-    </None>
   </ItemGroup>
 </Project>

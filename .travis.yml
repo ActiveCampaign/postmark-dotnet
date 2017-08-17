@@ -1,5 +1,7 @@
 language: csharp
+mono: latest
+dotnet: latest
 install:
-  - nuget restore ./src/postmark-dotnet.sln
+  - dotnet restore ./src/postmark-dotnet.sln
 script:
   - msbuild ./src/postmark-dotnet.sln

@@ -3,6 +3,7 @@ mono: latest
 dotnet: 2.0.0
 install:
   - dotnet restore ./src/postmark-dotnet.sln
+  - nuget install xunit.runners -Version 1.9.2 -OutputDirectory testrunner
 script:
   - msbuild ./src/postmark-dotnet.sln
-  - dotnet test ./src/Postmark.Tests/Postmark.Tests.csproj
+  - mono ./testrunner/xunit.runners.1.9.2/tools/xunit.console.clr4.exe ./src/Postmark.Tests/bin/Release/netcoreapp1.1/Postmark.Tests.dll

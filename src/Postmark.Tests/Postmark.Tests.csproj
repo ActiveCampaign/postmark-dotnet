@@ -1,11 +1,14 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup Label="Configuration" Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
-    <OutputType>exe</OutputType>
+    <OutputType>Library</OutputType>
+  </PropertyGroup>
+  <PropertyGroup Label="Configuration" Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
+    <OutputType>Library</OutputType>
   </PropertyGroup>
   <PropertyGroup>
-    <TargetFramework>netcoreapp1.1</TargetFramework>
+    <TargetFramework>netstandard1.5</TargetFramework>
     <ApplicationIcon />
-    <OutputTypeEx>exe</OutputTypeEx>
+    <OutputTypeEx>Library</OutputTypeEx>
     <StartupObject />
   </PropertyGroup>
   <ItemGroup>

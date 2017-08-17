@@ -12,7 +12,7 @@ namespace PostmarkDotNet
 {
     /// <summary>
     ///   A client for the Postmark application. 
-    ///   Use this client in place of an <see cref = "SmtpClient" /> to send messages
+    ///   Use this client in place of an SmtpClient to send messages
     ///   through this service.
     /// </summary>
     public partial class PostmarkClient : IPostmarkClient
@@ -959,7 +959,8 @@ namespace PostmarkDotNet
         /// <param name = "from">An email address for a sender.</param>
         /// <param name = "to">An email address for a recipient.</param>
         /// <param name = "subject">The message subject line.</param>
-        /// <param name = "body">The message body.</param>
+        /// <param name = "textBody">The plain text message body. This may be null, if htmlBody is set.</param>
+        /// <param name = "htmlBody">The plain HTML message body. This may be null, if textBody is set.</param>
         /// <param name="callback">The callback invoked when a <see cref = "PostmarkResponse" /> is received from the API</param>
         public void SendMessage(string from, string to, string subject, string textBody, string htmlBody, Action<PostmarkResponse> callback)
         {
@@ -976,7 +977,8 @@ namespace PostmarkDotNet
         /// <param name = "from">An email address for a sender</param>
         /// <param name = "to">An email address for a recipient</param>
         /// <param name = "subject">The message subject line</param>
-        /// <param name = "body">The message body</param>
+        /// <param name = "textBody">The plain text message body. This may be null, if htmlBody is set.</param>
+        /// <param name = "htmlBody">The plain HTML message body. This may be null, if textBody is set.</param>
         /// <param name = "headers">A collection of additional mail headers to send with the message</param>
         /// <param name="callback">The callback invoked when a response is received from the API</param>
         /// <returns>A <see cref = "PostmarkResponse" /> with details about the transaction</returns>

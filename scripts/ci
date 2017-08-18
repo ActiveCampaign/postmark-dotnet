@@ -1,22 +1,25 @@
 #!/usr/bin/env bash
 set -e
-dir="$( dirname "$0" )/../src/"
-pushd $dir
-dotnet restore
+shopt -s expand_aliases
+
+pushd "$(dirname $0)"
+
+popd
+
+pushd "$( dirname "$0" )/../src/"
+
+nugetExe='../scripts/tools/nuget-cli/NuGet.CommandLine.4.3.0-preview3-4168/tools/NuGet.exe'
+
+echo 'Run nuget restore...'
+mono $nugetExe restore
 
 msbuild /p:Configuration=Release /p:LibraryFrameworks='netstandard1.2'
 dotnet test ./Postmark.Tests/Postmark.Tests.csproj /p:LibraryFrameworks='netstandard1.2'
 
-echo 'Run nuget restore...'
-nuget restore
-
-echo 'Clean the project...'
+# build for multi-target, now that we've built and tested on netstandard 1.2
+mono $nugetExe restore
 msbuild /t:Clean /p:Configuration=Release
-
-echo 'Build the solution'
 msbuild /p:Configuration=Release
 
-#Set a base path to locate ilrepack and the xunit runner.
-DOTNET_TOOLS_BASE_DIR='$( dirname $0 )/tools'
 
 popd

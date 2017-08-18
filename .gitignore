@@ -43,3 +43,4 @@ testing_keys.json
 .DS_Store
 .testrunner/
 .vs/
+tools/

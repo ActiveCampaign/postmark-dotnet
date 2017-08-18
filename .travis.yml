@@ -2,7 +2,6 @@ language: csharp
 mono: latest
 dotnet: 2.0.0
 install:
-  - dotnet restore ./src/postmark-dotnet.sln
-  - nuget install xunit.runners -Version 1.9.2 -OutputDirectory .testrunner
+  - ./scripts/setup
 script:
   - ./scripts/ci

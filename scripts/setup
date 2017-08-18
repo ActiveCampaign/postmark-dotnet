@@ -1,0 +1,7 @@
+#!/usr/bin/env bash
+set -ex
+pushd $( dirname $0 )
+mkdir -p tools
+nuget install xunit.runners -Version 1.9.2 -OutputDirectory ./tools/testrunner
+nuget install ILRepack -Version 2.0.13 -OutputDirectory ./tools/ilrepack
+popd

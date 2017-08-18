@@ -4,7 +4,5 @@ dotnet: 2.0.0
 install:
   - dotnet restore ./src/postmark-dotnet.sln
   - nuget install xunit.runners -Version 1.9.2 -OutputDirectory .testrunner
-  - chmod +x ./scripts/*.*
-  - chmod +x ./scripts/*
 script:
   - ./scripts/ci

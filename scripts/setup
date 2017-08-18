@@ -8,9 +8,10 @@ ls -alh $(which nuget)
 
 echo 'Update nuget if it is not currently up to date...'
 
-nuget update -self
+sudo nuget update -self
 
 echo 'Install some tooling packages...'
 nuget install xunit.runners -Version 1.9.2 -OutputDirectory ./tools/testrunner
 nuget install ILRepack -Version 2.0.13 -OutputDirectory ./tools/ilrepack
+#nuget install nuget.exe -OutputDirectory ./tools/nuget
 popd

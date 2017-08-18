@@ -1,5 +1,6 @@
 language: csharp
 dist: trusty
+sudo: none
 mono: latest
 dotnet: 2.0.0
 install:

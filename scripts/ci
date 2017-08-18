@@ -1,0 +1,8 @@
+#!/usr/bin/env bash
+set -e
+dir="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )/../src/"
+pushd $dir
+dotnet restore
+msbuild /p:Configuration=Release /p:LibraryFrameworks="netstandard1.2"
+dotnet test ./Postmark.Tests/Postmark.Tests.csproj /p:LibraryFrameworks='netstandard1.2'
+popd

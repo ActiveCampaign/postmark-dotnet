@@ -1,6 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
-    <TargetFrameworks>netstandard1.2;net20</TargetFrameworks>
+    <TargetFrameworks Condition="'$(LibraryFrameworks)' == ''">netstandard1.2;net20</TargetFrameworks>
+    <TargetFrameworks Condition="'$(LibraryFrameworks)' != ''">$(LibraryFrameworks)</TargetFrameworks>
     <AssemblyVersion>3.0.0.0</AssemblyVersion>
     <AssemblyTitle>PostmarkDotNet</AssemblyTitle>
     <PackageProjectUrl>https://github.com/wildbit/postmark-dotnet/wiki</PackageProjectUrl>

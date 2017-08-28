@@ -15,5 +15,10 @@ namespace PostmarkDotNet.Model
         public int WithClientRecorded { get; set; }
         public int WithPlatformRecorded { get; set; }
         public int WithReadTimeRecorded { get; set; }
+        public int TotalClicks { get; set; }
+        public int UniqueLinksClicked { get; set; }
+        public int TotalTrackedLinksSent { get; set; }
+        public int WithLinkTracking { get; set; }
+        public int WithOpenTracking { get; set; }
     }
 }

@@ -101,7 +101,7 @@ namespace PostmarkDotNet
         /// <value>The server token.</value>
         public string ServerToken { get; private set; }
 
-        #region Mail API
+#region Mail API
 
         /// <summary>
         ///   Sends a message through the Postmark API.
@@ -210,9 +210,9 @@ namespace PostmarkDotNet
             return GetPostmarkResponses(request);
         }
 
-        #endregion
+#endregion
 
-        #region Bounce API
+#region Bounce API
 
         /// <summary>
         ///   Retrieves the bounce-related <see cref = "PostmarkDeliveryStats" /> results for the
@@ -492,9 +492,9 @@ namespace PostmarkDotNet
             return JsonConvert.DeserializeObject<PostmarkBounceActivation>(response.Content, _settings);
         }
 
-        #endregion
+#endregion
 
-        #region Messages API
+#region Messages API
 
         /// <summary>
         /// Return a listing of Outbound sent messages using the filters supported by the API.
@@ -751,7 +751,7 @@ namespace PostmarkDotNet
             return JsonConvert.DeserializeObject<InboundMessageDetail>(response.Content, _settings);
         }
 
-        #endregion
+#endregion
 
         private void SetPostmarkMeta(RestBase request)
         {

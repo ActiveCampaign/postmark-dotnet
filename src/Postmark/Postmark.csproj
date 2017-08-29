@@ -1,8 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
-    <TargetFrameworks Condition="'$(LibraryFrameworks)' == ''">netstandard1.2</TargetFrameworks>
+    <TargetFrameworks Condition="'$(LibraryFrameworks)' == ''">netstandard1.1</TargetFrameworks>
     <TargetFrameworks Condition="'$(LibraryFrameworks)' != ''">$(LibraryFrameworks)</TargetFrameworks>
-    <AssemblyVersion Condition="'$(AssemblyVersion)' == ''">3.0.0.0</AssemblyVersion>
     <AssemblyTitle>PostmarkDotNet</AssemblyTitle>
     <PackageProjectUrl>https://github.com/wildbit/postmark-dotnet/wiki</PackageProjectUrl>
     <PackageIconUrl>https://github.com/wildbit/postmark-dotnet/raw/master/postmark-logo.png</PackageIconUrl>
@@ -28,7 +27,7 @@
     </PackageReference>
   </ItemGroup>
 
-  <ItemGroup Condition="'$(TargetFramework)' == 'netstandard1.2'">
+  <ItemGroup Condition="'$(TargetFramework)' == 'netstandard1.1'">
     <PackageReference Include="System.Net.Http">
       <Version>4.3.2</Version>
     </PackageReference>

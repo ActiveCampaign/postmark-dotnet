@@ -1,4 +1,4 @@
-﻿#if NETSTANDARD2_0
+﻿#if NET20
 using PostmarkDotNet;
 using PostmarkDotNet.Model;
 using System;

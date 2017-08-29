@@ -1,5 +1,4 @@
-﻿#if NETSTANDARD1_2
-using System;
+﻿using System;
 using System.Net.Http;
 using System.Threading.Tasks;
 
@@ -32,4 +31,3 @@ namespace PostmarkDotNet
         }
     }
 }
-#endif

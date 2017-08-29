@@ -1,5 +1,4 @@
-﻿#if NETSTANDARD1_2
-using PostmarkDotNet.Converters;
+﻿using PostmarkDotNet.Converters;
 using PostmarkDotNet.Exceptions;
 using PostmarkDotNet.Utility;
 using System;
@@ -161,4 +160,3 @@ namespace PostmarkDotNet
 
     }
 }
-#endif

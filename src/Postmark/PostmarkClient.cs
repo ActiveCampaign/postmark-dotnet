@@ -1,5 +1,4 @@
-﻿#if NETSTANDARD1_2
-using Newtonsoft.Json.Linq;
+﻿using Newtonsoft.Json.Linq;
 using PostmarkDotNet.Model;
 using System;
 using System.Collections.Generic;
@@ -859,4 +858,3 @@ namespace PostmarkDotNet
         #endregion
     }
 }
-#endif

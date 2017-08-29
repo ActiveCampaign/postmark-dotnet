@@ -1,8 +1,6 @@
 ﻿#if NET20
 using System;
 using System.Collections.Generic;
-using Hammock;
-using Hammock.Web;
 using Newtonsoft.Json;
 using PostmarkDotNet.Model;
 

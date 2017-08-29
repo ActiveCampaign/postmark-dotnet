@@ -9,7 +9,7 @@ dotnet restore
 #generate a version, based on the tag, or rev.
 revision=$(git rev-parse HEAD)
 inferred_assembly_version="0.0.0.${TRAVIS_BUILD_NUMBER:-1}"
-version=${TRAVIS_TAG:-$inferred_assembly_version}
+version=$(echo "${TRAVIS_TAG:-$inferred_assembly_version}" | sed -E s/-.+$//)
 descriptive_version=${TRAVIS_TAG:-"$version-$revision"}
 
 # build and test in one step.

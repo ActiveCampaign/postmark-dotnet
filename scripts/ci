@@ -2,26 +2,27 @@
 set -e
 shopt -s expand_aliases
 
-pushd "$(dirname $0)"
-
-popd
-
 pushd "$( dirname "$0" )/../src/"
 
 dotnet restore
 
 #generate a version, based on the tag, or rev.
 revision=$(git rev-parse HEAD)
-inferred_assembly_version="0.0.${TRAVIS_BUILD_NUMBER:-0}.0"
+inferred_assembly_version="0.0.0.${TRAVIS_BUILD_NUMBER:-1}"
 version=${TRAVIS_TAG:-$inferred_assembly_version}
 descriptive_version=${TRAVIS_TAG:-"$version-$revision"}
 
 # build and test in one step.
-dotnet test ./Postmark.Tests/Postmark.Tests.csproj /p:Configuration=Release /p:AssemblyVersion=$version /p:Version=$descriptive_version
+dotnet build /p:Configuration=Release /p:AssemblyVersion=$version /p:Version=$descriptive_version
+dotnet test --no-build ./Postmark.Tests/Postmark.Tests.csproj /p:Configuration=Release /p:AssemblyVersion=$version /p:Version=$descriptive_version
+dotnet pack ./Postmark/Postmark.csproj --no-build -c Release -o ../../tmp /p:AssemblyVersion=$version /p:Version=$descriptive_version
 
-if [[ $TRAVIS_TAG ]]; then
-    echo 'TODO: This package should be published.'
+if [[ $TRAVIS_TAG && $NUGET_API_KEY && $MYGET_API_KEY ]]; then
+    echo 'This package will be published to NuGet, and MyGet'
+    dotnet nuget push -s https://www.myget.org/F/postmark-ci/api/v3/index.json -k $NUGET_API_KEY ../tmp/*.nupkg
+    dotnet nuget push -s https://www.myget.org/F/postmark-ci/api/v3/index.json -k $MYGET_API_KEY ../tmp/*.nupkg
 else
-    echo 'This package will not be published, because it has not been tagged.'
+    echo 'This package will be published to the CI "MyGet" feed:'
+    dotnet nuget push -s https://www.myget.org/F/postmark-ci/api/v3/index.json -k $MYGET_API_KEY ../tmp/*.nupkg
 fi
 popd

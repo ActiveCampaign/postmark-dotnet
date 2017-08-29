@@ -11,6 +11,6 @@ echo 'Update nuget if it is not currently up to date...'
 echo 'Install some tooling packages...'
 nuget install xunit.runners -Version 1.9.2 -OutputDirectory ./tools/testrunner
 nuget install ILRepack -Version 2.0.13 -OutputDirectory ./tools/ilrepack
-nuget install NuGet.CommandLine -Version 4.3.0-preview3-4168 -OutputDirectory ./tools/nuget-cli
+#nuget install NuGet.CommandLine -Version 4.3.0-preview3-4168 -OutputDirectory ./tools/nuget-cli
 
 popd

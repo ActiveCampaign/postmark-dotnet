@@ -19,7 +19,7 @@ dotnet pack ./Postmark/Postmark.csproj --no-build -c Release -o ../../tmp /p:Ass
 
 if [[ $TRAVIS_TAG && $NUGET_API_KEY && $MYGET_API_KEY ]]; then
     echo 'This package will be published to NuGet, and MyGet'
-    dotnet nuget push -s https://www.myget.org/F/postmark-ci/api/v3/index.json -k $NUGET_API_KEY ../tmp/*.nupkg
+    dotnet nuget push -s https://www.nuget.org/ -k $NUGET_API_KEY ../tmp/*.nupkg
     dotnet nuget push -s https://www.myget.org/F/postmark-ci/api/v3/index.json -k $MYGET_API_KEY ../tmp/*.nupkg
 else
     echo 'This package will be published to the CI "MyGet" feed:'

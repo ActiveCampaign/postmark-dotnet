@@ -1,4 +1,5 @@
-﻿using PostmarkDotNet;
+﻿#if NETSTANDARD2_0
+using PostmarkDotNet;
 using PostmarkDotNet.Model;
 using System;
 using System.Collections.Generic;
@@ -220,3 +221,4 @@ namespace PostmarkDotNet
         }
     }
 }
+#endif

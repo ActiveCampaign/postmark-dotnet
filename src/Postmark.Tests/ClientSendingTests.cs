@@ -59,7 +59,7 @@ namespace Postmark.Tests
                 TrackOpens = true,
                 TrackLinks = LinkTrackingOptions.HtmlAndText,
                 Headers = new HeaderCollection(){
-                  new NameValuePair( "X-Integration-Testing-Postmark-Type-Message" , TESTING_DATE.ToString("o"))
+                  new MailHeader( "X-Integration-Testing-Postmark-Type-Message" , TESTING_DATE.ToString("o"))
                 },
                 ReplyTo = inboundAddress,
                 Tag = "integration-testing"

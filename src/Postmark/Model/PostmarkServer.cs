@@ -85,6 +85,11 @@ namespace PostmarkDotNet.Model
         public LinkTrackingOptions TrackLinks { get; set; }
 
         /// <summary>
+        /// URL to POST to everytime an click event occurs.
+        /// </summary>
+        public string ClickHookUrl { get; set; }
+
+        /// <summary>
         /// Inbound domain for MX setup
         /// </summary>
         public string InboundDomain { get; set; }

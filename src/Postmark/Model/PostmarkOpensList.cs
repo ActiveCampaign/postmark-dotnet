@@ -32,7 +32,7 @@ namespace PostmarkDotNet.Model
         /// <summary>
         /// Any known geo data for the this Open.
         /// </summary>
-        public PostmarkGeographyOpenInfo Geo { get; set; }
+        public PostmarkGeographyInfo Geo { get; set; }
 
         /// <summary>
         /// What was the platform used to open the message?
@@ -53,23 +53,5 @@ namespace PostmarkDotNet.Model
         /// Information about the opening client operating system, extracted from the UserAgent string.
         /// </summary>
         public PostmarkAgentInfo OS { get; set; }
-    }
-
-    public class PostmarkAgentInfo
-    {
-        public string Name { get; set; }
-        public string Company { get; set; }
-        public string Family { get; set; }
-    }
-
-    public class PostmarkGeographyOpenInfo
-    {
-        public string City { get; set; }
-        public string Region { get; set; }
-        public string Country { get; set; }
-        public string IP { get; set; }
-        public string RegionISOCode { get; set; }
-        public string CountryISOCode { get; set; }
-        public string Coords { get; set; }
     }
 }

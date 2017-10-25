@@ -390,6 +390,53 @@ namespace PostmarkDotNet
                 .ProcessNoBodyRequestAsync<PostmarkOpensList>("/messages/outbound/opens", parameters);
         }
 
+
+        /// <summary>
+        /// Get the Open Events for messages, optionally filtering by various
+        /// attributes of the Open Events and Messages.
+        /// </summary>
+        /// <param name="offset"></param>
+        /// <param name="count"></param>
+        /// <param name="recipient"></param>
+        /// <param name="tag"></param>
+        /// <param name="clientName"></param>
+        /// <param name="clientCompany"></param>
+        /// <param name="clientFamily"></param>
+        /// <param name="operatingSystemName"></param>
+        /// <param name="operatingSystemFamily"></param>
+        /// <param name="operatingSystemCompany"></param>
+        /// <param name="platform"></param>
+        /// <param name="country"></param>
+        /// <param name="region"></param>
+        /// <param name="city"></param>
+        /// <returns></returns>
+        public async Task<PostmarkClicksList> GetClicksEventsForMessagesAsync(
+            int offset = 0, int count = 100, string recipient = null, string tag = null,
+            string clientName = null, string clientCompany = null, string clientFamily = null,
+            string operatingSystemName = null, string operatingSystemFamily = null, string operatingSystemCompany = null,
+            string platform = null, string country = null, string region = null, string city = null)
+        {
+            var parameters = new Dictionary<string, object>();
+            parameters["offset"] = offset;
+            parameters["count"] = count;
+            parameters["recipient"] = recipient;
+            parameters["tag"] = tag;
+            parameters["client_name"] = clientName;
+            parameters["client_company"] = clientCompany;
+            parameters["client_family"] = clientFamily;
+            parameters["os_name"] = operatingSystemName;
+            parameters["os_family"] = operatingSystemFamily;
+            parameters["os_company"] = operatingSystemCompany;
+            parameters["platform"] = platform;
+            parameters["country"] = country;
+            parameters["region"] = region;
+            parameters["city"] = city;
+
+            return await this
+                .ProcessNoBodyRequestAsync<PostmarkClicksList>("/messages/outbound/clicks", parameters);
+        }
+
+
         /// <summary>
         /// Get the Open events for a specific message.
         /// </summary>
@@ -407,6 +454,25 @@ namespace PostmarkDotNet
 
             return await this.ProcessNoBodyRequestAsync<PostmarkOpensList>
                 (String.Format("/messages/outbound/opens/{0}", messageId), parameters);
+        }
+
+        /// <summary>
+        /// Get the Clicks events for a specific message.
+        /// </summary>
+        /// <param name="messageId"></param>
+        /// <param name="offset"></param>
+        /// <param name="count"></param>
+        /// <returns></returns>
+        public async Task<PostmarkClicksList> GetClickEventsForMessageAsync(
+            string messageId, int offset = 0, int count = 100)
+        {
+
+            var parameters = new Dictionary<string, object>();
+            parameters["offset"] = offset;
+            parameters["count"] = count;
+
+            return await this.ProcessNoBodyRequestAsync<PostmarkClicksList>
+                (String.Format("/messages/outbound/clicks/{0}", messageId), parameters);
         }
 
         /// <summary>

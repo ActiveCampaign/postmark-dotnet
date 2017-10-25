@@ -91,26 +91,27 @@ namespace Postmark.Tests
                 _inboundHookUrl, _bounceHookUrl, _openHookUrl, _postFirstOpenOpenOnly, _trackOpens,
                 null, _inboundSpamThreshold);
 
-            var updatedAffix = "updated";
+            var updatedSuffix = "updated";
 
-            var updatedServer = await _adminClient.EditServerAsync(newServer.ID, _name + updatedAffix, ServerColors.Yellow,
+            var updatedServer = await _adminClient.EditServerAsync(newServer.ID, _name + updatedSuffix, ServerColors.Yellow,
                 !newServer.RawEmailEnabled, !newServer.SmtpApiActivated,
-                _inboundHookUrl + updatedAffix, _bounceHookUrl + updatedAffix,
-                _openHookUrl + updatedAffix, !newServer.PostFirstOpenOnly,
-                !newServer.TrackOpens, null, 5, null, _clickHookUrl, _deliveryHookUrl);
+                _inboundHookUrl + updatedSuffix, _bounceHookUrl + updatedSuffix,
+                _openHookUrl + updatedSuffix, !newServer.PostFirstOpenOnly,
+                !newServer.TrackOpens, null, 5, null, _clickHookUrl + updatedSuffix,
+                _deliveryHookUrl + updatedSuffix);
 
             var retrievedServer = await _adminClient.GetServerAsync(newServer.ID);
 
-            Assert.Equal(_name + updatedAffix, retrievedServer.Name);
+            Assert.Equal(_name + updatedSuffix, retrievedServer.Name);
             Assert.Equal(ServerColors.Yellow, retrievedServer.Color);
             Assert.NotEqual(newServer.Color, retrievedServer.Color);
             Assert.Equal(!_rawEmailEnabled, retrievedServer.RawEmailEnabled);
             Assert.Equal(!_smtpActivated, retrievedServer.SmtpApiActivated);
-            Assert.Equal(_inboundHookUrl + updatedAffix, retrievedServer.InboundHookUrl);
-            Assert.Equal(_bounceHookUrl + updatedAffix, retrievedServer.BounceHookUrl);
-            Assert.Equal(_clickHookUrl + updatedAffix, retrievedServer.ClickHookUrl);
-            Assert.Equal(_deliveryHookUrl + updatedAffix, retrievedServer.DeliveryHookUrl);
-            Assert.Equal(_openHookUrl + updatedAffix, retrievedServer.OpenHookUrl);
+            Assert.Equal(_inboundHookUrl + updatedSuffix, retrievedServer.InboundHookUrl);
+            Assert.Equal(_bounceHookUrl + updatedSuffix, retrievedServer.BounceHookUrl);
+            Assert.Equal(_clickHookUrl + updatedSuffix, retrievedServer.ClickHookUrl);
+            Assert.Equal(_deliveryHookUrl + updatedSuffix, retrievedServer.DeliveryHookUrl);
+            Assert.Equal(_openHookUrl + updatedSuffix, retrievedServer.OpenHookUrl);
             Assert.Equal(!_postFirstOpenOpenOnly, retrievedServer.PostFirstOpenOnly);
             Assert.Equal(!_trackOpens, retrievedServer.TrackOpens);
             //Assert.Equal(updatedAffix + _inboundDomain, retrievedServer.InboundDomain);

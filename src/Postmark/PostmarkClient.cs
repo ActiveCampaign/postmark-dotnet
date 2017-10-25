@@ -294,7 +294,8 @@ namespace PostmarkDotNet
             bool? rawEmailEnabled = null, bool? smtpApiActivated = null, string inboundHookUrl = null,
             string bounceHookUrl = null, string openHookUrl = null, bool? postFirstOpenOnly = null,
             bool? trackOpens = null, string inboundDomain = null, int? inboundSpamThreshold = null, 
-            LinkTrackingOptions? trackLinks = null)
+            LinkTrackingOptions? trackLinks = null,
+            string clickHookUrl = null, string deliveryHookUrl = null)
         {
             var body = new Dictionary<string, object>();
             body["Name"] = name;
@@ -309,6 +310,8 @@ namespace PostmarkDotNet
             body["InboundDomain"] = inboundDomain;
             body["InboundSpamThreshold"] = inboundSpamThreshold;
             body["TrackLinks"] = trackLinks;
+            body["ClickHookUrl"] = clickHookUrl;
+            body["DeliveryHookUrl"] = deliveryHookUrl;
 
             body = body.Where(kv => kv.Value != null).ToDictionary(k => k.Key, v => v.Value);
 
@@ -392,8 +395,8 @@ namespace PostmarkDotNet
 
 
         /// <summary>
-        /// Get the Open Events for messages, optionally filtering by various
-        /// attributes of the Open Events and Messages.
+        /// Get the Click Events for messages, optionally filtering by various
+        /// attributes of the Click Events and Messages.
         /// </summary>
         /// <param name="offset"></param>
         /// <param name="count"></param>
@@ -410,7 +413,7 @@ namespace PostmarkDotNet
         /// <param name="region"></param>
         /// <param name="city"></param>
         /// <returns></returns>
-        public async Task<PostmarkClicksList> GetClicksEventsForMessagesAsync(
+        public async Task<PostmarkClicksList> GetClickEventsForMessagesAsync(
             int offset = 0, int count = 100, string recipient = null, string tag = null,
             string clientName = null, string clientCompany = null, string clientFamily = null,
             string operatingSystemName = null, string operatingSystemFamily = null, string operatingSystemCompany = null,

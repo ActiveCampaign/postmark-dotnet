@@ -66,7 +66,8 @@ namespace PostmarkDotNet
         public async Task<PostmarkServer> CreateServerAsync(String name, string color = null,
             bool? rawEmailEnabled = null, bool? smtpApiActivated = null, string inboundHookUrl = null,
             string bounceHookUrl = null, string openHookUrl = null, bool? postFirstOpenOnly = null,
-            bool? trackOpens = null, string inboundDomain = null, int? inboundSpamThreshold = null)
+            bool? trackOpens = null, string inboundDomain = null, int? inboundSpamThreshold = null,
+            LinkTrackingOptions? trackLinks = null, string clickHookUrl = null, string deliveryHookUrl = null)
         {
 
             var body = new Dictionary<string, object>();
@@ -81,6 +82,9 @@ namespace PostmarkDotNet
             body["TrackOpens"] = trackOpens;
             body["InboundDomain"] = inboundDomain;
             body["InboundSpamThreshold"] = inboundSpamThreshold;
+            body["TrackLinks"] = trackLinks;
+            body["ClickHookUrl"] = clickHookUrl;
+            body["DeliveryHookUrl"] = deliveryHookUrl;
 
             return await this.ProcessRequestAsync<Dictionary<string, object>, PostmarkServer>("/servers/", HttpMethod.Post, body);
         }
@@ -100,11 +104,15 @@ namespace PostmarkDotNet
         /// <param name="rawEmailEnabled"></param>
         /// <param name="smtpApiActivated"></param>
         /// <param name="trackOpens"></param>
+        /// <param name="trackLinks"></param>
+        /// <param name="clickHookUrl"></param>
+        /// <param name="deliveryHookUrl"></param>
         /// <returns></returns>
         public async Task<PostmarkServer> EditServerAsync(int serverId, String name = null, string color = null,
             bool? rawEmailEnabled = null, bool? smtpApiActivated = null, string inboundHookUrl = null,
             string bounceHookUrl = null, string openHookUrl = null, bool? postFirstOpenOnly = null,
-            bool? trackOpens = null, string inboundDomain = null, int? inboundSpamThreshold = null)
+            bool? trackOpens = null, string inboundDomain = null, int? inboundSpamThreshold = null, 
+            LinkTrackingOptions? trackLinks = null, string clickHookUrl = null, string deliveryHookUrl = null)
         {
 
             var body = new Dictionary<string, object>();
@@ -119,6 +127,10 @@ namespace PostmarkDotNet
             body["TrackOpens"] = trackOpens;
             body["InboundDomain"] = inboundDomain;
             body["InboundSpamThreshold"] = inboundSpamThreshold;
+            body["TrackLinks"] = trackLinks;
+            body["ClickHookUrl"] = clickHookUrl;
+            body["DeliveryHookUrl"] = deliveryHookUrl;
+            
 
             return await this.ProcessRequestAsync<Dictionary<string, object>, PostmarkServer>
                 ("/servers/" + serverId, HttpMethod.Put, body);

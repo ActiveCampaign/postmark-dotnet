@@ -16,6 +16,7 @@ namespace Postmark.Tests
         private bool? _smtpActivated;
         private string _inboundHookUrl;
         private string _openHookUrl;
+        private string _clickHookUrl;
         private bool? _postFirstOpenOpenOnly;
         private bool? _trackOpens;
         private int? _inboundSpamThreshold;
@@ -37,6 +38,7 @@ namespace Postmark.Tests
             _inboundHookUrl = "http://www.example.com/inbound/" + id;
             _bounceHookUrl = "http://www.example.com/bounce/" + id;
             _openHookUrl = "http://www.example.com/opened/" + id;
+            _clickHookUrl = "http://www.example.com/clicked/" + id;
             _postFirstOpenOpenOnly = true;
             _trackOpens = true;
             _inboundSpamThreshold = 30;

@@ -16,6 +16,8 @@ namespace Postmark.Tests
         private string _inboundHookUrl;
         private string _bounceHookUrl;
         private string _openHookUrl;
+        private string _clickHookUrl;
+        private string _deliveryHookUrl;
 
         protected override void Setup()
         {
@@ -29,6 +31,8 @@ namespace Postmark.Tests
             _inboundHookUrl = "http://www.example.com/inbound/" + id;
             _bounceHookUrl = "http://www.example.com/bounce/" + id;
             _openHookUrl = "http://www.example.com/opened/" + id;
+            _clickHookUrl = "http://www.example.com/click/" + id;
+            _deliveryHookUrl = "http://www.example.com/delivery/" + id;
             //_inboundDomain = "inbound-" + id + ".exmaple.com";
         }
 
@@ -68,7 +72,8 @@ namespace Postmark.Tests
                 !existingServer.RawEmailEnabled, !existingServer.SmtpApiActivated,
                 _inboundHookUrl + updatedAffix, _bounceHookUrl + updatedAffix,
                 _openHookUrl + updatedAffix, !existingServer.PostFirstOpenOnly,
-                !existingServer.TrackOpens, null, 10, LinkTrackingOptions.HtmlOnly);
+                !existingServer.TrackOpens, null, 10, LinkTrackingOptions.HtmlOnly,
+                _clickHookUrl + updatedAffix, _deliveryHookUrl + updatedAffix);
 
             //go get a fresh copy from the API.
             var retrievedServer = await _client.GetServerAsync();
@@ -81,7 +86,7 @@ namespace Postmark.Tests
                 existingServer.OpenHookUrl, existingServer.PostFirstOpenOnly,
                 existingServer.TrackOpens, null,
                 existingServer.InboundSpamThreshold,
-                LinkTrackingOptions.None);
+                LinkTrackingOptions.None, existingServer.ClickHookUrl, existingServer.DeliveryHookUrl);
 
             Assert.Equal(_name + updatedAffix, retrievedServer.Name);
             Assert.Equal(ServerColors.Purple, retrievedServer.Color);
@@ -91,6 +96,8 @@ namespace Postmark.Tests
             Assert.Equal(_inboundHookUrl + updatedAffix, retrievedServer.InboundHookUrl);
             Assert.Equal(_bounceHookUrl + updatedAffix, retrievedServer.BounceHookUrl);
             Assert.Equal(_openHookUrl + updatedAffix, retrievedServer.OpenHookUrl);
+            Assert.Equal(_clickHookUrl + updatedAffix, retrievedServer.ClickHookUrl);
+            Assert.Equal(_deliveryHookUrl + updatedAffix, retrievedServer.DeliveryHookUrl);
             Assert.NotEqual(existingServer.PostFirstOpenOnly, retrievedServer.PostFirstOpenOnly);
             Assert.NotEqual(existingServer.TrackOpens, retrievedServer.TrackOpens);
             Assert.Equal(10, retrievedServer.InboundSpamThreshold);

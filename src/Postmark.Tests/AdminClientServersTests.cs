@@ -24,6 +24,7 @@ namespace Postmark.Tests
         private string _color;
         private bool? _rawEmailEnabled;
         private string _bounceHookUrl;
+        private string _deliveryHookUrl;
 
         protected override void Setup()
         {
@@ -39,6 +40,7 @@ namespace Postmark.Tests
             _bounceHookUrl = "http://www.example.com/bounce/" + id;
             _openHookUrl = "http://www.example.com/opened/" + id;
             _clickHookUrl = "http://www.example.com/clicked/" + id;
+            _deliveryHookUrl = "http://www.example.com/delivery/" + id;
             _postFirstOpenOpenOnly = true;
             _trackOpens = true;
             _inboundSpamThreshold = 30;
@@ -95,7 +97,7 @@ namespace Postmark.Tests
                 !newServer.RawEmailEnabled, !newServer.SmtpApiActivated,
                 _inboundHookUrl + updatedAffix, _bounceHookUrl + updatedAffix,
                 _openHookUrl + updatedAffix, !newServer.PostFirstOpenOnly,
-                !newServer.TrackOpens, null, 5);
+                !newServer.TrackOpens, null, 5, null, _clickHookUrl, _deliveryHookUrl);
 
             var retrievedServer = await _adminClient.GetServerAsync(newServer.ID);
 
@@ -106,6 +108,8 @@ namespace Postmark.Tests
             Assert.Equal(!_smtpActivated, retrievedServer.SmtpApiActivated);
             Assert.Equal(_inboundHookUrl + updatedAffix, retrievedServer.InboundHookUrl);
             Assert.Equal(_bounceHookUrl + updatedAffix, retrievedServer.BounceHookUrl);
+            Assert.Equal(_clickHookUrl + updatedAffix, retrievedServer.ClickHookUrl);
+            Assert.Equal(_deliveryHookUrl + updatedAffix, retrievedServer.DeliveryHookUrl);
             Assert.Equal(_openHookUrl + updatedAffix, retrievedServer.OpenHookUrl);
             Assert.Equal(!_postFirstOpenOpenOnly, retrievedServer.PostFirstOpenOnly);
             Assert.Equal(!_trackOpens, retrievedServer.TrackOpens);
@@ -119,7 +123,7 @@ namespace Postmark.Tests
         {
             var newServer = await _adminClient.CreateServerAsync(_name, _color, _rawEmailEnabled, _smtpActivated,
                 _inboundHookUrl, _bounceHookUrl, _openHookUrl, _postFirstOpenOpenOnly, _trackOpens,
-                null, _inboundSpamThreshold);
+                null, _inboundSpamThreshold, null, _clickHookUrl, _deliveryHookUrl);
 
             var retrievedServer = await _adminClient.GetServerAsync(newServer.ID);
 
@@ -130,10 +134,13 @@ namespace Postmark.Tests
             Assert.Equal(_inboundHookUrl, retrievedServer.InboundHookUrl);
             Assert.Equal(_bounceHookUrl, retrievedServer.BounceHookUrl);
             Assert.Equal(_openHookUrl, retrievedServer.OpenHookUrl);
+            Assert.Equal(_deliveryHookUrl, retrievedServer.DeliveryHookUrl);
+            Assert.Equal(_clickHookUrl, retrievedServer.ClickHookUrl);
             Assert.Equal(_postFirstOpenOpenOnly, retrievedServer.PostFirstOpenOnly);
             Assert.Equal(_trackOpens, retrievedServer.TrackOpens);
             Assert.True(String.IsNullOrEmpty(retrievedServer.InboundDomain));
             Assert.Equal(_inboundSpamThreshold, retrievedServer.InboundSpamThreshold);
+
 
         }
 

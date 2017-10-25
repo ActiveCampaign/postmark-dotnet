@@ -90,6 +90,11 @@ namespace PostmarkDotNet.Model
         public string ClickHookUrl { get; set; }
 
         /// <summary>
+        /// URL to POST to when messages delivery occurs.
+        /// </summary>
+        public string DeliveryHookUrl { get; set; }
+
+        /// <summary>
         /// Inbound domain for MX setup
         /// </summary>
         public string InboundDomain { get; set; }

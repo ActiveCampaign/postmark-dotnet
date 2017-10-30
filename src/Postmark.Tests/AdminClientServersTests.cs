@@ -1,4 +1,4 @@
-﻿using Xunit;
+using Xunit;
 using PostmarkDotNet;
 using PostmarkDotNet.Model;
 using System;

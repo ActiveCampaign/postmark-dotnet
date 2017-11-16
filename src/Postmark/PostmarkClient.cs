@@ -90,10 +90,12 @@ namespace PostmarkDotNet
         /// <param name="messageID">Filter by MessageID.</param>
         /// <param name="offset">The page offset for the returned results; defaults to 0.</param>
         /// <param name="count">The number of results to return by the page offset; defaults to 100.</param>
+        /// <param name="fromDate">Filter messages starting from the date specified (inclusive). e.g. 2014-02-01</param>
+        /// <param name="toDate">Filter messages up to the date specified (inclusive). e.g. 2014-02-01</param>
         /// <returns></returns>
         /// <seealso href = "http://developer.postmarkapp.com/bounces" />
         public async Task<PostmarkBounces> GetBouncesAsync(int offset = 0, int count = 100, PostmarkBounceType? type = null,
-            bool? inactive = null, string emailFilter = null, string tag = null, string messageID = null)
+            bool? inactive = null, string emailFilter = null, string tag = null, string messageID = null, string fromDate = null, string toDate = null)
         {
             var parameters = new Dictionary<string, object>();
             parameters["type"] = type;
@@ -103,6 +105,8 @@ namespace PostmarkDotNet
             parameters["messageID"] = messageID;
             parameters["offset"] = offset;
             parameters["count"] = count;
+            parameters["fromDate"] = fromDate;
+            parameters["toDate"] = toDate;
 
             return await ProcessNoBodyRequestAsync<PostmarkBounces>("/bounces", parameters);
         }

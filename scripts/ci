@@ -17,13 +17,15 @@ dotnet build /p:Configuration=Release /p:AssemblyVersion=$version /p:Version=$de
 dotnet test --no-build ./Postmark.Tests/Postmark.Tests.csproj /p:Configuration=Release /p:AssemblyVersion=$version /p:Version=$descriptive_version
 dotnet pack ./Postmark/Postmark.csproj --no-build -c Release -o ../../tmp /p:AssemblyVersion=$version /p:Version=$descriptive_version
 
+popd
+
+package_path="../tmp/Postmark.$descriptive_version.nupkg"
+
 if [[ $TRAVIS_TAG && $NUGET_API_KEY && $MYGET_API_KEY ]]; then
     echo 'This package will be published to NuGet, and MyGet'
-    dotnet nuget push -s https://www.nuget.org/ -k $NUGET_API_KEY ../tmp/*.nupkg
-    dotnet nuget push -s https://www.myget.org/F/postmark-ci/api/v3/index.json -k $MYGET_API_KEY ../../tmp/*.nupkg
+    dotnet nuget push -s https://www.nuget.org/ -k $NUGET_API_KEY $package_path
+    dotnet nuget push -s https://www.myget.org/F/postmark-ci/api/v3/index.json -k $MYGET_API_KEY $package_path
 else
     echo 'This package will be published to the CI "MyGet" feed:'
-    dotnet nuget push -s https://www.myget.org/F/postmark-ci/api/v3/index.json -k $MYGET_API_KEY ../../tmp/*.nupkg
+    dotnet nuget push -s https://www.myget.org/F/postmark-ci/api/v3/index.json -k $MYGET_API_KEY $package_path
 fi
-
-popd

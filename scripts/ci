@@ -10,7 +10,7 @@ dotnet restore
 revision=$(git rev-parse HEAD)
 inferred_assembly_version="0.0.0.${TRAVIS_BUILD_NUMBER:-1}"
 version=$(echo "${TRAVIS_TAG:-$inferred_assembly_version}" | sed -E s/-.+$//)
-descriptive_version=${TRAVIS_TAG:-"$version-$revision"}
+descriptive_version=${TRAVIS_TAG:-"$version-git-$revision"}
 
 # build and test in one step.
 dotnet build /p:Configuration=Release /p:AssemblyVersion=$version /p:Version=$descriptive_version

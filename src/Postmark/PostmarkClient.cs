@@ -814,6 +814,16 @@ namespace PostmarkDotNet
         }
 
         /// <summary>
+        /// Get basic info associated with the specified Alias.
+        /// </summary>
+        /// <param name="alias">The alias of the template you wish to retrive.</param>
+        /// <returns></returns>
+        public async Task<PostmarkTemplate> GetTemplateAsync(string alias)
+        {
+            return await ProcessNoBodyRequestAsync<PostmarkTemplate>("/templates/" + alias, null, HttpMethod.Get);
+        }
+
+        /// <summary>
         /// Get a listing of templates, optionally including deleted templates.
         /// </summary>
         /// <param name="count"></param>
@@ -836,25 +846,39 @@ namespace PostmarkDotNet
         /// <param name="subject">The subject to be used when sending with this template.</param>
         /// <param name="htmlBody">The HTMLBody to be used when sending with this template. Optional if TextBody is specified.</param>
         /// <param name="textBody">The TextBody to be used when sending with this template. Optional if HtmlBody is specified.</param>
+        /// <param name="alias">A friendly name to use for this template to access it, or to send with it.</param>
         /// <returns></returns>
-        public async Task<BasicTemplateInformation> CreateTemplateAsync(string name, string subject, string htmlBody = null, string textBody = null)
+        public async Task<BasicTemplateInformation> CreateTemplateAsync(string name, string subject, string htmlBody = null, string textBody = null, string alias = null)
         {
             var body = new Dictionary<string, object>();
             body["Name"] = name;
             body["HTMLBody"] = htmlBody;
             body["TextBody"] = textBody;
             body["Subject"] = subject;
+            body["Alias"] = alias;
 
             return await ProcessRequestAsync<Dictionary<string, object>, BasicTemplateInformation>("/templates/", HttpMethod.Post, body);
         }
 
-        public async Task<BasicTemplateInformation> EditTemplateAsync(long templateId, string name = null, string subject = null, string htmlBody = null, string textBody = null)
+        public async Task<BasicTemplateInformation> EditTemplateAsync(string alias, string name = null, string subject = null, string htmlBody = null, string textBody = null)
         {
             var body = new Dictionary<string, object>();
             body["Name"] = name;
             body["HTMLBody"] = htmlBody;
             body["TextBody"] = textBody;
             body["Subject"] = subject;
+            
+            return await ProcessRequestAsync<Dictionary<string, object>, BasicTemplateInformation>("/templates/" + alias, HttpMethod.Put, body);
+        }
+
+        public async Task<BasicTemplateInformation> EditTemplateAsync(long templateId, string name = null, string subject = null, string htmlBody = null, string textBody = null, string alias = null)
+        {
+            var body = new Dictionary<string, object>();
+            body["Name"] = name;
+            body["HTMLBody"] = htmlBody;
+            body["TextBody"] = textBody;
+            body["Subject"] = subject;
+            body["Alias"] = alias;
 
             return await ProcessRequestAsync<Dictionary<string, object>, BasicTemplateInformation>("/templates/" + templateId, HttpMethod.Put, body);
         }
@@ -869,6 +893,16 @@ namespace PostmarkDotNet
             return await ProcessNoBodyRequestAsync<PostmarkResponse>("/templates/" + templateId, null, HttpMethod.Delete);
         }
 
+        /// <summary>
+        /// Delete a template from the server.
+        /// </summary>
+        /// <param name="templateAlias">The Alias of the template you wish to delete from the server.</param>
+        /// <returns></returns>
+        public async Task<PostmarkResponse> DeleteTemplateAsync(string templateAlias)
+        {
+            return await ProcessNoBodyRequestAsync<PostmarkResponse>("/templates/" + templateAlias, null, HttpMethod.Delete);
+        }
+
         public async Task<PostmarkResponse> SendMessageAsync(TemplatedPostmarkMessage emailToSend)
         {
             return await SendEmailWithTemplateAsync(emailToSend);
@@ -879,6 +913,18 @@ namespace PostmarkDotNet
             return await ProcessRequestAsync<TemplatedPostmarkMessage, PostmarkResponse>("/email/withTemplate", HttpMethod.Post, emailToSend);
         }
 
+        public async Task<PostmarkResponse> SendEmailWithTemplateAsync<T>(string templateAlias, T templateModel,
+            string to, string from,
+            bool? inlineCss = null, string cc = null,
+            string bcc = null, string replyTo = null,
+            bool? trackOpens = null,
+            IDictionary<string, string> headers = null,
+            params PostmarkMessageAttachment[] attachments)
+        {
+            return await InternalSendEmailWithTemplateAsync(templateAlias, templateModel, to, from, inlineCss, cc,
+            bcc, replyTo, trackOpens, headers, attachments);
+        }
+
         public async Task<PostmarkResponse> SendEmailWithTemplateAsync<T>(long templateId, T templateModel,
             string to, string from,
             bool? inlineCss = null, string cc = null,
@@ -887,8 +933,25 @@ namespace PostmarkDotNet
             IDictionary<string, string> headers = null,
             params PostmarkMessageAttachment[] attachments)
         {
+            return await InternalSendEmailWithTemplateAsync(templateId, templateModel, to, from, inlineCss, cc,
+            bcc, replyTo, trackOpens, headers, attachments);
+        }
+
+        private async Task<PostmarkResponse> InternalSendEmailWithTemplateAsync<T>(object templateReference, T templateModel,
+            string to, string from,
+            bool? inlineCss = null, string cc = null,
+            string bcc = null, string replyTo = null,
+            bool? trackOpens = null,
+            IDictionary<string, string> headers = null,
+            params PostmarkMessageAttachment[] attachments)
+        {
+            
             var email = new TemplatedPostmarkMessage();
-            email.TemplateId = templateId;
+            if(templateReference is long){
+                email.TemplateId = (long)templateReference;
+            }else{
+                email.TemplateAlias = (string)templateReference;
+            }
             email.TemplateModel = templateModel;
             email.To = to;
             email.From = from;

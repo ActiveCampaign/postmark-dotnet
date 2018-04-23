@@ -4,6 +4,8 @@
     {
         public long TemplateId { get; set; }
 
+        public string Alias { get;set; }
+
         public string Subject { get; set; }
 
         public string Name { get; set; }

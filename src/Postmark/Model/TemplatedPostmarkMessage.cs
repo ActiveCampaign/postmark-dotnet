@@ -21,9 +21,16 @@ namespace PostmarkDotNet
         public bool InlineCss { get { return _inlineCss; } set { _inlineCss = value; } }
 
         /// <summary>
-        /// The template to use when sending this message.
+        /// The template to use when sending this message. Either this or the TemplateAlias are required
+        /// when sending using a template. TemplateId takes precendent when both are specified.
         /// </summary>
         public long TemplateId { get; set; }
+
+        ///<summary>
+        /// The alias of the template to use. Either this value, or the TemplateId are required 
+        /// when sending using a template. The TemplateId takes precendent when both are specified.
+        ///</summary>
+        public string TemplateAlias { get; set; }
 
         private object _templateModel;
 

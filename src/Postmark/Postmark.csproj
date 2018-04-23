@@ -1,6 +1,6 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
-    <TargetFrameworks Condition="'$(LibraryFrameworks)' == ''">netstandard1.1</TargetFrameworks>
+    <TargetFrameworks Condition="'$(LibraryFrameworks)' == ''">netstandard1.1;net45</TargetFrameworks>
     <TargetFrameworks Condition="'$(LibraryFrameworks)' != ''">$(LibraryFrameworks)</TargetFrameworks>
     <AssemblyTitle>PostmarkDotNet</AssemblyTitle>
     <PackageProjectUrl>https://github.com/wildbit/postmark-dotnet/wiki</PackageProjectUrl>
@@ -13,7 +13,7 @@
   </PropertyGroup>
   
   <PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Release|netstandard1.2|AnyCPU'">
-    <DocumentationFile>bin\Release\netstandard1.2\Postmark.xml</DocumentationFile>
+    <DocumentationFile>bin\Release\netstandard1.1\Postmark.xml</DocumentationFile>
     <NoWarn>1701;1702;1705;1591</NoWarn>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Release|net20|AnyCPU'">
@@ -27,7 +27,24 @@
     </PackageReference>
   </ItemGroup>
 
-  <ItemGroup Condition="'$(TargetFramework)' == 'netstandard1.1'">
+  <PropertyGroup>
+    <TargetFrameworks>netstandard1.1;net45;netstandard2.0</TargetFrameworks>
+    <!-- Add the myget feed, without altering any other configurations. -->
+    <RestoreAdditionalProjectSources>https://dotnet.myget.org/F/dotnet-core/api/v3/index.json</RestoreAdditionalProjectSources>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(TargetFramework)'== 'net45'">
+    <FrameworkPathOverride>$(NuGetPackageRoot)microsoft.targetingpack.netframework.v4.5/1.0.1/lib/net45/</FrameworkPathOverride>
+  </PropertyGroup>
+  
+  <ItemGroup Condition="'$(TargetFramework)'== 'net45'">
+      <!-- Make sure the reference assemblies are available -->
+      <PackageReference Include="Microsoft.TargetingPack.NETFramework.v4.5"
+                        Version="1.0.1" ExcludeAssets="All" PrivateAssets="All" />
+    <Reference Include="Microsoft.CSharp" />
+  </ItemGroup>
+
+  <ItemGroup>
     <PackageReference Include="System.Net.Http">
       <Version>4.3.2</Version>
     </PackageReference>

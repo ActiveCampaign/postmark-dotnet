@@ -1,4 +1,5 @@
-#ignore thumbnails created by windows
+#ignore thumbnails created by windowsi
+.vscode
 Thumbs.db
 #Ignore files build by Visual Studio
 *.obj

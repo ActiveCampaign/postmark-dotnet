@@ -28,14 +28,14 @@
   </ItemGroup>
 
   <PropertyGroup Condition="$(TargetFrameworks.Contains('net45'))">
-    <RestoreAdditionalProjectSources>https://dotnet.myget.org/F/dotnet-core/api/v3/index.json</RestoreAdditionalProjectSources>
-    <FrameworkPathOverride>$(NuGetPackageRoot)microsoft.targetingpack.netframework.v4.5/1.0.1/lib/net45/</FrameworkPathOverride>
+    <!-- <RestoreAdditionalProjectSources>https://dotnet.myget.org/F/dotnet-core/api/v3/index.json</RestoreAdditionalProjectSources>
+    <FrameworkPathOverride>$(NuGetPackageRoot)microsoft.targetingpack.netframework.v4.5/1.0.1/lib/net45/</FrameworkPathOverride> -->
   </PropertyGroup>
   
   <ItemGroup Condition="$(TargetFrameworks.Contains('net45'))">
       <!-- Make sure the reference assemblies are available -->
-      <PackageReference Include="Microsoft.TargetingPack.NETFramework.v4.5"
-                        Version="1.0.1" ExcludeAssets="All" PrivateAssets="All" />
+      <!-- <PackageReference Include="Microsoft.TargetingPack.NETFramework.v4.5"
+                        Version="1.0.1" ExcludeAssets="All" PrivateAssets="All" /> -->
     <Reference Include="Microsoft.CSharp" />
   </ItemGroup>
 

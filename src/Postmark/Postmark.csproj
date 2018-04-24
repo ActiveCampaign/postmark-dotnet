@@ -1,6 +1,6 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
-    <TargetFrameworks Condition="'$(LibraryFrameworks)' == ''">netstandard1.1;net45</TargetFrameworks>
+    <TargetFrameworks Condition="'$(LibraryFrameworks)' == ''">netstandard1.1;net45;netstandard2</TargetFrameworks>
     <TargetFrameworks Condition="'$(LibraryFrameworks)' != ''">$(LibraryFrameworks)</TargetFrameworks>
     <AssemblyTitle>PostmarkDotNet</AssemblyTitle>
     <PackageProjectUrl>https://github.com/wildbit/postmark-dotnet/wiki</PackageProjectUrl>
@@ -12,7 +12,7 @@
     <Description>The official .net client for Postmark.</Description>
   </PropertyGroup>
   
-  <PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Release|netstandard1.2|AnyCPU'">
+  <PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Release|netstandard1.1|AnyCPU'">
     <DocumentationFile>bin\Release\netstandard1.1\Postmark.xml</DocumentationFile>
     <NoWarn>1701;1702;1705;1591</NoWarn>
   </PropertyGroup>
@@ -27,17 +27,12 @@
     </PackageReference>
   </ItemGroup>
 
-  <PropertyGroup>
-    <TargetFrameworks>netstandard1.1;net45;netstandard2.0</TargetFrameworks>
-    <!-- Add the myget feed, without altering any other configurations. -->
+  <PropertyGroup Condition="$(TargetFrameworks.Contains('net45'))">
     <RestoreAdditionalProjectSources>https://dotnet.myget.org/F/dotnet-core/api/v3/index.json</RestoreAdditionalProjectSources>
-  </PropertyGroup>
-
-  <PropertyGroup Condition="'$(TargetFramework)'== 'net45'">
     <FrameworkPathOverride>$(NuGetPackageRoot)microsoft.targetingpack.netframework.v4.5/1.0.1/lib/net45/</FrameworkPathOverride>
   </PropertyGroup>
   
-  <ItemGroup Condition="'$(TargetFramework)'== 'net45'">
+  <ItemGroup Condition="$(TargetFrameworks.Contains('net45'))">
       <!-- Make sure the reference assemblies are available -->
       <PackageReference Include="Microsoft.TargetingPack.NETFramework.v4.5"
                         Version="1.0.1" ExcludeAssets="All" PrivateAssets="All" />

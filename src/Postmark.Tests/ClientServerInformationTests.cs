@@ -102,7 +102,7 @@ namespace Postmark.Tests
             Assert.Equal(_deliveryHookUrl + updatedAffix, retrievedServer.DeliveryHookUrl);
             Assert.NotEqual(existingServer.PostFirstOpenOnly, retrievedServer.PostFirstOpenOnly);
             Assert.NotEqual(existingServer.TrackOpens, retrievedServer.TrackOpens);
-            Assert.Equal(10, retrievedServer.InboundSpamThreshold);
+            Assert.Equal(9, retrievedServer.InboundSpamThreshold);
             Assert.NotEqual(existingServer.InboundSpamThreshold, retrievedServer.InboundSpamThreshold);
             Assert.Equal(LinkTrackingOptions.HtmlOnly, retrievedServer.TrackLinks);
         }

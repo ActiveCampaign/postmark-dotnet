@@ -30,7 +30,7 @@ namespace PostmarkDotNet
             Subject = subject;
             TextBody = textBody;
             HtmlBody = htmlBody;
-            Headers = headers = new HeaderCollection();
+            Headers = headers ?? new HeaderCollection();
         }
 
         /// <summary>

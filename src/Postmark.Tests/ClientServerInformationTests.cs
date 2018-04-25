@@ -67,14 +67,14 @@ namespace Postmark.Tests
             var existingServer = await _client.GetServerAsync();
             var updatedAffix = "updated";
 
-            var inboundThreshold = 9;
+            var inboundThreshold = 10;
 
             var updatedServer = await _client.EditServerAsync(
                 _name + updatedAffix, ServerColors.Purple,
                 !existingServer.RawEmailEnabled, !existingServer.SmtpApiActivated,
                 _inboundHookUrl + updatedAffix, _bounceHookUrl + updatedAffix,
                 _openHookUrl + updatedAffix, !existingServer.PostFirstOpenOnly,
-                !existingServer.TrackOpens, null, inboundThreshold, LinkTrackingOptions.HtmlOnly,
+                !existingServer.TrackOpens, null, inboundThreshold - 1, LinkTrackingOptions.HtmlOnly,
                 _clickHookUrl + updatedAffix, _deliveryHookUrl + updatedAffix);
 
             //go get a fresh copy from the API.
@@ -87,7 +87,7 @@ namespace Postmark.Tests
                 existingServer.InboundHookUrl, existingServer.BounceHookUrl,
                 existingServer.OpenHookUrl, existingServer.PostFirstOpenOnly,
                 existingServer.TrackOpens, null,
-                inboundThreshold + 1,
+                inboundThreshold,
                 LinkTrackingOptions.None, existingServer.ClickHookUrl, existingServer.DeliveryHookUrl);
 
             Assert.Equal(_name + updatedAffix, retrievedServer.Name);

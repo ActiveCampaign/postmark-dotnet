@@ -4,31 +4,19 @@ using System.Collections.Generic;
 
 namespace PostmarkDotNet.Model
 {
-    public class To
+    public class Recipient
     {
         public string Email { get; set; }
-        public object Name { get; set; }
-    }
-
-    public class Cc
-    {
-        public string Email { get; set; }
-        public object Name { get; set; }
-    }
-
-    public class Bcc
-    {
-        public string Email { get; set; }
-        public object Name { get; set; }
+        public string Name { get; set; }
     }
 
     public class Message
     {
         public string Tag { get; set; }
         public string MessageID { get; set; }
-        public List<To> To { get; set; }
-        public List<Cc> Cc { get; set; }
-        public List<Bcc> Bcc { get; set; }
+        public List<Recipient> To { get; set; }
+        public List<Recipient> Cc { get; set; }
+        public List<Recipient> Bcc { get; set; }
         public List<string> Recipients { get; set; }
         public DateTime ReceivedAt { get; set; }
         public string From { get; set; }

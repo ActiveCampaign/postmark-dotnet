@@ -247,6 +247,87 @@ namespace PostmarkDotNet
         }
 
         /// <summary>
+        /// Get a list of domains.
+        /// </summary>
+        /// <param name="offset"></param>
+        /// <param name="count"></param>
+        /// <returns></returns>
+        public async Task<PostmarkDomainList> GetDomainsAsync(int offset = 0, int count = 100)
+        {
+            var parameters = new Dictionary<string, object>();
+            parameters["offset"] = offset;
+            parameters["count"] = count;
+            return await this.ProcessNoBodyRequestAsync<PostmarkDomainList>("/domains", parameters);
+        }
+
+
+        /// <summary>
+        /// Retrieve a domain.
+        /// </summary>
+        /// <param name="domainId"></param>
+        /// <returns></returns>
+        public async Task<PostmarkCompleteDomain> GetDomainAsync(int domainId)
+        {
+            return await this.ProcessNoBodyRequestAsync<PostmarkCompleteDomain>("/domains/" + domainId);
+        }
+
+        /// <summary>
+        /// Delete a domain.
+        /// </summary>
+        /// <param name="domainId"></param>
+        /// <returns></returns>
+        public async Task<PostmarkResponse> DeleteDomainAsync(int domainId)
+        {
+            return await this.ProcessNoBodyRequestAsync<PostmarkResponse>
+                ("/domains/" + domainId, verb: HttpMethod.Delete);
+        }
+
+        /// <summary>
+        /// Creates a new DKIM key to be created. Until the DNS entries are confirmed, the new values will be in the DKIMPendingHost and DKIMPendingTextValue fields. After the new DKIM value is verified in DNS, the pending values will migrate to DKIMTextValue and DKIMPendingTextValue and Postmark will begin to sign emails with the new DKIM key.
+        /// </summary>
+        /// <param name="domainId"></param>
+        /// <returns></returns>
+        public async Task<PostmarkResponse> RequestNewDomainDKIMAsync(int domainId)
+        {
+            return await this.ProcessNoBodyRequestAsync<PostmarkResponse>
+                ("/domains/" + domainId + "/rotatedkim", verb: HttpMethod.Post);
+        }
+
+        /// <summary>
+        /// Create a new domain.
+        /// </summary>
+        /// <param name="name"></param>
+        /// <param name="returnPathDomain"></param>
+        /// <returns></returns>
+        public async Task<PostmarkCompleteDomain> CreateDomainAsync(string name, string returnPathDomain = null)
+        {
+            var parameters = new Dictionary<string, object>();
+            parameters["Name"] = name;
+            parameters["ReturnPathDomain"] = returnPathDomain;
+
+            return await this.ProcessRequestAsync<Dictionary<string, object>, PostmarkCompleteDomain>
+               ("/domains/", HttpMethod.Post, parameters);
+        }
+
+        /// <summary>
+        /// Modify an existing domain.
+        /// </summary>
+        /// <param name="domainId"></param>
+        /// <param name="name"></param>
+        /// <param name="returnPathDomain"></param>
+        /// <returns></returns>
+        public async Task<PostmarkCompleteDomain> UpdateDomainAsync
+            (int domainId, string returnPathDomain = null)
+        {
+            var parameters = new Dictionary<string, object>();
+            parameters["ReturnPathDomain"] = returnPathDomain;
+
+            return await this.ProcessRequestAsync<Dictionary<string, object>, PostmarkCompleteDomain>
+               ("/domains/" + domainId, HttpMethod.Put, parameters);
+        }
+
+
+        /// <summary>
         /// List all servers that are currently configured for this account.
         /// </summary>
         /// <param name="offset"></param>

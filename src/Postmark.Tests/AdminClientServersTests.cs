@@ -25,6 +25,7 @@ namespace Postmark.Tests
         private bool? _rawEmailEnabled;
         private string _bounceHookUrl;
         private string _deliveryHookUrl;
+        private bool? _enableSmtpApiErrorHooks;
 
         protected override void Setup()
         {
@@ -44,6 +45,7 @@ namespace Postmark.Tests
             _postFirstOpenOpenOnly = true;
             _trackOpens = true;
             _inboundSpamThreshold = 30;
+            _enableSmtpApiErrorHooks = true;
         }
 
 
@@ -98,7 +100,7 @@ namespace Postmark.Tests
                 _inboundHookUrl + updatedSuffix, _bounceHookUrl + updatedSuffix,
                 _openHookUrl + updatedSuffix, !newServer.PostFirstOpenOnly,
                 !newServer.TrackOpens, null, 5, null, _clickHookUrl + updatedSuffix,
-                _deliveryHookUrl + updatedSuffix);
+                _deliveryHookUrl + updatedSuffix, _enableSmtpApiErrorHooks);
 
             var retrievedServer = await _adminClient.GetServerAsync(newServer.ID);
 
@@ -117,6 +119,8 @@ namespace Postmark.Tests
             //Assert.Equal(updatedAffix + _inboundDomain, retrievedServer.InboundDomain);
             Assert.Equal(5, retrievedServer.InboundSpamThreshold);
             Assert.NotEqual(newServer.InboundSpamThreshold, retrievedServer.InboundSpamThreshold);
+            Assert.False(newServer.EnableSmtpApiErrorHooks);
+            Assert.Equal(_enableSmtpApiErrorHooks, updatedServer.EnableSmtpApiErrorHooks);
         }
 
         [Fact]
@@ -124,7 +128,7 @@ namespace Postmark.Tests
         {
             var newServer = await _adminClient.CreateServerAsync(_name, _color, _rawEmailEnabled, _smtpActivated,
                 _inboundHookUrl, _bounceHookUrl, _openHookUrl, _postFirstOpenOpenOnly, _trackOpens,
-                null, _inboundSpamThreshold, null, _clickHookUrl, _deliveryHookUrl);
+                null, _inboundSpamThreshold, null, _clickHookUrl, _deliveryHookUrl, _enableSmtpApiErrorHooks);
 
             var retrievedServer = await _adminClient.GetServerAsync(newServer.ID);
 
@@ -141,8 +145,7 @@ namespace Postmark.Tests
             Assert.Equal(_trackOpens, retrievedServer.TrackOpens);
             Assert.True(String.IsNullOrEmpty(retrievedServer.InboundDomain));
             Assert.Equal(_inboundSpamThreshold, retrievedServer.InboundSpamThreshold);
-
-
+            Assert.Equal(_enableSmtpApiErrorHooks, retrievedServer.EnableSmtpApiErrorHooks);
         }
 
         [Fact]

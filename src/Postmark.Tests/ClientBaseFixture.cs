@@ -71,6 +71,8 @@ namespace Postmark.Tests
         public static readonly string READ_SELENIUM_TEST_SERVER_TOKEN = ConfigVariable("READ_SELENIUM_TEST_SERVER_TOKEN");
         public static readonly string READ_LINK_TRACKING_TEST_SERVER_TOKEN = ConfigVariable("READ_LINK_TRACKING_TEST_SERVER_TOKEN");
         public static readonly string READ_SELENIUM_OPEN_TRACKING_TOKEN = ConfigVariable("READ_SELENIUM_OPEN_TRACKING_TOKEN");
+        public static readonly string READ_TEST_SENDER_EMAIL_ADDRESS = ConfigVariable("READ_TEST_SENDER_EMAIL_ADDRESS");
+        public static readonly string READ_TEST_RECIPIENT_EMAIL_ADDRESS = ConfigVariable("READ_TEST_RECIPIENT_EMAIL_ADDRESS");
 
         public static readonly string WRITE_ACCOUNT_TOKEN = ConfigVariable("WRITE_ACCOUNT_TOKEN");
         public static readonly string WRITE_TEST_SERVER_TOKEN = ConfigVariable("WRITE_TEST_SERVER_TOKEN");

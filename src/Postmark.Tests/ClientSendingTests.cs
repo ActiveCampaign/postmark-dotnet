@@ -26,6 +26,10 @@ namespace Postmark.Tests
                 new Dictionary<string, string>()
                 {
                   {  "X-Integration-Testing" , TESTING_DATE.ToString("o")}
+                },
+                new Dictionary<string, string>() {
+                    {"test-metadata", "value-goes-here"},
+                    {"more-metadata", "more-goes-here"}
                 });
 
             Assert.Equal(PostmarkStatus.Success, result.Status);
@@ -61,6 +65,7 @@ namespace Postmark.Tests
                 Headers = new HeaderCollection(){
                   new MailHeader( "X-Integration-Testing-Postmark-Type-Message" , TESTING_DATE.ToString("o"))
                 },
+                Metadata = new Dictionary<string, string>() { { "something-interesting", "very-interesting" }, {"client-id", "42"} },
                 ReplyTo = inboundAddress,
                 Tag = "integration-testing"
             };
@@ -89,7 +94,5 @@ namespace Postmark.Tests
             Assert.True(results.All(k => k.Status == PostmarkStatus.Success));
             Assert.Equal(messages.Length, results.Count());
         }
-
-
     }
 }

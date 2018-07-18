@@ -174,7 +174,7 @@ namespace PostmarkDotNet
         /// <returns>PostmarkOutboundMessageList</returns>
         public async Task<PostmarkOutboundMessageList> GetOutboundMessagesAsync(int offset = 0, int count = 100,
             string recipient = null, string fromemail = null, string tag = null, string subject = null,
-            OutboundMessageStatus status = OutboundMessageStatus.Sent, string toDate = null, string fromDate = null)
+            OutboundMessageStatus status = OutboundMessageStatus.Sent, string toDate = null, string fromDate = null, IDictionary<string, string> metadata = null)
         {
             var parameters = new Dictionary<string, object>();
             parameters["count"] = count;
@@ -186,6 +186,7 @@ namespace PostmarkDotNet
             parameters["todate"] = toDate;
             parameters["fromdate"] = fromDate;
             parameters["status"] = status.ToString().ToLower();
+            parameters["metadata"] = FormatMetadataSearchString(metadata);
            
             return await ProcessNoBodyRequestAsync<PostmarkOutboundMessageList>("/messages/outbound", parameters);
         }
@@ -919,10 +920,11 @@ namespace PostmarkDotNet
             string bcc = null, string replyTo = null,
             bool? trackOpens = null,
             IDictionary<string, string> headers = null,
+            IDictionary<string, string> metadata = null,
             params PostmarkMessageAttachment[] attachments)
         {
             return await InternalSendEmailWithTemplateAsync(templateAlias, templateModel, to, from, inlineCss, cc,
-            bcc, replyTo, trackOpens, headers, attachments);
+            bcc, replyTo, trackOpens, headers, metadata, attachments);
         }
 
         public async Task<PostmarkResponse> SendEmailWithTemplateAsync<T>(long templateId, T templateModel,
@@ -931,10 +933,11 @@ namespace PostmarkDotNet
             string bcc = null, string replyTo = null,
             bool? trackOpens = null,
             IDictionary<string, string> headers = null,
+            IDictionary<string, string> metadata = null,
             params PostmarkMessageAttachment[] attachments)
         {
             return await InternalSendEmailWithTemplateAsync(templateId, templateModel, to, from, inlineCss, cc,
-            bcc, replyTo, trackOpens, headers, attachments);
+            bcc, replyTo, trackOpens, headers, metadata, attachments);
         }
 
         private async Task<PostmarkResponse> InternalSendEmailWithTemplateAsync<T>(object templateReference, T templateModel,
@@ -943,6 +946,7 @@ namespace PostmarkDotNet
             string bcc = null, string replyTo = null,
             bool? trackOpens = null,
             IDictionary<string, string> headers = null,
+            IDictionary<string, string> metadata = null,
             params PostmarkMessageAttachment[] attachments)
         {
             
@@ -970,6 +974,10 @@ namespace PostmarkDotNet
             {
                 email.Headers = new HeaderCollection(headers);
             }
+            if(metadata != null)
+            {
+                email.Metadata = metadata;
+            }
             if (attachments != null)
             {
                 email.Attachments = attachments;
@@ -988,6 +996,11 @@ namespace PostmarkDotNet
             body["InlineCssForHtmlTestRender"] = inlineCssForHtmlTestRender;
 
             return await ProcessRequestAsync<Dictionary<string, object>, TemplateValidationResponse>("/templates/validate", HttpMethod.Post, body);
+        }
+
+        string FormatMetadataSearchString(IDictionary<string, string> metadata)
+        {
+            return string.Join("&", metadata.Select(m => $"metadata_{m.Key}={m.Value}"));
         }
 
 

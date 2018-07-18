@@ -69,6 +69,11 @@ namespace PostmarkDotNet
         public HeaderCollection Headers { get; set; } = new HeaderCollection();
 
         /// <summary>
+        ///   A dictionary of optional metadata.
+        /// </summary>
+        public IDictionary<string, string> Metadata { get; set; }
+
+        /// <summary>
         ///   A collection of optional file attachments.
         /// </summary>
         public ICollection<PostmarkMessageAttachment> Attachments { get; set; }

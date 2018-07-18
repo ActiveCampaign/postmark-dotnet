@@ -23,6 +23,7 @@ namespace PostmarkDotNet.Model
         public string Subject { get; set; }
         public List<string> Attachments { get; set; }
         public string Status { get; set; }
+        public Dictionary<string, string> Metadata { get; set; }
     }
 
     public class OutboundMessageDetail : Message

@@ -21,16 +21,17 @@ namespace PostmarkDotNet
         /// <param name="textBody">The Plain Text Body to be used for the message, this may be null if HtmlBody is set.</param>
         /// <param name="htmlBody">The HTML Body to be used for the message, this may be null if TextBody is set.</param>
         /// <param name = "headers">A collection of additional mail headers to send with the message. (optional)</param>
-        public PostmarkMessage(string from, string to, string subject, string textBody, string htmlBody, HeaderCollection headers = null)
+        /// <param name = "metadata">A dictionary of metadata to send with the message. (optional)</param>
+        public PostmarkMessage(string from, string to, string subject, string textBody, string htmlBody, HeaderCollection headers = null, IDictionary<string, string> metadata = null)
             : base()
         {
-            
             From = from;
             To = to;
             Subject = subject;
             TextBody = textBody;
             HtmlBody = htmlBody;
             Headers = headers ?? new HeaderCollection();
+            Metadata = metadata;
         }
 
         /// <summary>

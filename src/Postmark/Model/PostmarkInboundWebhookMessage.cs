@@ -115,5 +115,10 @@ namespace PostmarkDotNet.Webhooks
         /// A list of Attachments from the message, fully parsed as Attachment classes
         /// </summary>
         public List<Attachment> Attachments { get; set; }
+
+        /// <summary>
+        /// The metadata for this message.
+        /// </summary>
+        public Dictionary<string, string> Metadata { get; set; }
     }
 }

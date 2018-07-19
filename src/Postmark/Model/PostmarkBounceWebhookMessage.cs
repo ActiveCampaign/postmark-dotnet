@@ -1,4 +1,6 @@
-﻿namespace PostmarkDotNet.Webhooks
+﻿using System.Collections.Generic;
+
+namespace PostmarkDotNet.Webhooks
 {
 
     /// <summary>
@@ -12,5 +14,9 @@
         /// <value>The type code</value>
         public int TypeCode { get; set; }
 
+        /// <summary>
+        /// The metadata for the bounced message.
+        /// </summary>
+        public Dictionary<string, string> Metadata { get; set; }
     }
 }

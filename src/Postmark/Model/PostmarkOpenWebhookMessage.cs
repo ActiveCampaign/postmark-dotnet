@@ -27,6 +27,11 @@ namespace PostmarkDotNet.Webhooks
         /// </summary>
         /// <value>Email address of the recipient</value>
         public string Recipient { get; set; }
+
+        /// <summary>
+        /// The metadata for the opened message.
+        /// </summary>
+        public Dictionary<string, string> Metadata { get; set; }
     }
 
 }

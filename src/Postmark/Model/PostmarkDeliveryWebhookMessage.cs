@@ -1,5 +1,6 @@
 ﻿using Newtonsoft.Json;
 using System;
+using System.Collections.Generic;
 
 namespace PostmarkDotNet.Webhooks
 {
@@ -39,5 +40,10 @@ namespace PostmarkDotNet.Webhooks
         /// The response line received from the destination email server.
         /// </summary>
         public string Details { get; set; }
+
+        /// <summary>
+        /// The metadata for this message.
+        /// </summary>
+        public Dictionary<string, string> Metadata { get; set; }
     }
 }

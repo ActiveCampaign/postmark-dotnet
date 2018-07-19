@@ -974,10 +974,7 @@ namespace PostmarkDotNet
             {
                 email.Headers = new HeaderCollection(headers);
             }
-            if(metadata != null)
-            {
-                email.Metadata = metadata;
-            }
+            email.Metadata = metadata;
             if (attachments != null)
             {
                 email.Attachments = attachments;

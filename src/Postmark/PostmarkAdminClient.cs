@@ -199,6 +199,7 @@ namespace PostmarkDotNet
         /// </summary>
         /// <param name="signatureId"></param>
         /// <returns></returns>
+        [Obsolete("We no longer require SPF verification. See here for details: https://postmarkapp.com/blog/why-we-no-longer-ask-for-spf-records")]
         public async Task<PostmarkCompleteSenderSignature> VerifySignatureSPF(int signatureId)
         {
             return await this.ProcessNoBodyRequestAsync<PostmarkCompleteSenderSignature>
@@ -268,7 +269,7 @@ namespace PostmarkDotNet
         /// <returns></returns>
         public async Task<PostmarkCompleteDomain> GetDomainAsync(int domainId)
         {
-            return await this.ProcessNoBodyRequestAsync<PostmarkCompleteDomain>("/domains/" + domainId);
+            return await this.ProcessNoBodyRequestAsync<PostmarkCompleteDomain>($"/domains/{domainId}");
         }
 
         /// <summary>
@@ -314,16 +315,38 @@ namespace PostmarkDotNet
         /// </summary>
         /// <param name="domainId"></param>
         /// <param name="name"></param>
-        /// <param name="returnPathDomain"></param>
+        /// <param name="returnPathDomain">Setting this to null or empty will clear your Return-Path</param>
         /// <returns></returns>
         public async Task<PostmarkCompleteDomain> UpdateDomainAsync
-            (int domainId, string returnPathDomain = null)
+            (int domainId, string returnPathDomain)
         {
             var parameters = new Dictionary<string, object>();
-            parameters["ReturnPathDomain"] = returnPathDomain;
+            parameters["ReturnPathDomain"] = returnPathDomain ?? "";
 
             return await this.ProcessRequestAsync<Dictionary<string, object>, PostmarkCompleteDomain>
-               ("/domains/" + domainId, HttpMethod.Put, parameters);
+               ($"/domains/{domainId}", HttpMethod.Put, parameters);
+        }
+
+        /// <summary>
+        /// Verify DKIM record for a domain
+        /// </summary>
+        /// <param name="domainId"></param>
+        /// <returns></returns>
+        public async Task<PostmarkCompleteDomain> VerifyDomainDkim(int domainId)
+        {
+            return await this.ProcessNoBodyRequestAsync<PostmarkCompleteDomain>
+               ($"/domains/{domainId}/verifyreturnpath", verb: HttpMethod.Put);
+        }
+
+        /// <summary>
+        /// Verify DKIM record for a domain
+        /// </summary>
+        /// <param name="domainId"></param>
+        /// <returns></returns>
+        public async Task<PostmarkCompleteDomain> VerifyDomainReturnPath(int domainId)
+        {
+            return await this.ProcessNoBodyRequestAsync<PostmarkCompleteDomain>
+               ($"/domains/{domainId}/verifydkim", verb: HttpMethod.Put);
         }
 
 

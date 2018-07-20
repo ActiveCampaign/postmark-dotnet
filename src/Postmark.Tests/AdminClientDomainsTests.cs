@@ -108,22 +108,6 @@ namespace Postmark.Tests
         }
 
         [Fact]
-        public async void AdminClient_CanUpdateDomains()
-        {
-            var domain = await _adminClient.CreateDomainAsync(_domainName, _returnPath);
-
-            var prefix = "updated-";
-
-            var updateResult = await _adminClient.UpdateDomainAsync(domain.ID,
-            prefix + _returnPath);
-
-            var updateddomain = await _adminClient.GetDomainAsync(domain.ID);
-
-            Assert.Equal(updateResult.ReturnPathDomain, updateddomain.ReturnPathDomain);
-            Assert.Equal(prefix + domain.ReturnPathDomain, updateddomain.ReturnPathDomain);
-        }
-
-        [Fact]
         public async void AdminClient_CanUpdateDomainReturnPath()
         {
             var domain = await _adminClient.CreateDomainAsync(_domainName, _returnPath);
@@ -137,9 +121,40 @@ namespace Postmark.Tests
             Assert.Equal(updateResult.ReturnPathDomain, updateddomain.ReturnPathDomain);
         }
 
+        [Fact]
+        public async void AdminClient_CanClearDomainReturnPath()
+        {
+            var domain = await _adminClient.CreateDomainAsync(_domainName, _returnPath);
+
+            var updateResult = await _adminClient.UpdateDomainAsync(domain.ID, returnPathDomain: null);
+
+            var updateddomain = await _adminClient.GetDomainAsync(domain.ID);
+
+            Assert.Equal(updateResult.ReturnPathDomain, string.Empty);
+        }
 
         [Fact]
-        public async void AdminClient_CanCreatedomainWithReturnPath()
+        public async void AdminClient_CanCallVerifyDomainDkim()
+        {
+            var domain = (await _adminClient.GetDomainsAsync()).Domains.First();
+            var result = await _adminClient.VerifyDomainDkim(domain.ID);
+
+            //just make sure a result is returned. We're not setting DKIM keys for this test.
+            Assert.NotNull(result);
+        }
+
+        [Fact]
+        public async void AdminClient_CanCallVerifyDomainReturnPath()
+        {
+            var domain = (await _adminClient.GetDomainsAsync()).Domains.First();
+            var result = await _adminClient.VerifyDomainReturnPath(domain.ID);
+
+            //just make sure a result is returned. We're not setting a custom Return-Path for this test.
+            Assert.NotNull(result);
+        }
+
+        [Fact]
+        public async void AdminClient_CanCreateDomainWithReturnPath()
         {
             var domain = await _adminClient.CreateDomainAsync(_domainName, _returnPath);
             Assert.Equal(_returnPath, domain.ReturnPathDomain);

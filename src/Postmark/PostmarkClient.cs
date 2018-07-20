@@ -186,8 +186,13 @@ namespace PostmarkDotNet
             parameters["todate"] = toDate;
             parameters["fromdate"] = fromDate;
             parameters["status"] = status.ToString().ToLower();
-            parameters["metadata"] = FormatMetadataSearchString(metadata);
-           
+
+            if(metadata != null){
+                foreach(var a in metadata){
+                    parameters[$"metadata_{a.Key}"] = a.Value;
+                }
+            }
+
             return await ProcessNoBodyRequestAsync<PostmarkOutboundMessageList>("/messages/outbound", parameters);
         }
 
@@ -994,13 +999,6 @@ namespace PostmarkDotNet
 
             return await ProcessRequestAsync<Dictionary<string, object>, TemplateValidationResponse>("/templates/validate", HttpMethod.Post, body);
         }
-
-        string FormatMetadataSearchString(IDictionary<string, string> metadata)
-        {
-            return string.Join("&", metadata.Select(m => $"metadata_{m.Key}={m.Value}"));
-        }
-
-
         #endregion
     }
 }

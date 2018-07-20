@@ -110,7 +110,7 @@ namespace Postmark.Tests
                 Headers = new HeaderCollection(){
                   new MailHeader( "X-Integration-Testing-Postmark-Type-Message" , TESTING_DATE.ToString("o"))
                 },
-                Metadata = new Dictionary<string, string>() { { "something-interesting", "very-interesting" }, {"client-id", "42"} },
+                Metadata = new Dictionary<string, string>() { { "stuff", "very-interesting" }, {"client-id", "42"} },
                 ReplyTo = inboundAddress,
                 Tag = "integration-testing"
             };

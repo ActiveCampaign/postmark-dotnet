@@ -27,9 +27,12 @@ namespace PostmarkDotNet
         /// <param name="headers">A collection of additional mail headers to send with the message.</param>
         /// <returns>A <see cref = "PostmarkResponse" /> with details about the transaction.</returns>
         public static async Task<PostmarkResponse> SendMessageAsync(this PostmarkClient client,
-            string from, string to, string subject, string textBody, string htmlBody, IDictionary<string, string> headers = null, IDictionary<string, string> metadata = null)
+            string from, string to, string subject, string textBody, string htmlBody,
+             IDictionary<string, string> headers = null, 
+             IDictionary<string, string> metadata = null)
         {
-            var message = new PostmarkMessage(from, to, subject, textBody, htmlBody, new HeaderCollection(headers), metadata);
+            var message = new PostmarkMessage(from, to, subject, textBody, htmlBody, 
+            new HeaderCollection(headers), metadata);
             return await client.SendMessageAsync(message);
         }
 

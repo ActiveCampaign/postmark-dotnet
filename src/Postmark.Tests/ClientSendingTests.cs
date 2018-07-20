@@ -16,18 +16,17 @@ namespace Postmark.Tests
             _client = new PostmarkClient(WRITE_TEST_SERVER_TOKEN);
         }
 
-        //This is a bad test since it requires a Delay before the message has been saved so that we can retrieve details.
-        //In other tests (for link and click tracking), we have test accounts that have plenty of messages to sample from
-        //We would need to agree on a convetion for metadata and do something similar to avoid having to create and wait for data in this test
         [Fact]
         public async void Client_CanSendAndGetOutboundMessageDetailsWithMetadata()
         {
+            // prime the test for a future go-round (this ensures this test can run quickly,
+            // but it's also a bit of a hack.
             var metadata = new Dictionary<string, string>() {
-                    {"test-metadata", "value-goes-here"},
-                    {"more-metadata", "more-goes-here"}
+                    {"client-test", "value-goes-here"},
+                    {"client-test2", "more-goes-here"}
                 };
 
-            var sendResult = await _client.SendMessageAsync(
+            await _client.SendMessageAsync(
                 WRITE_TEST_SENDER_EMAIL_ADDRESS,
                 WRITE_TEST_EMAIL_RECIPIENT_ADDRESS,
                 $"Integration Test - {TESTING_DATE}",
@@ -35,29 +34,14 @@ namespace Postmark.Tests
                 $"Testing the Postmark .net client, <b>{TESTING_DATE}</b>",
                 null,
                 metadata
-                );
+            );
 
-            IDictionary<string, string> storedDetails = null;
-
-            Func<Task> query = async()=>{
-                try{
-                    while(true){
-                        var details = await _client
-                            .GetOutboundMessageDetailsAsync(sendResult.MessageID.ToString());
-                        storedDetails = details.Metadata;
-                        if(storedDetails != null) return; 
-                        await Task.Delay(TimeSpan.FromSeconds(2));
-                    }
-                }catch{
-
-                }
-                return;
-            };
-
-            //wait up to 30 seconds, checking every two seconds for the metadata.
-            await Task.WhenAny(Task.Delay(TimeSpan.FromSeconds(30)), query());
-
-            Assert.Equal(storedDetails, metadata);
+            var result = await _client.GetOutboundMessagesAsync(metadata: metadata);
+            
+            Assert.True(result.TotalCount > 0, 
+                "Messages with the supplied metadata were not found. " +
+                "If it has been more than 45 days since these tests have been run on this server, try re-running this test."
+            );
         }
 
         [Fact]

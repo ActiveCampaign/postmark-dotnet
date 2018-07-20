@@ -64,32 +64,6 @@ namespace Postmark.Tests
             Assert.Equal(baseMessage.MessageID, requestedMessage.MessageID);
         }
 
-        //This is a bad test since it requires a Delay before the message has been saved so that we can retrieve details.
-        //In other tests (for link and click tracking), we have test accounts that have plenty of messages to sample from
-        //We would need to agree on a convetion for metadata and do something similar to avoid having to create and wait for data in this test
-        [Fact]
-        public async void Client_CanSendAndGetOutboundMessageDetailsWithMetadata()
-        {
-            var metadata = new Dictionary<string, string>() {
-                    {"test-metadata", "value-goes-here"},
-                    {"more-metadata", "more-goes-here"}
-                };
-
-            var messageWithMetadata = await _client.SendMessageAsync(READ_TEST_SENDER_EMAIL_ADDRESS,
-                WRITE_TEST_EMAIL_RECIPIENT_ADDRESS,
-                String.Format("Integration Test - {0}", TESTING_DATE),
-                String.Format("Plain text body, {0}", TESTING_DATE),
-                String.Format("Testing the Postmark .net client, <b>{0}</b>", TESTING_DATE),
-                null,
-                metadata
-                );
-
-            await Task.Delay(TimeSpan.FromSeconds(2));
-
-            var details = await _client.GetOutboundMessageDetailsAsync(messageWithMetadata.MessageID.ToString());
-            Assert.Equal(details.Metadata, metadata);
-        }
-
         [Fact]
         public async void Client_CanGetMessageDump()
         {

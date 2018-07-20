@@ -22,8 +22,7 @@ namespace Postmark.Tests
             // prime the test for a future go-round (this ensures this test can run quickly,
             // but it's also a bit of a hack.
             var metadata = new Dictionary<string, string>() {
-                    {"client-test", "value-goes-here"},
-                    {"client-test2", "more-goes-here"}
+                    {"client-test", "value-goes-here"}
                 };
 
             await _client.SendMessageAsync(

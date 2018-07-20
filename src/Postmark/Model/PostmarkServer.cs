@@ -109,6 +109,11 @@ namespace PostmarkDotNet.Model
         /// </summary>
         public int InboundSpamThreshold { get; set; }
 
+        /// <summary>
+        /// Include SMTP API Errors in error webhooks.
+        /// </summary>
+        public bool EnableSmtpApiErrorHooks { get; set; }
+
     }
 
     /// <summary>

@@ -79,7 +79,6 @@ namespace Postmark.Tests
         public static readonly string WRITE_TEST_SENDER_EMAIL_ADDRESS = ConfigVariable("WRITE_TEST_SENDER_EMAIL_ADDRESS");
         public static readonly string WRITE_TEST_EMAIL_RECIPIENT_ADDRESS = ConfigVariable("WRITE_TEST_EMAIL_RECIPIENT_ADDRESS");
         public static readonly string WRITE_TEST_SENDER_SIGNATURE_PROTOTYPE = ConfigVariable("WRITE_TEST_SENDER_SIGNATURE_PROTOTYPE");
-        
         public static readonly string BASE_URL = ConfigVariable("BASE_URL");
 
         protected PostmarkClient _client;

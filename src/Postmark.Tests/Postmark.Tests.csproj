@@ -14,8 +14,8 @@
   <ItemGroup>
     <PackageReference Include="Microsoft.NET.Test.Sdk" Version="*" />
     <PackageReference Include="microsoft.testplatform.testhost" Version="*" />
-    <PackageReference Include="xunit" Version="2.2.0" />
-    <PackageReference Include="xunit.runner.visualstudio" Version="2.2.0" />
+    <PackageReference Include="xunit" Version="*" />
+    <PackageReference Include="xunit.runner.visualstudio" Version="*" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Postmark\Postmark.csproj" />

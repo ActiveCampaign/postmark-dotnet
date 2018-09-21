@@ -1,55 +1,21 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
-    <TargetFrameworks Condition="'$(LibraryFrameworks)' == ''">netstandard1.1;net45;netstandard2</TargetFrameworks>
-    <TargetFrameworks Condition="'$(LibraryFrameworks)' != ''">$(LibraryFrameworks)</TargetFrameworks>
+    <TargetFrameworks>netstandard2</TargetFrameworks>
     <AssemblyTitle>PostmarkDotNet</AssemblyTitle>
     <PackageProjectUrl>https://github.com/wildbit/postmark-dotnet/wiki</PackageProjectUrl>
     <PackageIconUrl>https://github.com/wildbit/postmark-dotnet/raw/master/postmark-logo.png</PackageIconUrl>
     <RepositoryUrl>https://github.com/wildbit/postmark-dotnet.git</RepositoryUrl>
     <RepositoryType>git</RepositoryType>
-    <Version>3.0</Version>
+    <Version>3.4</Version>
     <Company>Wildbit, LLC.</Company>
     <Description>The official .net client for Postmark.</Description>
   </PropertyGroup>
   
-  <PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Release|netstandard1.1|AnyCPU'">
-    <DocumentationFile>bin\Release\netstandard1.1\Postmark.xml</DocumentationFile>
-    <NoWarn>1701;1702;1705;1591</NoWarn>
-  </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Release|net20|AnyCPU'">
-    <DocumentationFile>bin\Release\net20\Postmark.xml</DocumentationFile>
-    <NoWarn>1591</NoWarn>
-  </PropertyGroup>
-
-  <ItemGroup Condition="'$(TargetFramework)' == 'net20'">
-    <PackageReference Include="Hammock">
-      <Version>1.3.1</Version>
-    </PackageReference>
-  </ItemGroup>
-
-  <PropertyGroup Condition="$(TargetFrameworks.Contains('net45'))">
-    <!-- <RestoreAdditionalProjectSources>https://dotnet.myget.org/F/dotnet-core/api/v3/index.json</RestoreAdditionalProjectSources>
-    <FrameworkPathOverride>$(NuGetPackageRoot)microsoft.targetingpack.netframework.v4.5/1.0.1/lib/net45/</FrameworkPathOverride> -->
-  </PropertyGroup>
-  
-  <ItemGroup Condition="$(TargetFrameworks.Contains('net45'))">
-      <!-- Make sure the reference assemblies are available -->
-      <!-- <PackageReference Include="Microsoft.TargetingPack.NETFramework.v4.5"
-                        Version="1.0.1" ExcludeAssets="All" PrivateAssets="All" /> -->
-    <Reference Include="Microsoft.CSharp" />
-  </ItemGroup>
-
   <ItemGroup>
-    <PackageReference Include="System.Net.Http">
-      <Version>4.3.2</Version>
-    </PackageReference>
-    <PackageReference Include="System.Threading.Tasks">
-      <Version>4.3.0</Version>
-    </PackageReference>
-    <Reference Include="System.Net.Http" />
     <Reference Include="System.Threading.Tasks" />
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="Newtonsoft.Json" Version="10.0.3" />
+    <PackageReference Include="System.Net.Http" Version="4.3.3" />
   </ItemGroup>
 </Project>

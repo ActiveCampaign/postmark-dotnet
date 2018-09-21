@@ -25,7 +25,7 @@ namespace PostmarkDotNet
         /// in cases where you want to use another http client, or to mock the http processing
         /// (for tests).
         /// </remarks>
-        public static Func<ISimpleHttpClient> ClientFactory {get;set;} => () => _staticClient.Value;
+        public static Func<ISimpleHttpClient> ClientFactory {get;set;} = () => _staticClient.Value;
 
         protected static readonly string DATE_FORMAT = "yyyy-MM-dd";
 

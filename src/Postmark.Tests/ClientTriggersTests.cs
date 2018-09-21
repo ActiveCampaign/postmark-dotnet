@@ -21,7 +21,7 @@ namespace Postmark.Tests
             this.Cleanup().Wait();
         }
 
-        public Task Cleanup()
+        private Task Cleanup()
         {
             return Task.Run(async() =>
             {

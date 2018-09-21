@@ -49,7 +49,7 @@ namespace Postmark.Tests
         }
 
 
-        public Task Cleanup()
+        private Task Cleanup()
         {
             return Task.Run(async () =>
             {

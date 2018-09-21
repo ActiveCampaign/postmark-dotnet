@@ -4,7 +4,7 @@ using System.Threading.Tasks;
 
 namespace PostmarkDotNet
 {
-    public interface ISimpleHttpClient : IDisposable
+    public interface ISimpleHttpClient
     {
         TimeSpan Timeout { get; set; }
 

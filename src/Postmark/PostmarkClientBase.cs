@@ -65,53 +65,53 @@ namespace PostmarkDotNet
         {
             TResponse retval = default(TResponse);
 
-            using (var client = ClientFactory())
+            var client = ClientFactory();
+            
+            var request = new HttpRequestMessage(verb, baseUri + apiPath.TrimStart('/'));
+
+            //if the message is not a string, or the message is a non-empty string,
+            //set a body for this request.
+            if (message != null)
             {
-                var request = new HttpRequestMessage(verb, baseUri + apiPath.TrimStart('/'));
+                var content = new JsonContent<TRequestBody>(message);
+                request.Content = content;
+            }
+            
+            request.Headers.Add("Accept", "application/json");
+            request.Headers.Add(AuthHeaderName, _authToken);
+            request.Headers.Add("User-Agent", _agent);
 
-                //if the message is not a string, or the message is a non-empty string,
-                //set a body for this request.
-                if (message != null)
+            client.Timeout = TimeSpan.FromSeconds(this._requestTimeout);
+
+            var result = await client.SendAsync(request);
+
+            var body = await result.Content.ReadAsStringAsync();
+
+            if (!JsonNetExtensions.TryDeserializeObject<TResponse>(body, out retval) || result.StatusCode != HttpStatusCode.OK)
+            {
+                PostmarkResponse error;
+                if (JsonNetExtensions.TryDeserializeObject<PostmarkResponse>(body, out error))
                 {
-                    var content = new JsonContent<TRequestBody>(message);
-                    request.Content = content;
+                    switch ((int)result.StatusCode)
+                    {
+                        case 422:
+                            error.Status = PostmarkStatus.UserError;
+                            break;
+                        case 500:
+                            error.Status = PostmarkStatus.ServerError;
+                            break;
+                        default:
+                            error.Status = PostmarkStatus.Unknown;
+                            break;
+                    }
+                    throw new PostmarkValidationException(error);
                 }
-                
-                request.Headers.Add("Accept", "application/json");
-                request.Headers.Add(AuthHeaderName, _authToken);
-                request.Headers.Add("User-Agent", _agent);
-
-                client.Timeout = TimeSpan.FromSeconds(this._requestTimeout);
-
-                var result = await client.SendAsync(request);
-
-                var body = await result.Content.ReadAsStringAsync();
-
-                if (!JsonNetExtensions.TryDeserializeObject<TResponse>(body, out retval) || result.StatusCode != HttpStatusCode.OK)
+                else
                 {
-                    PostmarkResponse error;
-                    if (JsonNetExtensions.TryDeserializeObject<PostmarkResponse>(body, out error))
-                    {
-                        switch ((int)result.StatusCode)
-                        {
-                            case 422:
-                                error.Status = PostmarkStatus.UserError;
-                                break;
-                            case 500:
-                                error.Status = PostmarkStatus.ServerError;
-                                break;
-                            default:
-                                error.Status = PostmarkStatus.Unknown;
-                                break;
-                        }
-                        throw new PostmarkValidationException(error);
-                    }
-                    else
-                    {
-                        throw new Exception("The response from the API could not be parsed.");
-                    }
+                    throw new Exception("The response from the API could not be parsed.");
                 }
             }
+            
             return retval;
         }
 

@@ -100,7 +100,7 @@ namespace Postmark.Tests
             await _client.DeleteTemplateAsync(toDelete);
             result = await _client.GetTemplatesAsync();
             Assert.Equal(9, result.TotalCount);
-            Assert.False(result.Templates.Any(k => k.TemplateId == toDelete));
+            Assert.False(result.Templates.FirstOrDefault(k => k.TemplateId == toDelete) != null);
             var offsetResults = await _client.GetTemplatesAsync(5);
             Assert.True(result.Templates.Skip(5).Select(k => k.TemplateId).SequenceEqual(offsetResults.Templates.Select(k => k.TemplateId)));
 

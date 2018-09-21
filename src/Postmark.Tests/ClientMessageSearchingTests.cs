@@ -30,7 +30,7 @@ namespace Postmark.Tests
             var subject = baseList.Messages.First().Subject;
 
             var searchedList = await _client.GetOutboundMessagesAsync(0, 33);
-            Assert.Equal(searchedList.Messages.Count, 33);
+            Assert.Equal(33,searchedList.Messages.Count);
 
             searchedList = await _client.GetOutboundMessagesAsync(0, 20, recipient);
             Assert.True(searchedList.Messages.Count > 0);

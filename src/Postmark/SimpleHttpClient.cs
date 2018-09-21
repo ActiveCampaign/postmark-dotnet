@@ -8,11 +8,6 @@ namespace PostmarkDotNet
     {
         private HttpClient _client = new HttpClient();
 
-        public void Dispose()
-        {
-            _client.Dispose();
-        }
-
         public TimeSpan Timeout
         {
             get
@@ -28,6 +23,10 @@ namespace PostmarkDotNet
         public Task<HttpResponseMessage> SendAsync(HttpRequestMessage request)
         {
             return _client.SendAsync(request);
+        }
+
+        ~SimpleHttpClient(){
+            _client.Dispose();
         }
     }
 }

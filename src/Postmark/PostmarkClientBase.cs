@@ -14,7 +14,8 @@ namespace PostmarkDotNet
     /// </summary>
     public abstract class PostmarkClientBase
     {
-        private static Func<ISimpleHttpClient> _clientFactory = () => new SimpleHttpClient();
+        private static Lazy<ISimpleHttpClient> _staticClient = 
+            new Lazy<ISimpleHttpClient>(()=>new SimpleHttpClient()) ;
 
         /// <summary>
         /// Configure a global connection factory to to process HTTP interactions.
@@ -24,17 +25,7 @@ namespace PostmarkDotNet
         /// in cases where you want to use another http client, or to mock the http processing
         /// (for tests).
         /// </remarks>
-        public static Func<ISimpleHttpClient> ClientFactory
-        {
-            get
-            {
-                return _clientFactory;
-            }
-            set
-            {
-                _clientFactory = value ?? (() => new SimpleHttpClient());
-            }
-        }
+        public static Func<ISimpleHttpClient> ClientFactory {get;set;} => () => _staticClient.Value;
 
         protected static readonly string DATE_FORMAT = "yyyy-MM-dd";
 

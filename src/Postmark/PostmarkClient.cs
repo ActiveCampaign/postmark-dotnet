@@ -29,10 +29,9 @@ namespace PostmarkDotNet
         /// Instantiate the client.
         /// </summary>
         /// <param name="apiBaseUri">The base uri to use when connecting to Postmark. You should rarely need to modify this, except if you want to disable TLS (not recommended), or you are using a proxy of some sort to connect to the API.</param>
-        /// <param name="requestTimeoutInSeconds">The length of time to wait for an API request to complete. In most cases, this should not be modified. If your requests are timing out (for example, large batch submissions, you should consider reducing the size or number of messages you are submitting at one time before increasing this value).</param>
         /// <param name="serverToken">Used for requests that require server level privileges. This token can be found on the Credentials tab under your Postmark server.</param>
-        public PostmarkClient(string serverToken, string apiBaseUri = "https://api.postmarkapp.com", int requestTimeoutInSeconds = 30)
-            : base(apiBaseUri, requestTimeoutInSeconds)
+        public PostmarkClient(string serverToken, string apiBaseUri = "https://api.postmarkapp.com")
+            : base(apiBaseUri)
         {
             _authToken = serverToken;
         }

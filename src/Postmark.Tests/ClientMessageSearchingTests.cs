@@ -11,7 +11,7 @@ namespace Postmark.Tests
     {
         protected override void Setup()
         {
-            _client = new PostmarkClient(READ_SELENIUM_TEST_SERVER_TOKEN, requestTimeoutInSeconds: 60);
+            _client = new PostmarkClient(READ_SELENIUM_TEST_SERVER_TOKEN);
         }
 
         [Fact]

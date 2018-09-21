@@ -6,8 +6,6 @@ namespace PostmarkDotNet
 {
     public interface ISimpleHttpClient
     {
-        TimeSpan Timeout { get; set; }
-
         Task<HttpResponseMessage> SendAsync(HttpRequestMessage request);
     }
 }

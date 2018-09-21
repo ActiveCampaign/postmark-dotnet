@@ -39,16 +39,14 @@ namespace PostmarkDotNet
         /// </summary>
         /// <param name="apiBaseUri"></param>
         /// <param name="requestTimeoutInSeconds"></param>
-        public PostmarkClientBase(string apiBaseUri = "https://api.postmarkapp.com", int requestTimeoutInSeconds = 30)
+        public PostmarkClientBase(string apiBaseUri = "https://api.postmarkapp.com")
         {
             baseUri = new Uri(apiBaseUri);
-            _requestTimeout = requestTimeoutInSeconds;
         }
 
         protected abstract string AuthHeaderName { get; }
 
         protected string _authToken;
-        private int _requestTimeout;
 
         /// <summary>
         /// The core delivery method for all other API methods.
@@ -80,8 +78,6 @@ namespace PostmarkDotNet
             request.Headers.Add("Accept", "application/json");
             request.Headers.Add(AuthHeaderName, _authToken);
             request.Headers.Add("User-Agent", _agent);
-
-            client.Timeout = TimeSpan.FromSeconds(this._requestTimeout);
 
             var result = await client.SendAsync(request);
 

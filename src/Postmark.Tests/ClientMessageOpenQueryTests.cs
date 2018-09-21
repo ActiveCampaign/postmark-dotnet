@@ -10,7 +10,7 @@ namespace Postmark.Tests
     {
         protected override void Setup()
         {
-            _client = new PostmarkClient(READ_SELENIUM_OPEN_TRACKING_TOKEN, requestTimeoutInSeconds: 60);
+            _client = new PostmarkClient(READ_SELENIUM_OPEN_TRACKING_TOKEN);
         }
 
         [Fact]

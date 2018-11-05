@@ -186,8 +186,10 @@ namespace PostmarkDotNet
             parameters["fromdate"] = fromDate;
             parameters["status"] = status.ToString().ToLower();
 
-            if(metadata != null){
-                foreach(var a in metadata){
+            if (metadata != null)
+            {
+                foreach (var a in metadata)
+                {
                     parameters[$"metadata_{a.Key}"] = a.Value;
                 }
             }
@@ -232,7 +234,7 @@ namespace PostmarkDotNet
         /// <param name="toDate">Get messages on or before YYYY-MM-DD.</param>
         /// <returns>PostmarkInboundMessageList</returns>
         public async Task<PostmarkInboundMessageList> GetInboundMessagesAsync(int offset = 0, int count = 100,
-            string recipient = null, string fromemail = null, string subject = null, 
+            string recipient = null, string fromemail = null, string subject = null,
             string mailboxhash = null, InboundMessageStatus? status = InboundMessageStatus.Processed, String toDate = null, String fromDate = null)
         {
             var parameters = new Dictionary<string, object>();
@@ -245,7 +247,7 @@ namespace PostmarkDotNet
             parameters["todate"] = toDate;
             parameters["fromdate"] = fromDate;
             parameters["status"] = status.ToString().ToLower();
-        
+
             return await ProcessNoBodyRequestAsync<PostmarkInboundMessageList>("/messages/inbound", parameters);
         }
 
@@ -302,7 +304,7 @@ namespace PostmarkDotNet
         public async Task<PostmarkServer> EditServerAsync(String name = null, string color = null,
             bool? rawEmailEnabled = null, bool? smtpApiActivated = null, string inboundHookUrl = null,
             string bounceHookUrl = null, string openHookUrl = null, bool? postFirstOpenOnly = null,
-            bool? trackOpens = null, string inboundDomain = null, int? inboundSpamThreshold = null, 
+            bool? trackOpens = null, string inboundDomain = null, int? inboundSpamThreshold = null,
             LinkTrackingOptions? trackLinks = null,
             string clickHookUrl = null, string deliveryHookUrl = null)
         {
@@ -872,7 +874,7 @@ namespace PostmarkDotNet
             body["HTMLBody"] = htmlBody;
             body["TextBody"] = textBody;
             body["Subject"] = subject;
-            
+
             return await ProcessRequestAsync<Dictionary<string, object>, BasicTemplateInformation>("/templates/" + alias, HttpMethod.Put, body);
         }
 
@@ -910,12 +912,13 @@ namespace PostmarkDotNet
 
         public async Task<PostmarkResponse> SendMessageAsync(TemplatedPostmarkMessage emailToSend)
         {
-            return await SendEmailWithTemplateAsync(emailToSend);
+            return await ProcessRequestAsync<TemplatedPostmarkMessage, PostmarkResponse>("/email/withTemplate", HttpMethod.Post, emailToSend);
         }
 
+        [Obsolete("Use the normal `SendMessaageAsync` method, instead.")]
         public async Task<PostmarkResponse> SendEmailWithTemplateAsync(TemplatedPostmarkMessage emailToSend)
         {
-            return await ProcessRequestAsync<TemplatedPostmarkMessage, PostmarkResponse>("/email/withTemplate", HttpMethod.Post, emailToSend);
+            return await SendMessageAsync(emailToSend);
         }
 
         public async Task<PostmarkResponse> SendEmailWithTemplateAsync<T>(string templateAlias, T templateModel,
@@ -953,11 +956,14 @@ namespace PostmarkDotNet
             IDictionary<string, string> metadata = null,
             params PostmarkMessageAttachment[] attachments)
         {
-            
+
             var email = new TemplatedPostmarkMessage();
-            if(templateReference is long){
+            if (templateReference is long)
+            {
                 email.TemplateId = (long)templateReference;
-            }else{
+            }
+            else
+            {
                 email.TemplateAlias = (string)templateReference;
             }
             email.TemplateModel = templateModel;
@@ -983,7 +989,7 @@ namespace PostmarkDotNet
             {
                 email.Attachments = attachments;
             }
-            return await SendEmailWithTemplateAsync(email);
+            return await SendMessageAsync(email);
         }
 
         public async Task<TemplateValidationResponse> ValidateTemplateAsync<T>(string subject = null, string htmlbody = null,

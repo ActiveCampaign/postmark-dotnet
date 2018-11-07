@@ -24,7 +24,7 @@ namespace PostmarkDotNet
         /// The template to use when sending this message. Either this or the TemplateAlias are required
         /// when sending using a template. TemplateId takes precendent when both are specified.
         /// </summary>
-        public long TemplateId { get; set; }
+        public long? TemplateId { get; set; }
 
         ///<summary>
         /// The alias of the template to use. Either this value, or the TemplateId are required 

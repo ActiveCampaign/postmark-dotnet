@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
+using Postmark.Utility;
 
 namespace PostmarkDotNet
 {
@@ -27,17 +28,63 @@ namespace PostmarkDotNet
         /// <summary>
         ///   Any recipients. Separate multiple recipients with a comma.
         /// </summary>
-        public string To { get; set; }
+        public string To
+        {
+            get
+            {
+                return string.Join(",", StringUtils.TrimStringEnum(ToAddressSet));
+            }
+            set
+            {
+                ToAddressSet = new HashSet<string>(StringUtils.TrimStringEnum(value.Split(',')));
+            }
+        }
+
+        /// <summary>
+        ///   "To" Recipients organized as a collection, interfaced to the BCC field for compatibility
+        /// </summary>
+        public HashSet<string> ToAddressSet { get; set; }
 
         /// <summary>
         ///   Any CC recipients. Separate multiple recipients with a comma.
         /// </summary>
-        public string Cc { get; set; }
+        public string Cc
+        {
+            get
+            {
+                return string.Join(",", StringUtils.TrimStringEnum(CcAddressSet));
+            }
+            set
+            {
+                CcAddressSet = new HashSet<string>(StringUtils.TrimStringEnum(value.Split(',')));
+            }
+        }
+
+
+        /// <summary>
+        ///   "CC" Recipients organized as a collection, interfaced to the BCC field for compatibility
+        /// </summary>
+        public HashSet<string> CcAddressSet { get; set; }
 
         /// <summary>
         ///   Any BCC recipients. Separate multiple recipients with a comma.
         /// </summary>
-        public string Bcc { get; set; }
+        public string Bcc
+        {
+            get
+            {
+                return string.Join(",", StringUtils.TrimStringEnum(BccAddressSet));
+            }
+            set
+            {
+                BccAddressSet = new HashSet<string>(StringUtils.TrimStringEnum(value.Split(',')));
+            }
+        }
+
+        /// <summary>
+        ///   "BCC" Recipients organized as a collection, interfaced to the BCC field for compatibility
+        /// </summary>
+        public HashSet<string> BccAddressSet { get; set; }
 
         /// <summary>
         ///   The email address to reply to. This is optional.

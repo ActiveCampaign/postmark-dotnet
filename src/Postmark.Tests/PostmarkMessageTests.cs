@@ -216,5 +216,41 @@ namespace Postmark.Tests
 
         }
 
+
+        [Fact]
+        public void TestMissingCollectionItems()
+        {
+            var message = new PostmarkMessage()
+            {
+                From = singleFromAddress,
+                To = singleToAddress,
+                Subject = "Basic message setup",
+                HtmlBody = "This is <b>HTML</b> text.",
+                TextBody = "This is plain text.",
+                TrackOpens = true,
+                TrackLinks = LinkTrackingOptions.HtmlAndText,
+                Tag = "message-setup-testing"
+            };
+
+
+            string addressAdd = "test-addAddress@example.com";
+            string addressAdd2 = "    ";
+            //string addressAdd3 = "test-addAddress2@example.com";
+
+            Assert.Equal(0, message.CcAddressSet.Count);
+            Assert.Equal(0, message.BccAddressSet.Count);
+            Assert.Equal(0, message.Cc.Length);
+            Assert.Equal(0, message.Bcc.Length);
+
+            message.Cc = addressAdd;
+            message.Bcc = addressAdd2;
+
+            Assert.Equal(1, message.CcAddressSet.Count);
+            Assert.Equal(0, message.BccAddressSet.Count);
+            Assert.Equal(addressAdd.Length, message.Cc.Length);
+            Assert.Equal(0, message.Bcc.Length);
+
+        }
+
     }
 }

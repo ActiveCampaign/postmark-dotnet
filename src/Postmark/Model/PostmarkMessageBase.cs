@@ -19,6 +19,9 @@ namespace PostmarkDotNet
         {
             Attachments = new List<PostmarkMessageAttachment>(0);
             TrackLinks = LinkTrackingOptions.None;
+            ToAddressSet = new HashSet<string>();
+            CcAddressSet = new HashSet<string>();
+            BccAddressSet = new HashSet<string>();
         }
 
         /// <summary>

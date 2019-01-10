@@ -137,7 +137,7 @@ namespace Postmark.Tests
             Assert.DoesNotContain(singleToAddress, message.To);
             
         }
-
+        
         [Fact]
         public void MessageSetupWithEmptyAddressAddition()
         {
@@ -171,6 +171,48 @@ namespace Postmark.Tests
 
             //Message should not contain multiple commas with no address between them
             Assert.DoesNotContain(",,", message.To);
+
+        }
+
+
+        [Fact]
+        public void TestCollectionFieldProperParsing()
+        {
+            var message = new PostmarkMessage()
+            {
+                From = singleFromAddress,
+                To = singleToAddress,
+                Cc = singleCcAddress,
+                Bcc = singleBccAddress,
+                Subject = "Basic message setup",
+                HtmlBody = "This is <b>HTML</b> text.",
+                TextBody = "This is plain text.",
+                TrackOpens = true,
+                TrackLinks = LinkTrackingOptions.HtmlAndText,
+                Tag = "message-setup-testing"
+            };
+
+            string addressToTest = @"Bob <test-addAddress@example.com>,""Doe, John"" <test2-addAddress@example.com>,test-addressAgain@example.com";
+            message.To = addressToTest;
+            Assert.Contains(@"""Doe, John"" <test2-addAddress@example.com", message.To);
+            Assert.Equal(3, message.ToAddressSet.Count);
+
+
+            addressToTest = @"Bob <test-addAddress@example.com>,""Doe, John"" <test2-addAddress@example.com>,test-addressAgain@example.com,""Doe, Jane"" <test2-janeDoeAddress@example.com>";
+            message.To = addressToTest;
+            Assert.Contains(@"""Doe, John"" <test2-addAddress@example.com", message.To);
+            Assert.Equal(4, message.ToAddressSet.Count);
+
+
+            message.To = "";
+            message.ToAddressSet.Add(@"Bob <test-addAddress@example.com>");
+            message.ToAddressSet.Add(@"""Doe, John"" <test2-addAddress@example.com>");
+
+            //Hashset doesn't guarantee order, so look at the first character to know which we expect to see first
+            if (message.To.StartsWith("B"))
+                Assert.Equal(@"Bob <test-addAddress@example.com>,""Doe, John"" <test2-addAddress@example.com>", message.To);
+            else
+                Assert.Equal(@"""Doe, John"" <test2-addAddress@example.com>,Bob <test-addAddress@example.com>", message.To);
 
         }
 

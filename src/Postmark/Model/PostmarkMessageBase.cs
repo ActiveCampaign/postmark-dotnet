@@ -3,6 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using Postmark.Utility;
+using System.Text.RegularExpressions;
 
 namespace PostmarkDotNet
 {
@@ -36,7 +37,7 @@ namespace PostmarkDotNet
             }
             set
             {
-                ToAddressSet = new HashSet<string>(StringUtils.TrimStringEnum(value.Split(',')));
+                ToAddressSet = new HashSet<string>(StringUtils.TrimStringEnum(Regex.Split(value, @",(?=(?:[^\""]*\""[^\""]*\"")*(?![^\""]*\""))")));
             }
         }
 
@@ -56,7 +57,7 @@ namespace PostmarkDotNet
             }
             set
             {
-                CcAddressSet = new HashSet<string>(StringUtils.TrimStringEnum(value.Split(',')));
+                CcAddressSet = new HashSet<string>(StringUtils.TrimStringEnum(Regex.Split(value, @",(?=(?:[^\"]*\"[^\"]*\")*(?![^\"]*\"))")));
             }
         }
 
@@ -77,7 +78,7 @@ namespace PostmarkDotNet
             }
             set
             {
-                BccAddressSet = new HashSet<string>(StringUtils.TrimStringEnum(value.Split(',')));
+                BccAddressSet = new HashSet<string>(StringUtils.TrimStringEnum(Regex.Split(value, @",(?=(?:[^\"]*\"[^\"]*\")*(?![^\"]*\"))")));
             }
         }
 

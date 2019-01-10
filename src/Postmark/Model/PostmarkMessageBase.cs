@@ -57,7 +57,7 @@ namespace PostmarkDotNet
             }
             set
             {
-                CcAddressSet = new HashSet<string>(StringUtils.TrimStringEnum(Regex.Split(value, @",(?=(?:[^\"]*\"[^\"]*\")*(?![^\"]*\"))")));
+                CcAddressSet = new HashSet<string>(StringUtils.TrimStringEnum(Regex.Split(value, @",(?=(?:[^\""]*\""[^\""]*\"")*(?![^\""]*\""))")));
             }
         }
 
@@ -78,7 +78,7 @@ namespace PostmarkDotNet
             }
             set
             {
-                BccAddressSet = new HashSet<string>(StringUtils.TrimStringEnum(Regex.Split(value, @",(?=(?:[^\"]*\"[^\"]*\")*(?![^\"]*\"))")));
+                BccAddressSet = new HashSet<string>(StringUtils.TrimStringEnum(Regex.Split(value, @",(?=(?:[^\""]*\""[^\""]*\"")*(?![^\""]*\""))")));
             }
         }
 

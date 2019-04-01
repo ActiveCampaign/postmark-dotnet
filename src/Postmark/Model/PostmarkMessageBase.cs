@@ -16,7 +16,6 @@ namespace PostmarkDotNet
         public PostmarkMessageBase()
         {
             Attachments = new List<PostmarkMessageAttachment>(0);
-            TrackLinks = LinkTrackingOptions.None;
         }
 
         /// <summary>
@@ -61,7 +60,7 @@ namespace PostmarkDotNet
         /// </remarks>
         public bool? TrackOpens { get; set; }
 
-        public LinkTrackingOptions TrackLinks { get; set; }
+        public LinkTrackingOptions? TrackLinks { get; set; }
 
         /// <summary>
         ///   A collection of optional message headers.

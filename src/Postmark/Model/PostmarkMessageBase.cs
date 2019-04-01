@@ -16,6 +16,7 @@ namespace PostmarkDotNet
         public PostmarkMessageBase()
         {
             Attachments = new List<PostmarkMessageAttachment>(0);
+            TrackLinks = LinkTrackingOptions.None;
         }
 
         /// <summary>

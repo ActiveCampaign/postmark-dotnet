@@ -77,7 +77,19 @@ namespace Postmark.Tests
             Assert.NotEqual(Guid.Empty, result.MessageID);
         }
 
-        private PostmarkMessage ConstructMessage(string inboundAddress, int number = 0)
+        [Fact]
+        public async void Client_CanSendAPostmarkMessageWithEmptyTrackLinks()
+        {
+            var inboundAddress = (await _client.GetServerAsync()).InboundAddress;
+            var message = ConstructMessage(inboundAddress, 0, null);
+            var result = await _client.SendMessageAsync(message);
+
+            Assert.Equal(PostmarkStatus.Success, result.Status);
+            Assert.Equal(0, result.ErrorCode);
+            Assert.NotEqual(Guid.Empty, result.MessageID);
+        }
+
+        private PostmarkMessage ConstructMessage(string inboundAddress, int number = 0, LinkTrackingOptions? trackLinks = LinkTrackingOptions.HtmlAndText)
         {
             var message = new PostmarkMessage()
             {
@@ -89,7 +101,7 @@ namespace Postmark.Tests
                 HtmlBody = String.Format("Testing the Postmark .net client, <b>{0}</b>", TESTING_DATE),
                 TextBody = "This is plain text.",
                 TrackOpens = true,
-                TrackLinks = LinkTrackingOptions.HtmlAndText,
+                TrackLinks = trackLinks,
                 Headers = new HeaderCollection(){
                   new MailHeader( "X-Integration-Testing-Postmark-Type-Message" , TESTING_DATE.ToString("o"))
                 },

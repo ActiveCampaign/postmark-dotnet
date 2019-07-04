@@ -186,8 +186,10 @@ namespace PostmarkDotNet
             parameters["fromdate"] = fromDate;
             parameters["status"] = status.ToString().ToLower();
 
-            if(metadata != null){
-                foreach(var a in metadata){
+            if (metadata != null)
+            {
+                foreach (var a in metadata)
+                {
                     parameters[$"metadata_{a.Key}"] = a.Value;
                 }
             }
@@ -232,7 +234,7 @@ namespace PostmarkDotNet
         /// <param name="toDate">Get messages on or before YYYY-MM-DD.</param>
         /// <returns>PostmarkInboundMessageList</returns>
         public async Task<PostmarkInboundMessageList> GetInboundMessagesAsync(int offset = 0, int count = 100,
-            string recipient = null, string fromemail = null, string subject = null, 
+            string recipient = null, string fromemail = null, string subject = null,
             string mailboxhash = null, InboundMessageStatus? status = InboundMessageStatus.Processed, String toDate = null, String fromDate = null)
         {
             var parameters = new Dictionary<string, object>();
@@ -245,7 +247,7 @@ namespace PostmarkDotNet
             parameters["todate"] = toDate;
             parameters["fromdate"] = fromDate;
             parameters["status"] = status.ToString().ToLower();
-        
+
             return await ProcessNoBodyRequestAsync<PostmarkInboundMessageList>("/messages/inbound", parameters);
         }
 
@@ -302,7 +304,7 @@ namespace PostmarkDotNet
         public async Task<PostmarkServer> EditServerAsync(String name = null, string color = null,
             bool? rawEmailEnabled = null, bool? smtpApiActivated = null, string inboundHookUrl = null,
             string bounceHookUrl = null, string openHookUrl = null, bool? postFirstOpenOnly = null,
-            bool? trackOpens = null, string inboundDomain = null, int? inboundSpamThreshold = null, 
+            bool? trackOpens = null, string inboundDomain = null, int? inboundSpamThreshold = null,
             LinkTrackingOptions? trackLinks = null,
             string clickHookUrl = null, string deliveryHookUrl = null)
         {
@@ -829,20 +831,24 @@ namespace PostmarkDotNet
         }
 
         /// <summary>
-        /// Get a listing of templates, optionally including deleted templates.
+        /// Get a listing of templates.
         /// </summary>
-        /// <param name="count"></param>
-        /// <param name="offset"></param>
+        /// <param name="count">The number of templates to return. Defaults to 0.</param>
+        /// <param name="offset">The number of templates to "skip" before returning results. Defaults to 100.</param>
+        /// <param name="templateType">Filter the resulting templates by their TemplateType. Defaults to: All</param>
+        /// <param name="layoutTemplate">Filter results by layout template alias.</param>
         /// <returns></returns>
-        public async Task<PostmarkTemplateListingResponse> GetTemplatesAsync(int offset = 0, int count = 100)
+        public async Task<PostmarkTemplateListingResponse> GetTemplatesAsync(int offset = 0, int count = 100, TemplateTypeFilter templateType = TemplateTypeFilter.All,
+            string layoutTemplate = null)
         {
             var query = new Dictionary<string, object>();
             query["Count"] = count;
             query["Offset"] = offset;
+            query["TemplateType"] = Enum.GetName(typeof(TemplateTypeFilter), templateType);
+            query["LayoutTemplate"] = layoutTemplate;
 
             return await ProcessNoBodyRequestAsync<PostmarkTemplateListingResponse>("/templates/", query, HttpMethod.Get);
         }
-
 
         /// <summary>
         /// Store a new template associated with this server.
@@ -852,8 +858,11 @@ namespace PostmarkDotNet
         /// <param name="htmlBody">The HTMLBody to be used when sending with this template. Optional if TextBody is specified.</param>
         /// <param name="textBody">The TextBody to be used when sending with this template. Optional if HtmlBody is specified.</param>
         /// <param name="alias">A friendly name to use for this template to access it, or to send with it.</param>
+        /// <param name="templateType">The type of the template to create.</param>
+        /// <param name="layoutTemplate">The alias of the Layout template that you want to use as layout for this Standard template.</param>
         /// <returns></returns>
-        public async Task<BasicTemplateInformation> CreateTemplateAsync(string name, string subject, string htmlBody = null, string textBody = null, string alias = null)
+        public async Task<BasicTemplateInformation> CreateTemplateAsync(string name, string subject, string htmlBody = null, string textBody = null, string alias = null,
+            TemplateType templateType = TemplateType.Standard, string layoutTemplate = null)
         {
             var body = new Dictionary<string, object>();
             body["Name"] = name;
@@ -861,22 +870,27 @@ namespace PostmarkDotNet
             body["TextBody"] = textBody;
             body["Subject"] = subject;
             body["Alias"] = alias;
+            body["TemplateType"] = Enum.GetName(typeof(TemplateType), templateType);
+            body["LayoutTemplate"] = layoutTemplate;
 
             return await ProcessRequestAsync<Dictionary<string, object>, BasicTemplateInformation>("/templates/", HttpMethod.Post, body);
         }
 
-        public async Task<BasicTemplateInformation> EditTemplateAsync(string alias, string name = null, string subject = null, string htmlBody = null, string textBody = null)
+        public async Task<BasicTemplateInformation> EditTemplateAsync(string alias, string name = null, string subject = null, string htmlBody = null, string textBody = null,
+            string layoutTemplate = null)
         {
             var body = new Dictionary<string, object>();
             body["Name"] = name;
             body["HTMLBody"] = htmlBody;
             body["TextBody"] = textBody;
             body["Subject"] = subject;
-            
+            body["LayoutTemplate"] = layoutTemplate;
+
             return await ProcessRequestAsync<Dictionary<string, object>, BasicTemplateInformation>("/templates/" + alias, HttpMethod.Put, body);
         }
 
-        public async Task<BasicTemplateInformation> EditTemplateAsync(long templateId, string name = null, string subject = null, string htmlBody = null, string textBody = null, string alias = null)
+        public async Task<BasicTemplateInformation> EditTemplateAsync(long templateId, string name = null, string subject = null, string htmlBody = null, string textBody = null, string alias = null,
+            string layoutTemplate = null)
         {
             var body = new Dictionary<string, object>();
             body["Name"] = name;
@@ -884,6 +898,7 @@ namespace PostmarkDotNet
             body["TextBody"] = textBody;
             body["Subject"] = subject;
             body["Alias"] = alias;
+            body["LayoutTemplate"] = layoutTemplate;
 
             return await ProcessRequestAsync<Dictionary<string, object>, BasicTemplateInformation>("/templates/" + templateId, HttpMethod.Put, body);
         }
@@ -953,11 +968,14 @@ namespace PostmarkDotNet
             IDictionary<string, string> metadata = null,
             params PostmarkMessageAttachment[] attachments)
         {
-            
+
             var email = new TemplatedPostmarkMessage();
-            if(templateReference is long){
+            if (templateReference is long)
+            {
                 email.TemplateId = (long)templateReference;
-            }else{
+            }
+            else
+            {
                 email.TemplateAlias = (string)templateReference;
             }
             email.TemplateModel = templateModel;
@@ -986,15 +1004,30 @@ namespace PostmarkDotNet
             return await SendEmailWithTemplateAsync(email);
         }
 
-        public async Task<TemplateValidationResponse> ValidateTemplateAsync<T>(string subject = null, string htmlbody = null,
-            string textBody = null, T testRenderModel = default(T), bool inlineCssForHtmlTestRender = true)
+        /// <summary>
+        /// Validate a template.
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="subject">The subject content to validate.</param>
+        /// <param name="htmlBody">The HTML body content to validate.</param>
+        /// <param name="textBody">The plain text body content to validate.</param>
+        /// <param name="testRenderModel">The template model to be used when rendering test content.</param>
+        /// <param name="inlineCssForHtmlTestRender">Controls whether style blocks will be inlined as style attributes on matching html elements in HtmlBody.</param>
+        /// <param name="templateType">Validate templates based on template type.</param>
+        /// <param name="layoutTemplate">An optional string to specify which layout template alias to use to validate a standard template.</param>
+        /// <returns></returns>
+        public async Task<TemplateValidationResponse> ValidateTemplateAsync<T>(string subject = null, string htmlBody = null,
+            string textBody = null, T testRenderModel = default(T), bool inlineCssForHtmlTestRender = true,
+            TemplateType templateType = TemplateType.Standard, string layoutTemplate = null)
         {
             var body = new Dictionary<string, object>();
             body["TestRenderModel"] = testRenderModel;
             body["Subject"] = subject;
-            body["HtmlBody"] = htmlbody;
+            body["HtmlBody"] = htmlBody;
             body["TextBody"] = textBody;
             body["InlineCssForHtmlTestRender"] = inlineCssForHtmlTestRender;
+            body["TemplateType"] = Enum.GetName(typeof(TemplateType), templateType);
+            body["LayoutTemplate"] = layoutTemplate;
 
             return await ProcessRequestAsync<Dictionary<string, object>, TemplateValidationResponse>("/templates/validate", HttpMethod.Post, body);
         }

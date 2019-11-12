@@ -145,16 +145,6 @@ namespace PostmarkDotNet.Legacy
             return asyncResult.UnwrapResult<PostmarkBounce>();
         }
 
-        public static IAsyncResult BeginGetBounceTags(this PostmarkClient client)
-        {
-            return client.GetBounceTagsAsync();
-        }
-
-        public static IEnumerable<string> EndGetBounceTags(this PostmarkClient client, IAsyncResult asyncResult)
-        {
-            return asyncResult.UnwrapResult<IEnumerable<string>>();
-        }
-
         public static IAsyncResult BeginGetBounceDump(this PostmarkClient client, string bounceId)
         {
             return client.GetBounceDumpAsync(int.Parse(bounceId));
@@ -386,11 +376,6 @@ namespace PostmarkDotNet.Legacy
         public static PostmarkBounce GetBounce(this PostmarkClient client, string bounceId)
         {
             return Task.Run(async () => await client.GetBounceAsync(int.Parse(bounceId))).Result;
-        }
-
-        public static IEnumerable<string> GetBounceTags(this PostmarkClient client)
-        {
-            return Task.Run(async () => await client.GetBounceTagsAsync()).Result;
         }
 
         public static PostmarkBounceDump GetBounceDump(this PostmarkClient client, string bounceId)

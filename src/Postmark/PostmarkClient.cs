@@ -144,16 +144,6 @@ namespace PostmarkDotNet
             return await ProcessNoBodyRequestAsync<PostmarkBounceActivation>("/bounces/" + bounceId + "/activate", verb: HttpMethod.Put);
         }
 
-        /// <summary>
-        /// Returns a list of tags used for the current server.
-        /// </summary>
-        /// <returns></returns>
-        /// <seealso href = "http://developer.postmarkapp.com/bounces" />
-        public async Task<IEnumerable<string>> GetBounceTagsAsync()
-        {
-            return await ProcessNoBodyRequestAsync<String[]>("/bounces/tags");
-        }
-
         #endregion
 
         #region Outbound Message Retrieval

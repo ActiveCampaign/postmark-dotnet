@@ -182,7 +182,9 @@ namespace Postmark.Tests
         public async void AdminClient_CanVerifySPF()
         {
             var signature = await _adminClient.CreateSignatureAsync(_senderEmail, _senderName, _replyToAddress);
+#pragma warning disable 618
             var response = await _adminClient.VerifySignatureSPF(signature.ID);
+#pragma warning restore 618
             Assert.NotNull(response);
         }
 

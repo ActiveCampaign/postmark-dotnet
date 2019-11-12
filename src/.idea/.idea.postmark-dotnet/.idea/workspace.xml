@@ -1,0 +1,145 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="ChangeListManager">
+    <list default="true" id="31c5c7a7-a579-47e1-a6fc-2b0672847196" name="Default Changelist" comment="">
+      <change beforePath="$PROJECT_DIR$/Postmark.Tests/Postmark.Tests.csproj" beforeDir="false" afterPath="$PROJECT_DIR$/Postmark.Tests/Postmark.Tests.csproj" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Postmark/IPostmarkClient.Net20.Async.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Postmark/IPostmarkClient.Net20.Async.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Postmark/IPostmarkClient.Net20.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Postmark/IPostmarkClient.Net20.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Postmark/LegacyClientExtensions.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Postmark/LegacyClientExtensions.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Postmark/PostmarkClient.Net20.Async.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Postmark/PostmarkClient.Net20.Async.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Postmark/PostmarkClient.Net20.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Postmark/PostmarkClient.Net20.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Postmark/PostmarkClient.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Postmark/PostmarkClient.cs" afterDir="false" />
+    </list>
+    <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
+    <option name="SHOW_DIALOG" value="false" />
+    <option name="HIGHLIGHT_CONFLICTS" value="true" />
+    <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
+    <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
+  <component name="Git.Settings">
+    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$/.." />
+  </component>
+  <component name="HighlightingSettingsPerFile">
+    <setting file="file://$PROJECT_DIR$/Postmark.Tests/ClientTriggersTests.cs" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/Postmark/IPostmarkClient.Net20.cs" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/Postmark/LegacyClientExtensions.cs" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/Postmark/PostmarkClient.cs" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$USER_HOME$/.nuget/packages/microsoft.net.test.sdk/16.3.0/build/netcoreapp1.0/Microsoft.NET.Test.Sdk.Program.cs" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/Postmark.Tests/PostmarkClientTests.cs" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/Postmark/PostmarkClient.Net20.Async.cs" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/Postmark/PostmarkClientBase.cs" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/Postmark.Tests/AdminClientSenderSignatureTests.cs" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/Postmark/IPostmarkClient.Net20.Async.cs" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/Postmark/PostmarkClient.Net20.cs" root0="FORCE_HIGHLIGHTING" />
+  </component>
+  <component name="IdeDocumentHistory">
+    <option name="CHANGED_PATHS">
+      <list>
+        <option value="$PROJECT_DIR$/Postmark.Tests/ClientTriggersTests.cs" />
+        <option value="$PROJECT_DIR$/Postmark/PostmarkClient.cs" />
+        <option value="$PROJECT_DIR$/Postmark/LegacyClientExtensions.cs" />
+        <option value="$PROJECT_DIR$/Postmark/PostmarkClient.Net20.cs" />
+        <option value="$PROJECT_DIR$/Postmark/PostmarkClient.Net20.Async.cs" />
+        <option value="$PROJECT_DIR$/Postmark/IPostmarkClient.Net20.cs" />
+        <option value="$PROJECT_DIR$/Postmark/IPostmarkClient.Net20.Async.cs" />
+        <option value="$PROJECT_DIR$/Postmark.Tests/Postmark.Tests.csproj" />
+      </list>
+    </option>
+  </component>
+  <component name="IgnoredFileRootStore">
+    <option name="generatedRoots">
+      <set>
+        <option value="$PROJECT_DIR$/.idea/.idea.postmark-dotnet/.idea" />
+      </set>
+    </option>
+  </component>
+  <component name="ProjectId" id="1SIM16FmudUNWQbzh3peW1OaQ7n" />
+  <component name="ProjectLevelVcsManager" settingsEditedManually="true">
+    <ConfirmationsSetting value="1" id="Add" />
+  </component>
+  <component name="PropertiesComponent">
+    <property name="ASKED_SHARE_PROJECT_CONFIGURATION_FILES" value="true" />
+    <property name="Rider.DefaultBreakpoints.AreToggled" value="true" />
+    <property name="Rider.ProjectViewActivator.IsNotFirstRun" value="true" />
+    <property name="WebServerToolWindowFactoryState" value="false" />
+    <property name="nodejs_interpreter_path.stuck_in_default_project" value="undefined stuck path" />
+    <property name="nodejs_npm_path_reset_for_default_project" value="true" />
+    <property name="settings.editor.selected.configurable" value="preferences.lookFeel" />
+  </component>
+  <component name="RunDashboard">
+    <option name="ruleStates">
+      <list>
+        <RuleState>
+          <option name="name" value="ConfigurationTypeDashboardGroupingRule" />
+        </RuleState>
+        <RuleState>
+          <option name="name" value="StatusDashboardGroupingRule" />
+        </RuleState>
+      </list>
+    </option>
+  </component>
+  <component name="RunManager">
+    <configuration name="Default" type="DotNetProject" factoryName=".NET Project">
+      <option name="EXE_PATH" value="" />
+      <option name="PROGRAM_PARAMETERS" value="" />
+      <option name="WORKING_DIRECTORY" value="" />
+      <option name="PASS_PARENT_ENVS" value="1" />
+      <option name="USE_EXTERNAL_CONSOLE" value="0" />
+      <option name="USE_MONO" value="0" />
+      <option name="RUNTIME_ARGUMENTS" value="" />
+      <option name="PROJECT_PATH" value="" />
+      <option name="PROJECT_EXE_PATH_TRACKING" value="1" />
+      <option name="PROJECT_ARGUMENTS_TRACKING" value="1" />
+      <option name="PROJECT_WORKING_DIRECTORY_TRACKING" value="1" />
+      <option name="PROJECT_KIND" value="None" />
+      <option name="PROJECT_TFM" value="" />
+      <method v="2">
+        <option name="Build" enabled="true" />
+      </method>
+    </configuration>
+  </component>
+  <component name="SvnConfiguration">
+    <configuration />
+  </component>
+  <component name="TaskManager">
+    <task active="true" id="Default" summary="Default task">
+      <changelist id="31c5c7a7-a579-47e1-a6fc-2b0672847196" name="Default Changelist" comment="" />
+      <created>1571246439511</created>
+      <option name="number" value="Default" />
+      <option name="presentableId" value="Default" />
+      <updated>1571246439511</updated>
+      <workItem from="1571246442312" duration="327000" />
+      <workItem from="1573562300483" duration="458000" />
+    </task>
+    <servers />
+  </component>
+  <component name="TypeScriptGeneratedFilesManager">
+    <option name="version" value="1" />
+  </component>
+  <component name="Vcs.Log.Tabs.Properties">
+    <option name="TAB_STATES">
+      <map>
+        <entry key="MAIN">
+          <value>
+            <State>
+              <option name="COLUMN_ORDER" />
+            </State>
+          </value>
+        </entry>
+      </map>
+    </option>
+  </component>
+  <component name="VcsManagerConfiguration">
+    <option name="LOCAL_CHANGES_DETAILS_PREVIEW_SHOWN" value="true" />
+  </component>
+  <component name="XDebuggerManager">
+    <breakpoint-manager>
+      <breakpoints>
+        <breakpoint enabled="true" suspend="NONE" type="DotNet Exception Breakpoints">
+          <properties exception="System.Threading.ThreadAbortException" displayValue="System.Threading.ThreadAbortException" />
+          <option name="timeStamp" value="1" />
+        </breakpoint>
+      </breakpoints>
+    </breakpoint-manager>
+  </component>
+</project>

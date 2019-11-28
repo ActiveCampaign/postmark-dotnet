@@ -67,6 +67,7 @@ namespace Postmark.Tests
         [Fact]
         public async Task ClientCanListWebhookConfigurations()
         {
+            await Cleanup();
             await _client.CreateWebhookConfigurationAsync("http://www.test1.com/hook");
             await _client.CreateWebhookConfigurationAsync("http://www.test2.com/hook");
 

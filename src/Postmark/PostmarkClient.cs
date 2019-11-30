@@ -686,7 +686,7 @@ namespace PostmarkDotNet
         }
         #endregion
 
-        #region Triggers
+        #region Inbound Triggers
 
         /// <summary>
         /// Define a new Inbound Rule Trigger

@@ -29,6 +29,7 @@ namespace Postmark.Tests
                 try
                 {
                     var tasks = new List<Task>();
+
                     var inboundTriggers = await _client.GetAllInboundRuleTriggers();
                     foreach (var inboundRule in inboundTriggers.InboundRules)
                     {

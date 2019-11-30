@@ -79,7 +79,8 @@ namespace Postmark.Tests
         [Fact]
         public async Task ClientCanDeleteWebhookConfigurations()
         {
-            var configuration = await _client.CreateWebhookConfigurationAsync("http://www.test-delete.com/hook");
+            var createdResponse = await _client.CreateWebhookConfigurationAsync("http://www.test.com/delete-hook");
+            var configuration = await _client.GetWebhookConfigurationAsync(createdResponse.ID.Value);
 
             var response = await _client.DeleteWebhookConfigurationAsync(configuration.ID.Value);
 

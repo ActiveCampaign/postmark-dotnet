@@ -128,14 +128,22 @@ namespace Postmark.Tests
         {
             return Task.Run(async () =>
             {
-                var tasks = new List<Task>();
-                var result = await _client.GetWebhookConfigurationsAsync();
-
-                foreach (var webhook in result.Webhooks)
+                try
                 {
-                    tasks.Add(_client.DeleteWebhookConfigurationAsync(webhook.ID.Value));
+                    var tasks = new List<Task>();
+                    var result = await _client.GetWebhookConfigurationsAsync();
+
+                    foreach (var webhook in result.Webhooks)
+                    {
+                        tasks.Add(_client.DeleteWebhookConfigurationAsync(webhook.ID.Value));
+                    }
+
+                    await Task.WhenAll(tasks);
                 }
-                await Task.WhenAll(tasks);
+                catch (Exception)
+                {
+                    // ignored
+                }
             });
         }
 

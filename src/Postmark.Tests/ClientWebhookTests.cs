@@ -137,14 +137,7 @@ namespace Postmark.Tests
         {
             return Task.Run(async () =>
             {
-                try
-                {
-                    await _adminClient.DeleteServerAsync(_server.ID);
-                }
-                catch (Exception)
-                {
-                    // ignored
-                }
+                await _adminClient.DeleteServerAsync(_server.ID);
             });
         }
 

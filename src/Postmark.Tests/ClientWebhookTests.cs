@@ -67,13 +67,15 @@ namespace Postmark.Tests
         [Fact]
         public async Task ClientCanListWebhookConfigurations()
         {
-            await Cleanup();
-            await _client.CreateWebhookConfigurationAsync("http://www.test1.com/hook");
-            await _client.CreateWebhookConfigurationAsync("http://www.test2.com/hook");
+            var url1 = "http://www.test1.com/hook" + Guid.NewGuid();
+            var url2 = "http://www.test2.com/hook" + Guid.NewGuid();
+            await _client.CreateWebhookConfigurationAsync(url1);
+            await _client.CreateWebhookConfigurationAsync(url2);
 
             var configurations = await _client.GetWebhookConfigurationsAsync();
 
-            Assert.Equal(2, configurations.Webhooks.Count());
+            Assert.Contains(configurations.Webhooks, k => k.Url == url1);
+            Assert.Contains(configurations.Webhooks, k => k.Url == url2);
         }
 
         [Fact]

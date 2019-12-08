@@ -17,26 +17,19 @@ namespace Postmark.Tests
             _client = new PostmarkClient(WRITE_TEST_SERVER_TOKEN);
         }
 
-        public ClientTriggersTests(): base(){
+        public ClientTriggersTests() : base()
+        {
             this.Cleanup().Wait();
         }
 
         private Task Cleanup()
         {
-            return Task.Run(async() =>
+            return Task.Run(async () =>
             {
                 try
                 {
-                    var triggers = await _client.SearchTaggedTriggers();
                     var tasks = new List<Task>();
-                    foreach (var trigger in triggers.Tags)
-                    {
-                        if (trigger.MatchName.StartsWith(_triggerPrefix))
-                        {
-                            var dt = _client.DeleteTagTrigger(trigger.ID);
-                            tasks.Add(dt);
-                        }
-                    }
+
                     var inboundTriggers = await _client.GetAllInboundRuleTriggers();
                     foreach (var inboundRule in inboundTriggers.InboundRules)
                     {
@@ -54,70 +47,6 @@ namespace Postmark.Tests
                     //don't fail the tests because cleanup didn't happen.
                 }
             });
-        }
-
-        [Theory]
-        [InlineData("qwerty", false)]
-        [InlineData("pdq", true)]
-        public async void Client_CanCreateTagTrigger(string matchName, bool trackOpens)
-        {
-            var trigger = await _client.CreateTagTriggerAsync(_triggerPrefix + matchName, trackOpens);
-            var savedTrigger = await _client.GetTagTriggerAsync(trigger.ID);
-
-            Assert.Equal(trigger.MatchName, savedTrigger.MatchName);
-            Assert.Equal(trigger.TrackOpens, savedTrigger.TrackOpens);
-            Assert.Equal(trigger.ID, savedTrigger.ID);
-            Assert.Equal(_triggerPrefix + matchName, savedTrigger.MatchName);
-            Assert.Equal(trackOpens, savedTrigger.TrackOpens);
-        }
-
-        [Fact]
-        public async void Client_CanGetTagTrigger()
-        {
-            var trigger = await _client.CreateTagTriggerAsync(_triggerPrefix + "new-trigger" + DateTime.Now.Ticks);
-            var savedTrigger = await _client.GetTagTriggerAsync(trigger.ID);
-
-            Assert.NotNull(savedTrigger);
-        }
-
-        [Fact]
-        public async void Client_CanEditTagTrigger()
-        {
-            var trigger = await _client.CreateTagTriggerAsync(_triggerPrefix + "new-trigger" + DateTime.Now.Ticks, false);
-            var updatedTrigger = await _client.UpdateTagTriggerAsync(trigger.ID, _triggerPrefix + "updated" + DateTime.Now.Ticks, true);
-
-            Assert.NotEqual(trigger.MatchName, updatedTrigger.MatchName);
-            Assert.NotEqual(trigger.TrackOpens, updatedTrigger.TrackOpens);
-        }
-
-        [Fact]
-        public async void Client_CanDeleteTagTrigger()
-        {
-            var trigger = await _client.CreateTagTriggerAsync(_triggerPrefix + "new-trigger");
-            var result = await _client.DeleteTagTrigger(trigger.ID);
-
-            Assert.NotNull(result);
-            Assert.Equal(0, result.ErrorCode);
-            Assert.Equal(PostmarkStatus.Success, result.Status);
-        }
-
-        [Fact]
-        public async void Client_CanSearchTagTriggers()
-        {
-            var nameprefix = _triggerPrefix + "-tag-" + TESTING_DATE.ToString("o");
-            var names = Enumerable.Range(0, 10).Select(k => nameprefix + Guid.NewGuid()).ToArray();
-
-            var awaitables = names.Select(name => _client.CreateTagTriggerAsync(name));
-            var results = await Task.WhenAll(awaitables);
-
-            foreach (var name in names)
-            {
-                var result = (await _client.SearchTaggedTriggers(0, 100, name)).Tags;
-                Assert.Equal(name, result.Single().MatchName);
-            }
-
-            var allTriggers = await _client.SearchTaggedTriggers();
-            Assert.Equal(names.Count(), allTriggers.Tags.Count(k => k.MatchName.StartsWith(nameprefix)));
         }
 
         [Fact]

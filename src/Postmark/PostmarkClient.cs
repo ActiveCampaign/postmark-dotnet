@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Net.Http;
 using System.Threading.Tasks;
+using PostmarkDotNet.Model.Webhooks;
 
 namespace PostmarkDotNet
 {
@@ -685,85 +686,7 @@ namespace PostmarkDotNet
         }
         #endregion
 
-        #region Triggers
-
-        /// <summary>
-        /// Create a new Tag Trigger.
-        /// </summary>
-        /// <param name="matchName"></param>
-        /// <param name="trackOpens"></param>
-        /// <returns></returns>
-        public async Task<PostmarkTaggedTriggerInfo> CreateTagTriggerAsync(string matchName, bool trackOpens = true)
-        {
-            var parameters = new Dictionary<string, object>();
-            parameters["MatchName"] = matchName;
-            parameters["TrackOpens"] = trackOpens;
-
-            return await this.ProcessRequestAsync<Dictionary<string, object>, PostmarkTaggedTriggerInfo>
-                ("/triggers/tags", HttpMethod.Post, parameters);
-        }
-
-        /// <summary>
-        /// Retrieve a tag trigger.
-        /// </summary>
-        /// <param name="triggerId"></param>
-        /// <returns></returns>
-        public async Task<PostmarkTaggedTriggerInfo> GetTagTriggerAsync(int triggerId)
-        {
-            var result = await this.ProcessNoBodyRequestAsync<PostmarkTaggedTriggerInfo>("/triggers/tags/" + triggerId);
-            result.ID = triggerId;
-            return result;
-        }
-
-        /// <summary>
-        /// Modify a Tag Trigger.
-        /// </summary>
-        /// <param name="triggerId"></param>
-        /// <param name="matchName"></param>
-        /// <param name="trackOpens"></param>
-        /// <returns></returns>
-        public async Task<PostmarkTaggedTriggerInfo> UpdateTagTriggerAsync(int triggerId, string matchName = null, bool? trackOpens = null)
-        {
-            var parameters = new Dictionary<string, object>();
-            parameters["MatchName"] = matchName;
-            parameters["TrackOpens"] = trackOpens;
-
-            var result = await this
-                .ProcessRequestAsync<Dictionary<string, object>, PostmarkTaggedTriggerInfo>("/triggers/tags/" + triggerId,
-                HttpMethod.Put, parameters);
-
-            result.ID = triggerId;
-            return result;
-        }
-
-        /// <summary>
-        /// Delete a Tag Trigger based on the ID.
-        /// </summary>
-        /// <param name="triggerId"></param>
-        /// <returns></returns>
-        public async Task<PostmarkResponse> DeleteTagTrigger(int triggerId)
-        {
-            return await this
-                .ProcessNoBodyRequestAsync<PostmarkResponse>("/triggers/tags/" + triggerId,
-                verb: HttpMethod.Delete);
-        }
-
-        /// <summary>
-        /// Find all tag triggers, optionall filtering by "matchName".
-        /// </summary>
-        /// <param name="offset"></param>
-        /// <param name="count"></param>
-        /// <param name="matchName"></param>
-        /// <returns></returns>
-        public async Task<PostmarkTaggedTriggerList> SearchTaggedTriggers(int offset = 0, int count = 100, string matchName = null)
-        {
-            var parameters = new Dictionary<string, object>();
-            parameters["offset"] = offset;
-            parameters["count"] = count;
-            parameters["match_name"] = matchName;
-
-            return await this.ProcessNoBodyRequestAsync<PostmarkTaggedTriggerList>("/triggers/tags/", parameters);
-        }
+        #region Inbound Triggers
 
         /// <summary>
         /// Define a new Inbound Rule Trigger
@@ -1030,6 +953,87 @@ namespace PostmarkDotNet
             body["LayoutTemplate"] = layoutTemplate;
 
             return await ProcessRequestAsync<Dictionary<string, object>, TemplateValidationResponse>("/templates/validate", HttpMethod.Post, body);
+        }
+        #endregion
+
+        #region Webhooks
+
+        /// <summary>
+        /// Gets the webhook configuration for the provided configuration id
+        /// </summary>
+        /// <param name="configurationId">Configuration Id to search for</param>
+        /// <returns></returns>
+        public async Task<WebhookConfiguration> GetWebhookConfigurationAsync(long configurationId)
+        {
+            return await ProcessNoBodyRequestAsync<WebhookConfiguration>($"/webhooks/{configurationId}", null, HttpMethod.Get);
+        }
+
+        /// <summary>
+        /// Gets a listing of webhook configurations for the provided server
+        /// </summary>
+        /// <param name="messageStream"> Optional message stream to search for.
+        /// If not provided, all configurations for the server will be returned.</param>
+        /// <returns></returns>
+        public async Task<WebhookConfigurationListingResponse> GetWebhookConfigurationsAsync(string messageStream = null)
+        {
+            var query = new Dictionary<string, object> { ["MessageStream"] = messageStream };
+
+            return await ProcessNoBodyRequestAsync<WebhookConfigurationListingResponse>("/webhooks/", query, HttpMethod.Get);
+        }
+
+        /// <summary>
+        /// Delete a webhook configuration from the server.
+        /// </summary>
+        /// <param name="configurationId">Configuration id to search for</param>
+        /// <returns></returns>
+        public async Task<PostmarkResponse> DeleteWebhookConfigurationAsync(long configurationId)
+        {
+            return await ProcessNoBodyRequestAsync<PostmarkResponse>($"/webhooks/{configurationId}", null, HttpMethod.Delete);
+        }
+
+        /// <summary>
+        /// Creates a new webhook configuration
+        /// </summary>
+        /// <param name="url">The webhook URL</param>
+        /// <param name="messageStream">Message stream this configuration should belong to.
+        /// If not provided, it will belong to the default transactional stream.</param>
+        /// <param name="httpAuth">Optional Basic HTTP Authentication</param>
+        /// <param name="httpHeaders">Optional list of custom HTTP headers</param>
+        /// <param name="triggers">Optional triggers for this webhook configuration</param>
+        /// <returns></returns>
+        public async Task<WebhookConfiguration> CreateWebhookConfigurationAsync(string url, string messageStream = null,
+            HttpAuth httpAuth = null, IEnumerable<HttpHeader> httpHeaders = null, WebhookConfigurationTriggers triggers = null)
+        {
+            var body = new Dictionary<string, object>();
+            body["Url"] = url;
+            body["MessageStream"] = messageStream;
+            body["HttpAuth"] = httpAuth;
+            body["HttpHeaders"] = httpHeaders;
+            body["Triggers"] = triggers;
+
+            return await ProcessRequestAsync<Dictionary<string, object>, WebhookConfiguration>("/webhooks/", HttpMethod.Post, body);
+        }
+
+        /// <summary>
+        /// Update a webhook configuration for the provided configuration id.
+        /// </summary>
+        /// <param name="configurationId">Configuration id to search for</param>
+        /// <param name="url">The webhook URL</param>
+        /// <param name="httpAuth">Optional Basic HTTP Authentication</param>
+        /// <param name="httpHeaders">Optional list of custom HTTP headers</param>
+        /// <param name="triggers">Optional triggers for this webhook configuration</param>
+        /// <returns></returns>
+        public async Task<WebhookConfiguration> EditWebhookConfigurationAsync(long configurationId, string url,
+            HttpAuth httpAuth = null, IEnumerable<HttpHeader> httpHeaders = null, WebhookConfigurationTriggers triggers = null)
+        {
+            var body = new Dictionary<string, object>();
+            body["Url"] = url;
+            body["HttpAuth"] = httpAuth;
+            body["HttpHeaders"] = httpHeaders;
+            body["Triggers"] = triggers;
+
+            return await ProcessRequestAsync<Dictionary<string, object>, WebhookConfiguration>($"/webhooks/{configurationId}",
+                HttpMethod.Put, body);
         }
         #endregion
     }

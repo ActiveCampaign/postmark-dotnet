@@ -5,15 +5,21 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using PostmarkDotNet.Exceptions;
+using PostmarkDotNet.Model;
 using PostmarkDotNet.Model.Webhooks;
 
 namespace Postmark.Tests
 {
     public class ClientWebhookTests : ClientBaseFixture, IDisposable
     {
+        private PostmarkAdminClient _adminClient;
+        private PostmarkServer _server;
+
         protected override void Setup()
         {
-            _client = new PostmarkClient(WRITE_TEST_SERVER_TOKEN, BASE_URL);
+            _adminClient = new PostmarkAdminClient(WRITE_ACCOUNT_TOKEN, BASE_URL);
+            _server = _adminClient.CreateServerAsync($"integration-test-webhooks-{Guid.NewGuid()}").Result;
+            _client = new PostmarkClient(_server.ApiTokens.First(), BASE_URL);
         }
 
         [Fact]
@@ -74,6 +80,7 @@ namespace Postmark.Tests
 
             var configurations = await _client.GetWebhookConfigurationsAsync();
 
+            Assert.Equal(2, configurations.Webhooks.Count());
             Assert.Contains(configurations.Webhooks, k => k.Url == url1);
             Assert.Contains(configurations.Webhooks, k => k.Url == url2);
         }
@@ -132,15 +139,7 @@ namespace Postmark.Tests
             {
                 try
                 {
-                    var tasks = new List<Task>();
-                    var result = await _client.GetWebhookConfigurationsAsync();
-
-                    foreach (var webhook in result.Webhooks)
-                    {
-                        tasks.Add(_client.DeleteWebhookConfigurationAsync(webhook.ID.Value));
-                    }
-
-                    await Task.WhenAll(tasks);
+                    await _adminClient.DeleteServerAsync(_server.ID);
                 }
                 catch (Exception)
                 {

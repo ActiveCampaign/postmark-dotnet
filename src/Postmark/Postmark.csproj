@@ -9,6 +9,7 @@
     <Version>3.4</Version>
     <Company>Wildbit, LLC.</Company>
     <Description>The official .net client for Postmark.</Description>
+    <PackageLicenseExpression>MIT</PackageLicenseExpression>
   </PropertyGroup>
   
   <ItemGroup>

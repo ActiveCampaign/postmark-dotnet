@@ -11,10 +11,6 @@
     <Description>The official .net client for Postmark.</Description>
     <PackageLicenseExpression>MIT</PackageLicenseExpression>
   </PropertyGroup>
-  
-  <ItemGroup>
-    <Reference Include="System.Threading.Tasks" />
-  </ItemGroup>
   <ItemGroup>
     <PackageReference Include="Newtonsoft.Json" Version="10.0.3" />
     <PackageReference Include="System.Net.Http" Version="4.3.3" />

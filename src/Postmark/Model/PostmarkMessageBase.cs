@@ -11,6 +11,11 @@ namespace PostmarkDotNet
     public abstract class PostmarkMessageBase
     {
         /// <summary>
+        /// The default transactional stream available on each server.
+        /// </summary>
+        public static readonly string DefaultTransactionalStream = "outbound";
+
+        /// <summary>
         ///   Initializes a new instance of the <see cref = "PostmarkMessage" /> class.
         /// </summary>
         public PostmarkMessageBase()
@@ -18,6 +23,11 @@ namespace PostmarkDotNet
             Attachments = new List<PostmarkMessageAttachment>(0);
             TrackLinks = LinkTrackingOptions.None;
         }
+
+        /// <summary>
+        ///   The message stream used to send this message.
+        /// </summary>
+        public string MessageStream { get; set; } = DefaultTransactionalStream;
 
         /// <summary>
         ///   The sender's email address.

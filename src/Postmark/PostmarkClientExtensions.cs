@@ -10,7 +10,6 @@ namespace PostmarkDotNet
     /// </summary>
     public static class PostmarkClientExtensions
     {
-
         /// <summary>
         /// Sends a message through the Postmark API.
         /// All email addresses must be valid, and the sender must be
@@ -25,14 +24,16 @@ namespace PostmarkDotNet
         /// <param name="textBody">The Plain Text Body to be used for the message, this may be null if HtmlBody is set.</param>
         /// <param name="htmlBody">The HTML Body to be used for the message, this may be null if TextBody is set.</param>
         /// <param name="headers">A collection of additional mail headers to send with the message.</param>
+        /// <param name="messageStream">The message stream used to send this message</param>
         /// <returns>A <see cref = "PostmarkResponse" /> with details about the transaction.</returns>
         public static async Task<PostmarkResponse> SendMessageAsync(this PostmarkClient client,
             string from, string to, string subject, string textBody, string htmlBody,
-             IDictionary<string, string> headers = null, 
-             IDictionary<string, string> metadata = null)
+             IDictionary<string, string> headers = null,
+             IDictionary<string, string> metadata = null,
+             string messageStream = null)
         {
-            var message = new PostmarkMessage(from, to, subject, textBody, htmlBody, 
-            new HeaderCollection(headers), metadata);
+            var message = new PostmarkMessage(from, to, subject, textBody, htmlBody,
+            new HeaderCollection(headers), metadata, messageStream);
             return await client.SendMessageAsync(message);
         }
 

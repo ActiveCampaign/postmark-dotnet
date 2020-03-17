@@ -62,9 +62,9 @@ namespace PostmarkDotNet
         public bool? TrackOpens { get; set; }
 
         /// <summary>
-        /// Track this message using Postmark's ClickTracking feature.
+        /// Track this message using Postmark's LinkTracking feature.
         /// </summary>
-        /// <remarks>If not provided, the default server's ClickTracking option will be used instead.</remarks>
+        /// <remarks>If not provided, the default server's LinkTracking option will be used instead.</remarks>
         public LinkTrackingOptions? TrackLinks { get; set; }
 
         /// <summary>

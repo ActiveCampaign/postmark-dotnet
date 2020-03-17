@@ -61,7 +61,7 @@ namespace PostmarkDotNet
         /// </remarks>
         public bool? TrackOpens { get; set; }
 
-        public LinkTrackingOptions TrackLinks { get; set; }
+        public LinkTrackingOptions? TrackLinks { get; set; }
 
         /// <summary>
         ///   A collection of optional message headers.

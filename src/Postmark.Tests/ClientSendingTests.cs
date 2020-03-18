@@ -6,6 +6,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using PostmarkDotNet.Exceptions;
 
 namespace Postmark.Tests
 {
@@ -87,6 +88,23 @@ namespace Postmark.Tests
             Assert.Equal(PostmarkStatus.Success, result.Status);
             Assert.Equal(0, result.ErrorCode);
             Assert.NotEqual(Guid.Empty, result.MessageID);
+        }
+
+        [Fact]
+        public async void UnknownMessageStream_ThrowsException()
+        {
+            var inboundAddress = (await _client.GetServerAsync()).InboundAddress;
+            var message = ConstructMessage(inboundAddress, 0, null);
+            message.MessageStream = "outbound";
+
+            var result = await _client.SendMessageAsync(message);
+            Assert.Equal(PostmarkStatus.Success, result.Status);
+            Assert.Equal(0, result.ErrorCode);
+            Assert.NotEqual(Guid.Empty, result.MessageID);
+
+            message.MessageStream = "unknown-stream";
+
+            await Assert.ThrowsAsync<PostmarkValidationException>(() => _client.SendMessageAsync(message));
         }
 
         private PostmarkMessage ConstructMessage(string inboundAddress, int number = 0, LinkTrackingOptions? trackLinks = LinkTrackingOptions.HtmlAndText)

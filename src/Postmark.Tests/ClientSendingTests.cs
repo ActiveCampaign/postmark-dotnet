@@ -97,11 +97,13 @@ namespace Postmark.Tests
             var message = ConstructMessage(inboundAddress, 0, null);
             message.MessageStream = "outbound";
 
+            // Testing the default transactional stream
             var result = await _client.SendMessageAsync(message);
             Assert.Equal(PostmarkStatus.Success, result.Status);
             Assert.Equal(0, result.ErrorCode);
             Assert.NotEqual(Guid.Empty, result.MessageID);
 
+            // Testing an invalid non-existing stream
             message.MessageStream = "unknown-stream";
 
             await Assert.ThrowsAsync<PostmarkValidationException>(() => _client.SendMessageAsync(message));

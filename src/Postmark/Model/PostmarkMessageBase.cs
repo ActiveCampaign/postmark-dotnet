@@ -71,7 +71,11 @@ namespace PostmarkDotNet
         /// </remarks>
         public bool? TrackOpens { get; set; }
 
-        public LinkTrackingOptions TrackLinks { get; set; }
+        /// <summary>
+        /// Track this message using Postmark's LinkTracking feature.
+        /// </summary>
+        /// <remarks>If not provided, the default server's LinkTracking option will be used instead.</remarks>
+        public LinkTrackingOptions? TrackLinks { get; set; }
 
         /// <summary>
         ///   A collection of optional message headers.

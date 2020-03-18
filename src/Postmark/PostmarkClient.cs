@@ -905,7 +905,7 @@ namespace PostmarkDotNet
                 email.TemplateAlias = (string)templateReference;
             }
             email.TemplateModel = templateModel;
-            email.MessageStream = messageStream ?? PostmarkMessageBase.DefaultTransactionalStream;
+            email.MessageStream = messageStream;
             email.To = to;
             email.From = from;
             if (inlineCss.HasValue)

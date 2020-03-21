@@ -9,7 +9,7 @@ namespace Postmark.Model.Suppressions
     public class PostmarkSuppressionRequestResult
     {
         /// <summary>
-        /// Recipient address requested to be changed.
+        /// Recipient email address requested to be changed.
         /// </summary>
         public string EmailAddress { get; set; }
 

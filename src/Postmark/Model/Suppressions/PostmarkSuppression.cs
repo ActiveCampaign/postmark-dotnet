@@ -10,7 +10,7 @@ namespace Postmark.Model.Suppressions
     public class PostmarkSuppression
     {
         /// <summary>
-        /// Address of the suppressed recipient.
+        /// Email address of the suppressed recipient.
         /// </summary>
         public string EmailAddress { get; set; }
 

@@ -102,7 +102,6 @@ namespace Postmark.Tests
             // Suppressions are being processed asynchronously so we must give it some time to process those requests
             await Task.Delay(5000);
 
-            // Testing the default message stream - should be empty
             var suppressionListing = await _client.ListSuppressions(new PostmarkSuppressionQuery
             {
                 EmailAddress = suppressionRequests.First().EmailAddress

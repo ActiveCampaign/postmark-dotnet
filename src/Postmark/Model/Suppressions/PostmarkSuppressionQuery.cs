@@ -2,6 +2,9 @@
 
 namespace Postmark.Model.Suppressions
 {
+    /// <summary>
+    /// Query parameters for listing Suppressions.
+    /// </summary>
     public class PostmarkSuppressionQuery
     {
         /// <summary>

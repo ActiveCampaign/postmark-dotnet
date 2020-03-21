@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Net.Http;
 using System.Threading.Tasks;
+using Postmark.Model.Suppressions;
 using PostmarkDotNet.Model.Webhooks;
 
 namespace PostmarkDotNet
@@ -1035,6 +1036,70 @@ namespace PostmarkDotNet
             return await ProcessRequestAsync<Dictionary<string, object>, WebhookConfiguration>($"/webhooks/{configurationId}",
                 HttpMethod.Put, body);
         }
+        #endregion
+
+        #region Suppressions
+
+        /// <summary>
+        /// List Suppressions for the provided query parameters.
+        /// </summary>
+        /// <param name="query">Set of query parameters used to filter Suppressions.</param>
+        /// <returns>Listing of active Suppressions matching the provided query parameters.</returns>
+        public async Task<PostmarkSuppressionListingResponse> ListSuppressions(PostmarkSuppressionQuery query)
+        {
+            var parameters = new Dictionary<string, object>
+            {
+                ["SuppressionReason"] = query.SuppressionReason,
+                ["Origin"] = query.Origin,
+                ["todate"] = query.ToDate?.ToString("O"),
+                ["fromdate"] = query.FromDate?.ToString("O"),
+                ["emailAddress"] = query.EmailAddress,
+            };
+
+            var messageStreamID = query.MessageStream ?? DEFAULT_TRANSACTIONAL_STREAM;
+            var apiUrl = $"/message-streams/{messageStreamID}/suppressions/dump";
+
+            return await ProcessNoBodyRequestAsync<PostmarkSuppressionListingResponse>(apiUrl, parameters);
+        }
+
+        /// <summary>
+        /// Create Suppressions for the specified recipients.
+        /// </summary>
+        /// <param name="suppressionChanges">List of SuppressionChangeRequest objects that specify what recipients to suppress.</param>
+        /// <param name="messageStream">Message stream where the recipients should be suppressed.
+        /// If not provided, they will be suppressed on the default transactional stream.</param>
+        /// <remarks>Suppressions will be generated with a Customer Origin and will have a ManualSuppression reason.</remarks>
+        /// <returns>The status of the request for each recipient.</returns>
+        public async Task<PostmarkSuppressionBulkRequestResult> CreateSuppressions(IEnumerable<PostmarkSuppressionChangeRequest> suppressionChanges,
+            string messageStream = null)
+        {
+            var body = new Dictionary<string, object> { ["Suppressions"] = suppressionChanges.ToList() };
+
+            var messageStreamID = messageStream ?? DEFAULT_TRANSACTIONAL_STREAM;
+            var apiUrl = $"/message-streams/{messageStreamID}/suppressions";
+
+            return await ProcessRequestAsync<Dictionary<string, object>, PostmarkSuppressionBulkRequestResult>(apiUrl, HttpMethod.Post, body);
+        }
+
+        /// <summary>
+        /// Reactivate Suppressions for the specified recipients.
+        /// </summary>
+        /// <param name="suppressionChanges">List of SuppressionChangeRequest objects that specify what recipients to reactivate.</param>
+        /// <param name="messageStream">Message stream where the recipients should be reactivated.
+        /// If not provided, they will be reactivated on the default transactional stream.</param>
+        /// <remarks>Suppressions will only be reactivated if you have the required authority.</remarks>
+        /// <returns>The status of the request for each recipient.</returns>
+        public async Task<PostmarkSuppressionBulkRequestResult> DeleteSuppressions(
+            IEnumerable<PostmarkSuppressionChangeRequest> suppressionChanges, string messageStream = null)
+        {
+            var body = new Dictionary<string, object> { ["Suppressions"] = suppressionChanges.ToList() };
+
+            var messageStreamID = messageStream ?? DEFAULT_TRANSACTIONAL_STREAM;
+            var apiUrl = $"/message-streams/{messageStreamID}/suppressions/delete";
+
+            return await ProcessRequestAsync<Dictionary<string, object>, PostmarkSuppressionBulkRequestResult>(apiUrl, HttpMethod.Post, body);
+        }
+
         #endregion
     }
 }

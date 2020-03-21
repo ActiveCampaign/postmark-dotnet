@@ -29,6 +29,11 @@ namespace PostmarkDotNet
 
         protected static readonly string DATE_FORMAT = "yyyy-MM-dd";
 
+        /// <summary>
+        /// Default transactional message stream id.
+        /// </summary>
+        protected static readonly string DEFAULT_TRANSACTIONAL_STREAM = "outbound";
+
         private static readonly string _agent = "Postmark.NET 2.x (" +
               typeof(PostmarkClient).AssemblyQualifiedName + ")";
 

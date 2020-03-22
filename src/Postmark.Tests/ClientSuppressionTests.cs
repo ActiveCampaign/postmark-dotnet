@@ -63,57 +63,6 @@ namespace Postmark.Tests
             Assert.Null(suppressionResult.Message);
         }
 
-        [Fact]
-        public async Task ClientCanListSuppressions()
-        {
-            var suppressionRequests = new List<PostmarkSuppressionChangeRequest>();
-
-            for (var i = 0; i < 5; i++)
-            {
-                var reactivationRequest = new PostmarkSuppressionChangeRequest { EmailAddress = $"test-{Guid.NewGuid().ToString()}@gmail.com" };
-                suppressionRequests.Add(reactivationRequest);
-            }
-
-            var suppressionResult = await _client.CreateSuppressions(suppressionRequests);
-            Assert.Equal(5, suppressionResult.Suppressions.Count());
-            Assert.True(suppressionResult.Suppressions.All(k => k.Status == PostmarkSuppressionRequestStatus.Suppressed));
-
-            // Suppressions are being processed asynchronously so we must give it some time to process those requests
-            await Task.Delay(5000);
-
-            var suppressionListing = await _client.ListSuppressions(new PostmarkSuppressionQuery());
-            Assert.Equal(5, suppressionListing.Suppressions.Count());
-        }
-
-        [Fact]
-        public async Task ClientCanFilterSuppressionsByEmail()
-        {
-            var suppressionRequests = new List<PostmarkSuppressionChangeRequest>();
-
-            for (var i = 0; i < 3; i++)
-            {
-                var reactivationRequest = new PostmarkSuppressionChangeRequest { EmailAddress = $"test-{Guid.NewGuid().ToString()}@gmail.com" };
-                suppressionRequests.Add(reactivationRequest);
-            }
-
-            await _client.CreateSuppressions(suppressionRequests);
-
-            // Suppressions are being processed asynchronously so we must give it some time to process those requests
-            await Task.Delay(5000);
-
-            var suppressionListing = await _client.ListSuppressions(new PostmarkSuppressionQuery
-            {
-                EmailAddress = suppressionRequests.First().EmailAddress
-            });
-            Assert.Single(suppressionListing.Suppressions);
-
-            var actualSuppression = suppressionListing.Suppressions.First();
-
-            Assert.Equal(suppressionRequests.First().EmailAddress, actualSuppression.EmailAddress);
-            Assert.Equal("Customer", actualSuppression.Origin);
-            Assert.Equal("ManualSuppression", actualSuppression.SuppressionReason);
-        }
-
         private Task Cleanup()
         {
             return Task.Run(async () =>

@@ -57,10 +57,10 @@ namespace Postmark.Tests
 
             Assert.Single(result.Suppressions);
 
-            var suppressionResult = result.Suppressions.First();
-            Assert.Equal(reactivationRequest.EmailAddress, suppressionResult.EmailAddress);
-            Assert.Equal(PostmarkSuppressionRequestStatus.Deleted, suppressionResult.Status);
-            Assert.Null(suppressionResult.Message);
+            var reactivationResult = result.Suppressions.First();
+            Assert.Equal(reactivationRequest.EmailAddress, reactivationResult.EmailAddress);
+            Assert.Equal(PostmarkSuppressionRequestStatus.Deleted, reactivationResult.Status);
+            Assert.Null(reactivationResult.Message);
         }
 
         [Fact]
@@ -70,8 +70,8 @@ namespace Postmark.Tests
 
             for (var i = 0; i < 5; i++)
             {
-                var reactivationRequest = new PostmarkSuppressionChangeRequest { EmailAddress = $"test-{Guid.NewGuid().ToString()}@gmail.com" };
-                suppressionRequests.Add(reactivationRequest);
+                var suppressionRequest = new PostmarkSuppressionChangeRequest { EmailAddress = $"test-{Guid.NewGuid().ToString()}@gmail.com" };
+                suppressionRequests.Add(suppressionRequest);
             }
 
             var suppressionResult = await _client.CreateSuppressions(suppressionRequests);
@@ -92,8 +92,8 @@ namespace Postmark.Tests
 
             for (var i = 0; i < 3; i++)
             {
-                var reactivationRequest = new PostmarkSuppressionChangeRequest { EmailAddress = $"test-{Guid.NewGuid().ToString()}@gmail.com" };
-                suppressionRequests.Add(reactivationRequest);
+                var suppressionRequest = new PostmarkSuppressionChangeRequest { EmailAddress = $"test-{Guid.NewGuid().ToString()}@gmail.com" };
+                suppressionRequests.Add(suppressionRequest);
             }
 
             await _client.CreateSuppressions(suppressionRequests);
@@ -104,7 +104,6 @@ namespace Postmark.Tests
             };
 
             // Suppressions are being processed asynchronously so we must give it some time to process those requests
-
             var suppressionListing = await TestUtils.PollUntil(() => _client.ListSuppressions(query), k => k.Suppressions.Count() == 1);
 
             Assert.Single(suppressionListing.Suppressions);
@@ -112,8 +111,8 @@ namespace Postmark.Tests
             var actualSuppression = suppressionListing.Suppressions.First();
 
             Assert.Equal(suppressionRequests.First().EmailAddress, actualSuppression.EmailAddress);
-            Assert.Equal("Customer", actualSuppression.Origin);
-            Assert.Equal("ManualSuppression", actualSuppression.SuppressionReason);
+            Assert.Equal(PostmarkSuppressionOrigin.Customer, actualSuppression.Origin);
+            Assert.Equal(PostmarkSuppressionReason.ManualSuppression, actualSuppression.SuppressionReason);
         }
 
         private Task Cleanup()

@@ -1,4 +1,6 @@
 ﻿using System;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Converters;
 
 namespace Postmark.Model.Suppressions
 {
@@ -17,13 +19,15 @@ namespace Postmark.Model.Suppressions
         /// Filter Suppressions by reason. (optional)
         /// </summary>
         /// <remarks>If not provided, Suppressions for all reasons will be returned.</remarks>
-        public string SuppressionReason { get; set; }
+        [JsonConverter(typeof(StringEnumConverter))]
+        public PostmarkSuppressionReason? SuppressionReason { get; set; }
 
         /// <summary>
         /// Filter Suppressions by the origin that created them. (optional)
         /// </summary>
         /// <remarks>If not provided, Suppressions for all origins will be returned.</remarks>
-        public string Origin { get; set; }
+        [JsonConverter(typeof(StringEnumConverter))]
+        public PostmarkSuppressionOrigin? Origin { get; set; }
 
         /// <summary>
         /// Filter suppressions up to the date specified - inclusive. (optional)

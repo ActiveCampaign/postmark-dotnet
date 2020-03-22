@@ -1045,7 +1045,7 @@ namespace PostmarkDotNet
         /// </summary>
         /// <param name="query">Set of query parameters used to filter Suppressions.</param>
         /// <returns>Listing of active Suppressions matching the provided query parameters.</returns>
-        public async Task<PostmarkSuppressionListingResponse> ListSuppressions(PostmarkSuppressionQuery query)
+        public async Task<PostmarkSuppressionListing> ListSuppressions(PostmarkSuppressionQuery query)
         {
             var parameters = new Dictionary<string, object>
             {
@@ -1059,7 +1059,7 @@ namespace PostmarkDotNet
             var messageStreamID = query.MessageStream ?? DEFAULT_TRANSACTIONAL_STREAM;
             var apiUrl = $"/message-streams/{messageStreamID}/suppressions/dump";
 
-            return await ProcessNoBodyRequestAsync<PostmarkSuppressionListingResponse>(apiUrl, parameters);
+            return await ProcessNoBodyRequestAsync<PostmarkSuppressionListing>(apiUrl, parameters);
         }
 
         /// <summary>

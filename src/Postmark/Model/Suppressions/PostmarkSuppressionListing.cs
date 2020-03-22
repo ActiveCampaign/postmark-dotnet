@@ -5,7 +5,7 @@ namespace Postmark.Model.Suppressions
     /// <summary>
     /// Response model for listing Suppressions.
     /// </summary>
-    public class PostmarkSuppressionListingResponse
+    public class PostmarkSuppressionListing
     {
         /// <summary>
         /// Active Suppressions

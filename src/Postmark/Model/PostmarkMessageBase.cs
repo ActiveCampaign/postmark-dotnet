@@ -20,6 +20,11 @@ namespace PostmarkDotNet
         }
 
         /// <summary>
+        ///   The message stream used to send this message.
+        /// </summary>
+        public string MessageStream { get; set; }
+
+        /// <summary>
         ///   The sender's email address.
         /// </summary>
         public string From { get; set; }

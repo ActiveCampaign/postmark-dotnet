@@ -864,10 +864,11 @@ namespace PostmarkDotNet
             bool? trackOpens = null,
             IDictionary<string, string> headers = null,
             IDictionary<string, string> metadata = null,
+            string messageStream = null,
             params PostmarkMessageAttachment[] attachments)
         {
             return await InternalSendEmailWithTemplateAsync(templateAlias, templateModel, to, from, inlineCss, cc,
-            bcc, replyTo, trackOpens, headers, metadata, attachments);
+            bcc, replyTo, trackOpens, headers, metadata, messageStream, attachments);
         }
 
         public async Task<PostmarkResponse> SendEmailWithTemplateAsync<T>(long templateId, T templateModel,
@@ -877,10 +878,11 @@ namespace PostmarkDotNet
             bool? trackOpens = null,
             IDictionary<string, string> headers = null,
             IDictionary<string, string> metadata = null,
+            string messageStream = null,
             params PostmarkMessageAttachment[] attachments)
         {
             return await InternalSendEmailWithTemplateAsync(templateId, templateModel, to, from, inlineCss, cc,
-            bcc, replyTo, trackOpens, headers, metadata, attachments);
+            bcc, replyTo, trackOpens, headers, metadata, messageStream, attachments);
         }
 
         private async Task<PostmarkResponse> InternalSendEmailWithTemplateAsync<T>(object templateReference, T templateModel,
@@ -890,6 +892,7 @@ namespace PostmarkDotNet
             bool? trackOpens = null,
             IDictionary<string, string> headers = null,
             IDictionary<string, string> metadata = null,
+            string messageStream = null,
             params PostmarkMessageAttachment[] attachments)
         {
 
@@ -903,6 +906,7 @@ namespace PostmarkDotNet
                 email.TemplateAlias = (string)templateReference;
             }
             email.TemplateModel = templateModel;
+            email.MessageStream = messageStream;
             email.To = to;
             email.From = from;
             if (inlineCss.HasValue)

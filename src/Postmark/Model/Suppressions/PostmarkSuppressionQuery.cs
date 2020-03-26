@@ -12,7 +12,7 @@ namespace Postmark.Model.Suppressions
         /// <summary>
         /// Filter Suppressions by MessageStream. (optional)
         /// </summary>
-        /// <remarks>If not provided, Suppressions for the entire Server will be returned.</remarks>
+        /// <remarks>If not provided, Suppressions for the default transactional stream will be returned.</remarks>
         public string MessageStream { get; set; }
 
         /// <summary>

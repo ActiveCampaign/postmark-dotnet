@@ -117,7 +117,7 @@ namespace PostmarkDotNet
         /// <param name="bounceId">The bounce ID of the bounce to retrieve.</param>
         /// <returns></returns>
         /// <seealso href = "http://developer.postmarkapp.com/bounces" />
-        public async Task<PostmarkBounce> GetBounceAsync(int bounceId)
+        public async Task<PostmarkBounce> GetBounceAsync(long bounceId)
         {
             return await ProcessNoBodyRequestAsync<PostmarkBounce>("/bounces/" + bounceId);
         }
@@ -129,7 +129,7 @@ namespace PostmarkDotNet
         /// <param name="bounceId">The bounce ID of the bounce dump to retrieve.</param>
         /// <returns></returns>
         /// <seealso href = "http://developer.postmarkapp.com/bounces" />
-        public async Task<PostmarkBounceDump> GetBounceDumpAsync(int bounceId)
+        public async Task<PostmarkBounceDump> GetBounceDumpAsync(long bounceId)
         {
             return await ProcessNoBodyRequestAsync<PostmarkBounceDump>("/bounces/" + bounceId + "/dump");
         }
@@ -140,7 +140,7 @@ namespace PostmarkDotNet
         /// <param name="bounceId">The bounce ID of the bounce to Activate</param>
         /// <returns></returns>
         /// <seealso href = "http://developer.postmarkapp.com/bounces" />
-        public async Task<PostmarkBounceActivation> ActivateBounceAsync(int bounceId)
+        public async Task<PostmarkBounceActivation> ActivateBounceAsync(long bounceId)
         {
             return await ProcessNoBodyRequestAsync<PostmarkBounceActivation>("/bounces/" + bounceId + "/activate", verb: HttpMethod.Put);
         }

@@ -3,9 +3,9 @@
 namespace Postmark.Model.Suppressions
 {
     /// <summary>
-    /// Result of applying bulk Suppression requests.
+    /// Result of applying Suppression requests in bulk.
     /// </summary>
-    public class PostmarkSuppressionBulkRequestResult
+    public class PostmarkBulkSuppressionRequestResult
     {
         public IEnumerable<PostmarkSuppressionRequestResult> Suppressions { get; set; }
     }

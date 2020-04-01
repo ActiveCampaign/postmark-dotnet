@@ -3,9 +3,9 @@
 namespace Postmark.Model.Suppressions
 {
     /// <summary>
-    /// Result of applying bulk Reactivation requests.
+    /// Result of applying Reactivation requests in bulk.
     /// </summary>
-    public class PostmarkReactivationBulkRequestResult
+    public class PostmarkBulkReactivationRequestResult
     {
         public IEnumerable<PostmarkReactivationRequestResult> Suppressions { get; set; }
     }

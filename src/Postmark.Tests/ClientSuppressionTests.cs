@@ -111,8 +111,8 @@ namespace Postmark.Tests
             var actualSuppression = suppressionListing.Suppressions.First();
 
             Assert.Equal(suppressionRequests.First().EmailAddress, actualSuppression.EmailAddress);
-            Assert.Equal(PostmarkSuppressionOrigin.Customer, actualSuppression.Origin);
-            Assert.Equal(PostmarkSuppressionReason.ManualSuppression, actualSuppression.SuppressionReason);
+            Assert.Equal("Customer", actualSuppression.Origin);
+            Assert.Equal("ManualSuppression", actualSuppression.SuppressionReason);
         }
 
         private Task Cleanup()

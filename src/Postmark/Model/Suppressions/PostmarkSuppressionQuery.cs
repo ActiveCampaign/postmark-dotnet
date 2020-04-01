@@ -1,6 +1,4 @@
 ﻿using System;
-using Newtonsoft.Json;
-using Newtonsoft.Json.Converters;
 
 namespace Postmark.Model.Suppressions
 {
@@ -10,24 +8,18 @@ namespace Postmark.Model.Suppressions
     public class PostmarkSuppressionQuery
     {
         /// <summary>
-        /// Filter Suppressions by MessageStream. (optional)
-        /// </summary>
-        /// <remarks>If not provided, Suppressions for the default transactional stream will be returned.</remarks>
-        public string MessageStream { get; set; }
-
-        /// <summary>
         /// Filter Suppressions by reason. (optional)
+        /// E.g.: ManualSuppression, HardBounce, SpamComplaint.
         /// </summary>
         /// <remarks>If not provided, Suppressions for all reasons will be returned.</remarks>
-        [JsonConverter(typeof(StringEnumConverter))]
-        public PostmarkSuppressionReason? SuppressionReason { get; set; }
+        public string SuppressionReason { get; set; }
 
         /// <summary>
         /// Filter Suppressions by the origin that created them. (optional)
+        /// E.g.: Customer, Recipient, Admin.
         /// </summary>
         /// <remarks>If not provided, Suppressions for all origins will be returned.</remarks>
-        [JsonConverter(typeof(StringEnumConverter))]
-        public PostmarkSuppressionOrigin? Origin { get; set; }
+        public string Origin { get; set; }
 
         /// <summary>
         /// Filter suppressions up to the date specified - inclusive. (optional)

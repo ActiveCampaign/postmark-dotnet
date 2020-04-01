@@ -1,6 +1,4 @@
 ﻿using System;
-using Newtonsoft.Json;
-using Newtonsoft.Json.Converters;
 
 namespace Postmark.Model.Suppressions
 {
@@ -19,14 +17,12 @@ namespace Postmark.Model.Suppressions
         /// <summary>
         /// Reason why this recipient was suppressed. E.g.: ManualSuppression, HardBounce, SpamComplaint.
         /// </summary>
-        [JsonConverter(typeof(StringEnumConverter))]
-        public PostmarkSuppressionReason SuppressionReason { get; set; }
+        public string SuppressionReason { get; set; }
 
         /// <summary>
         /// Origin that suppressed this recipient. E.g.: Customer, Recipient, Admin.
         /// </summary>
-        [JsonConverter(typeof(StringEnumConverter))]
-        public PostmarkSuppressionOrigin Origin { get; set; }
+        public string Origin { get; set; }
 
         /// <summary>
         /// Date when the suppression was created.

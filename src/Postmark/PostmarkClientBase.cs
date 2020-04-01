@@ -32,7 +32,7 @@ namespace PostmarkDotNet
         /// <summary>
         /// Default transactional message stream id.
         /// </summary>
-        protected static readonly string DEFAULT_TRANSACTIONAL_STREAM = "outbound";
+        protected const string DefaultTransactionalStream = "outbound";
 
         private static readonly string _agent = "Postmark.NET 2.x (" +
               typeof(PostmarkClient).AssemblyQualifiedName + ")";

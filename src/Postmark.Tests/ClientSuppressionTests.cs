@@ -59,7 +59,7 @@ namespace Postmark.Tests
 
             var reactivationResult = result.Suppressions.First();
             Assert.Equal(reactivationRequest.EmailAddress, reactivationResult.EmailAddress);
-            Assert.Equal(PostmarkSuppressionRequestStatus.Deleted, reactivationResult.Status);
+            Assert.Equal(PostmarkReactivationRequestStatus.Deleted, reactivationResult.Status);
             Assert.Null(reactivationResult.Message);
         }
 

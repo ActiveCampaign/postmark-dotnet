@@ -3,7 +3,7 @@
 namespace Postmark.Model.Suppressions
 {
     /// <summary>
-    /// Result of applying bulk SuppressionChange requests.
+    /// Result of applying bulk Suppression requests.
     /// </summary>
     public class PostmarkSuppressionBulkRequestResult
     {

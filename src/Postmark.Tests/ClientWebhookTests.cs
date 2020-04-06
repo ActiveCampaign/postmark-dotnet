@@ -18,7 +18,7 @@ namespace Postmark.Tests
         protected override void Setup()
         {
             _adminClient = new PostmarkAdminClient(WRITE_ACCOUNT_TOKEN, BASE_URL);
-            _server = _adminClient.CreateServerAsync($"integration-test-webhooks-{Guid.NewGuid()}").Result;
+            _server = TestUtils.MakeSynchronous(() => _adminClient.CreateServerAsync($"integration-test-webhooks-{Guid.NewGuid()}"));
             _client = new PostmarkClient(_server.ApiTokens.First(), BASE_URL);
         }
 

@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Net.Http;
 using System.Threading.Tasks;
+using Postmark.Model.Suppressions;
 using PostmarkDotNet.Model.Webhooks;
 
 namespace PostmarkDotNet
@@ -1039,6 +1040,66 @@ namespace PostmarkDotNet
             return await ProcessRequestAsync<Dictionary<string, object>, WebhookConfiguration>($"/webhooks/{configurationId}",
                 HttpMethod.Put, body);
         }
+        #endregion
+
+        #region Suppressions
+
+        /// <summary>
+        /// List Suppressions for the provided query parameters.
+        /// </summary>
+        /// <param name="query">Set of query parameters used to filter Suppressions.</param>
+        /// <param name="messageStream">MessageStream used to search for Suppressions. Defaults to "outbound".</param>
+        /// <returns>Listing of active Suppressions matching the provided query parameters.</returns>
+        public async Task<PostmarkSuppressionListing> ListSuppressions(PostmarkSuppressionQuery query, string messageStream = DefaultTransactionalStream)
+        {
+            var parameters = new Dictionary<string, object>
+            {
+                ["SuppressionReason"] = query.SuppressionReason,
+                ["Origin"] = query.Origin,
+                ["todate"] = query.ToDate?.ToString("O"),
+                ["fromdate"] = query.FromDate?.ToString("O"),
+                ["emailAddress"] = query.EmailAddress,
+            };
+
+            var apiUrl = $"/message-streams/{messageStream}/suppressions/dump";
+
+            return await ProcessNoBodyRequestAsync<PostmarkSuppressionListing>(apiUrl, parameters);
+        }
+
+        /// <summary>
+        /// Create Suppressions for the specified recipients.
+        /// </summary>
+        /// <param name="suppressionChanges">List of SuppressionChangeRequest objects that specify what recipients to suppress.</param>
+        /// <param name="messageStream">Message stream where the recipients should be suppressed. Defaults to "outbound".</param>
+        /// <remarks>Suppressions will be generated with a Customer Origin and will have a ManualSuppression reason.</remarks>
+        /// <returns>The status of the request for each recipient.</returns>
+        public async Task<PostmarkBulkSuppressionResult> CreateSuppressions(IEnumerable<PostmarkSuppressionChangeRequest> suppressionChanges,
+            string messageStream = DefaultTransactionalStream)
+        {
+            var body = new Dictionary<string, object> { ["Suppressions"] = suppressionChanges.ToList() };
+
+            var apiUrl = $"/message-streams/{messageStream}/suppressions";
+
+            return await ProcessRequestAsync<Dictionary<string, object>, PostmarkBulkSuppressionResult>(apiUrl, HttpMethod.Post, body);
+        }
+
+        /// <summary>
+        /// Reactivate Suppressions for the specified recipients.
+        /// </summary>
+        /// <param name="suppressionChanges">List of SuppressionChangeRequest objects that specify what recipients to reactivate.</param>
+        /// <param name="messageStream">Message stream where the recipients should be reactivated. Defaults to "outbound".</param>
+        /// <remarks>Suppressions will only be reactivated if you have the required authority.</remarks>
+        /// <returns>The status of the request for each recipient.</returns>
+        public async Task<PostmarkBulkReactivationResult> DeleteSuppressions(IEnumerable<PostmarkSuppressionChangeRequest> suppressionChanges,
+            string messageStream = DefaultTransactionalStream)
+        {
+            var body = new Dictionary<string, object> { ["Suppressions"] = suppressionChanges.ToList() };
+
+            var apiUrl = $"/message-streams/{messageStream}/suppressions/delete";
+
+            return await ProcessRequestAsync<Dictionary<string, object>, PostmarkBulkReactivationResult>(apiUrl, HttpMethod.Post, body);
+        }
+
         #endregion
     }
 }

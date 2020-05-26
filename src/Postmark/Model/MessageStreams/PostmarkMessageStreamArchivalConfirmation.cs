@@ -13,7 +13,7 @@ namespace Postmark.Model.MessageStreams
         public string ID { get; set; }
 
         /// <summary>
-        /// SeverID of the message stream that was archived.
+        /// Id of the server where this stream was archived.
         /// </summary>
         public int ServerID { get; set; }
 

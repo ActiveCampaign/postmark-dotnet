@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Net.Http;
 using System.Threading.Tasks;
+using Postmark.Model.MessageStreams;
 using Postmark.Model.Suppressions;
 using PostmarkDotNet.Model.Webhooks;
 
@@ -1098,6 +1099,104 @@ namespace PostmarkDotNet
             var apiUrl = $"/message-streams/{messageStream}/suppressions/delete";
 
             return await ProcessRequestAsync<Dictionary<string, object>, PostmarkBulkReactivationResult>(apiUrl, HttpMethod.Post, body);
+        }
+
+        #endregion
+
+        #region MessageStreams
+
+        /// <summary>
+        /// Create a new message stream on your server.
+        /// </summary>
+        /// <param name="id">Identifier for your message stream, unique at server level.</param>
+        /// <param name="type">Type of the message stream. E.g.: Transactional or Broadcasts.</param>
+        /// <param name="name">Friendly name for your message stream.</param>
+        /// <param name="description">Friendly description for your message stream. (optional)</param>
+        /// <remarks>Currently, you cannot create multiple inbound streams.</remarks>
+        public async Task<PostmarkMessageStream> CreateMessageStream(string id, MessageStreamType type, string name, string description = null)
+        {
+            var body = new Dictionary<string, object>
+            {
+                ["ID"] = id,
+                ["Name"] = name,
+                ["Description"] = description,
+                ["MessageStreamType"] = type.ToString()
+            };
+
+            var apiUrl = "/message-streams/";
+
+            return await ProcessRequestAsync<Dictionary<string, object>, PostmarkMessageStream>(apiUrl, HttpMethod.Post, body);
+        }
+
+        /// <summary>
+        /// Edit the properties of a message stream.
+        /// </summary>
+        /// <param name="id">The identifier for the stream you are trying to update.</param>
+        /// <param name="name">New friendly name to use. (optional)</param>
+        /// <param name="description">New description to use. (optional)</param>
+        public async Task<PostmarkMessageStream> EditMessageStream(string id, string name = null, string description = null)
+        {
+            var body = new Dictionary<string, object>
+            {
+                ["Name"] = name,
+                ["Description"] = description
+            };
+
+            var apiUrl = $"/message-streams/{id}";
+
+            return await ProcessRequestAsync<Dictionary<string, object>, PostmarkMessageStream>(apiUrl, new HttpMethod("PATCH"), body);
+        }
+
+        /// <summary>
+        /// Retrieve details about a message stream.
+        /// </summary>
+        /// <param name="id">Identifier of the stream to retrieve details for.</param>
+        public async Task<PostmarkMessageStream> GetMessageStream(string id)
+        {
+            return await ProcessNoBodyRequestAsync<PostmarkMessageStream>($"/message-streams/{id}");
+        }
+
+        /// <summary>
+        /// Retrieve all message streams on the server.
+        /// </summary>
+        /// <param name="messageStreamType">Filter by stream type. E.g.: Transactional. Defaults to: All.</param>
+        /// <param name="includeArchivedStreams">Include archived streams in the result. Defaults to: false.</param>
+        public async Task<PostmarkMessageStreamListing> ListMessageStreams(MessageStreamTypeFilter messageStreamType = MessageStreamTypeFilter.All,
+            bool includeArchivedStreams = false)
+        {
+            var parameters = new Dictionary<string, object>
+            {
+                ["MessageStreamType"] = messageStreamType.ToString(),
+                ["IncludeArchivedStreams"] = includeArchivedStreams
+            };
+
+            return await ProcessNoBodyRequestAsync<PostmarkMessageStreamListing>("/message-streams/", parameters);
+        }
+
+        /// <summary>
+        /// Archive a message stream. This will disable sending/receiving messages via that stream.
+        /// The stream will also stop being shown in the Postmark UI.
+        /// Once a stream has been archived, it will be deleted (alongside associated data) at the ExpectedPurgeDate in the response.
+        /// </summary>
+        /// <param name="id">Identifier of the stream to archive.</param>
+        public async Task<PostmarkMessageStreamArchivalConfirmation> ArchiveMessageStream(string id)
+        {
+            var apiUrl = $"/message-streams/{id}/archive";
+
+            return await ProcessNoBodyRequestAsync<PostmarkMessageStreamArchivalConfirmation>(apiUrl, verb: HttpMethod.Post);
+        }
+
+        /// <summary>
+        /// UnArchive a message stream. This will resume sending/receiving via that stream.
+        /// The stream will also re-appear in the Postmark UI.
+        /// A stream can be unarchived only before the stream ExpectedPurgeDate.
+        /// </summary>
+        /// <param name="id">Identifier of the stream to unArchive.</param>
+        public async Task<PostmarkMessageStream> UnArchiveMessageStream(string id)
+        {
+            var apiUrl = $"/message-streams/{id}/unarchive";
+
+            return await ProcessNoBodyRequestAsync<PostmarkMessageStream>(apiUrl, verb: HttpMethod.Post);
         }
 
         #endregion

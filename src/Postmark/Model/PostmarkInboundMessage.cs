@@ -152,8 +152,7 @@ namespace PostmarkDotNet
         public string Name { get; set; }
         public string Content { get; set; }
         public string ContentType { get; set; }
-        public string ContentLength { get; set; }
-        public string ContentID { get; set; }
+        public int ContentLength { get; set; }
     }
 
 }

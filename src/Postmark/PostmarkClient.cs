@@ -861,7 +861,7 @@ namespace PostmarkDotNet
         /// <summary>
         /// Sends a batch of up to 500 templated messages through the Postmark API.
         /// All email addresses must be valid, and the sender must be a valid sender signature according to Postmark.
-        /// Either the TemplateID or the TemplateAlias must be provided for each TemplatedPostmarkMessage.
+        /// Either the TemplateId or the TemplateAlias must be provided for each TemplatedPostmarkMessage.
         /// </summary>
         /// <param name="messages">A prepared batch of templated messages.</param>
         /// <returns>The processed messages (Complete with system assigned message IDs)</returns>
@@ -873,7 +873,7 @@ namespace PostmarkDotNet
         /// <summary>
         /// Sends a batch of up to 500 templated messages through the Postmark API.
         /// All email addresses must be valid, and the sender must be a valid sender signature according to Postmark.
-        /// Either the TemplateID or the TemplateAlias must be provided for each TemplatedPostmarkMessage.
+        /// Either the TemplateId or the TemplateAlias must be provided for each TemplatedPostmarkMessage.
         /// </summary>
         /// <param name="messages">A prepared batch of templated messages.</param>
         /// <returns>The processed messages (Complete with system assigned message IDs)</returns>

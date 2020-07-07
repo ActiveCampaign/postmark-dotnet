@@ -222,7 +222,8 @@ namespace Postmark.Tests
         {
             var template = await _client.CreateTemplateAsync("test template name", "Test Message - #{{testKey}}", "test html body");
 
-            var messages = Enumerable.Range(0, 10).Select(k => BuildTemplatedMessage(template.TemplateId, k)).ToArray();
+            var messages = Enumerable.Range(0, 10)
+                .Select(k => BuildTemplatedMessage(template.TemplateId, k.ToString())).ToArray();
 
             var results = (await _client.SendEmailsWithTemplateAsync(messages)).ToList();
 
@@ -231,7 +232,7 @@ namespace Postmark.Tests
             Assert.Equal(messages.Length, results.Count());
         }
 
-        private TemplatedPostmarkMessage BuildTemplatedMessage(long templateId, int testValue = 0)
+        private TemplatedPostmarkMessage BuildTemplatedMessage(long templateId, string testValue)
         {
             var message = new TemplatedPostmarkMessage
             {
@@ -243,7 +244,7 @@ namespace Postmark.Tests
                 {
                     new MailHeader( "X-Integration-Testing-Postmark-Type-Message" , TESTING_DATE.ToString("o"))
                 },
-                Metadata = new Dictionary<string, string> { { "stuff", "very-interesting" }, { "client-id", "42" } },
+                Metadata = new Dictionary<string, string> { { "test-key", "test-value" }, { "client-id", "42" } },
                 Tag = "integration-testing"
             };
 

@@ -3,6 +3,7 @@ using PostmarkDotNet;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text;
 using System.Threading.Tasks;
 using PostmarkDotNet.Model;
 
@@ -214,6 +215,47 @@ namespace Postmark.Tests
             var template = await _client.CreateTemplateAsync("test template name", "test subject", "test html body");
             var sendResult = await _client.SendEmailWithTemplateAsync(template.TemplateId, "{ \"name\" : \"Andrew\" }", WRITE_TEST_SENDER_EMAIL_ADDRESS, WRITE_TEST_SENDER_EMAIL_ADDRESS, false);
             Assert.NotEqual(Guid.Empty, sendResult.MessageID);
+        }
+
+        [Fact]
+        public async void ClientCanSendBatchWithTemplates()
+        {
+            var template = await _client.CreateTemplateAsync("test template name", "Test Message - #{{testKey}}", "test html body");
+
+            var messages = Enumerable.Range(0, 10).Select(k => BuildTemplatedMessage(template.TemplateId, k)).ToArray();
+
+            var results = (await _client.SendEmailsWithTemplateAsync(messages)).ToList();
+
+            Assert.True(results.All(k => k.ErrorCode == 0));
+            Assert.True(results.All(k => k.Status == PostmarkStatus.Success));
+            Assert.Equal(messages.Length, results.Count());
+        }
+
+        private TemplatedPostmarkMessage BuildTemplatedMessage(long templateId, int testValue = 0)
+        {
+            var message = new TemplatedPostmarkMessage
+            {
+                TemplateId = templateId,
+                TemplateModel = new { testKey = $"{testValue}" },
+                From = WRITE_TEST_SENDER_EMAIL_ADDRESS,
+                To = WRITE_TEST_SENDER_EMAIL_ADDRESS,
+                Headers = new HeaderCollection
+                {
+                    new MailHeader( "X-Integration-Testing-Postmark-Type-Message" , TESTING_DATE.ToString("o"))
+                },
+                Metadata = new Dictionary<string, string> { { "stuff", "very-interesting" }, { "client-id", "42" } },
+                Tag = "integration-testing"
+            };
+
+            var content = "{ \"name\" : \"data\", \"age\" : null }";
+
+            message.Attachments.Add(new PostmarkMessageAttachment
+            {
+                ContentType = "application/json",
+                Name = "test.json",
+                Content = Convert.ToBase64String(Encoding.UTF8.GetBytes(content))
+            });
+            return message;
         }
 
         private Task Cleanup()

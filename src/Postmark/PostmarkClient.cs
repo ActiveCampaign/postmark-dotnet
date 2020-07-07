@@ -858,6 +858,32 @@ namespace PostmarkDotNet
             return await ProcessRequestAsync<TemplatedPostmarkMessage, PostmarkResponse>("/email/withTemplate", HttpMethod.Post, emailToSend);
         }
 
+        /// <summary>
+        /// Sends a batch of up to 500 templated messages through the Postmark API.
+        /// All email addresses must be valid, and the sender must be a valid sender signature according to Postmark.
+        /// Either the TemplateID or the TemplateAlias must be provided for each TemplatedPostmarkMessage.
+        /// </summary>
+        /// <param name="messages">A prepared batch of templated messages.</param>
+        /// <returns>The processed messages (Complete with system assigned message IDs)</returns>
+        public async Task<IEnumerable<PostmarkResponse>> SendMessagesAsync(params TemplatedPostmarkMessage[] messages)
+        {
+            return await SendEmailsWithTemplateAsync(messages);
+        }
+
+        /// <summary>
+        /// Sends a batch of up to 500 templated messages through the Postmark API.
+        /// All email addresses must be valid, and the sender must be a valid sender signature according to Postmark.
+        /// Either the TemplateID or the TemplateAlias must be provided for each TemplatedPostmarkMessage.
+        /// </summary>
+        /// <param name="messages">A prepared batch of templated messages.</param>
+        /// <returns>The processed messages (Complete with system assigned message IDs)</returns>
+        public async Task<IEnumerable<PostmarkResponse>> SendEmailsWithTemplateAsync(params TemplatedPostmarkMessage[] messages)
+        {
+            var body = new Dictionary<string, object> { ["Messages"] = messages.ToList() };
+
+            return await ProcessRequestAsync<Dictionary<string, object>, PostmarkResponse[]>("/email/batchWithTemplates", HttpMethod.Post, body);
+        }
+
         public async Task<PostmarkResponse> SendEmailWithTemplateAsync<T>(string templateAlias, T templateModel,
             string to, string from,
             bool? inlineCss = null, string cc = null,

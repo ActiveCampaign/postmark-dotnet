@@ -130,9 +130,9 @@ namespace PostmarkDotNet
     public class BccFull : AddressFull
     {
     }
-    
+
     public class AddressFull
-    {   
+    {
         public string Email { get; set; }
         public string Name { get; set; }
         public string MailboxHash { get; set; }
@@ -153,7 +153,6 @@ namespace PostmarkDotNet
         public string Content { get; set; }
         public string ContentType { get; set; }
         public long ContentLength { get; set; }
-
         public string ContentID { get; set; }
     }
 

@@ -44,7 +44,7 @@ namespace PostmarkDotNet
         /// </summary>
         /// <param name="apiBaseUri"></param>
         /// <param name="requestTimeoutInSeconds"></param>
-        public PostmarkClientBase(string apiBaseUri = "https://api.postmarkapp.com")
+        public PostmarkClientBase(string apiBaseUri = "https://api-ssl-temp.postmarkapp.com")
         {
             baseUri = new Uri(apiBaseUri);
         }

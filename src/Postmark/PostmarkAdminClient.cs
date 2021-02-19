@@ -19,7 +19,7 @@ namespace PostmarkDotNet
         /// </summary>
         /// <param name="accountToken">The "accountToken" can be found by logging into your Postmark and navigating to https://postmarkapp.com/account/edit - Keep this token secret and safe.</param>
         /// <param name="apiBaseUri">Optionally override the base url to the API. For example, you may fallback to HTTP (non-SSL) if your app requires it, though, this is not recommended.</param>
-        public PostmarkAdminClient(string accountToken, string apiBaseUri = "https://api.postmarkapp.com")
+        public PostmarkAdminClient(string accountToken, string apiBaseUri = "https://api-ssl-temp.postmarkapp.com")
             : base(apiBaseUri)
         {
             _authToken = accountToken;

@@ -260,20 +260,6 @@ namespace PostmarkDotNet
         PostmarkBounce EndGetBounce(IAsyncResult asyncResult);
 
         /// <summary>
-        /// Returns a list of tags used for the current server.
-        /// </summary>
-        /// <returns></returns>
-        /// <seealso href = "http://developer.postmarkapp.com/bounces" />
-        IAsyncResult BeginGetBounceTags();
-
-        /// <summary>
-        /// Completes an asynchronous request for a list of tags used for the current server.
-        /// </summary>
-        /// <param name="asyncResult">An <see cref="IAsyncResult" /> for the desired response</param>
-        /// <returns></returns>
-        IEnumerable<string> EndGetBounceTags(IAsyncResult asyncResult);
-
-        /// <summary>
         /// Returns the raw source of the bounce we accepted. 
         /// If Postmark does not have a dump for that bounce, it will return an empty string.
         /// </summary>

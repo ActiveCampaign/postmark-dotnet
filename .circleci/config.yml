@@ -32,12 +32,7 @@ jobs:
             inferred_assembly_version="0.0.0.${CIRCLE_BUILD_NUM:-1}"
             version=$(echo "${CIRCLE_TAG:-$inferred_assembly_version}" | sed -E s/-.+$//)
             descriptive_version=${CIRCLE_TAG:-"$version-git-$CIRCLE_SHA1"}
-            dotnet pack ./src/Postmark/Postmark.csproj -c release -o ./artifacts /p:AssemblyVersion=$version /p:Version=$descriptive_version
-      - run:
-          name: "Push a new release"
-          command: |
-            if [[ -z "$PUBLIC_NUGET_PUBLISH" ]]; then echo '$PUBLIC_NUGET_PUBLISH is not set'; exit 1; fi
-            # dotnet nuget push ./artifacts/*.nupkg -s https://www.nuget.org/ -k $PUBLIC_NUGET_PUBLISH
+            dotnet pack ./src/Postmark/Postmark.csproj -c Release -o ./artifacts /p:AssemblyVersion=$version /p:Version=$descriptive_version
       - store_artifacts:
           path: artifacts
 
@@ -59,5 +54,3 @@ workflows:
           filters:
             tags:
               only: /^\d*\.\d*\.\d*/
-            branches:
-              ignore: /.*/

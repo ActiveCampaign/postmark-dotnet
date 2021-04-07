@@ -1,5 +1,5 @@
 <a href="https://postmarkapp.com">
-    <img src="postmark-logo.png" alt="Postmark Logo" title="Postmark" width="100" height="100" align="right">
+    <img src="postmark-logo.png" alt="Postmark Logo" title="Postmark" width="120" height="120" align="right">
 </a>
 
 # Postmark .NET
@@ -19,4 +19,4 @@ Please see the [wiki](https://github.com/wildbit/postmark-dotnet/wiki) for instr
 Please leave all comments, bugs, requests, and issues on the Issues page. We'll respond to your request ASAP!
 
 ### License
-The Postmark .NET Library is licensed under the [MIT](http://www.opensource.org/licenses/mit-license.php "Read more about the MIT license form") license. Refere to the [LICENSE](https://github.com/wildbit/postmark-dotnet/blob/master/LICENSE) file for more information.
+The Postmark .NET Library is licensed under the [MIT](http://www.opensource.org/licenses/mit-license.php "Read more about the MIT license form") license. Refer to the [LICENSE](https://github.com/wildbit/postmark-dotnet/blob/master/LICENSE) file for more information.

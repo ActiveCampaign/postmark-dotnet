@@ -1,8 +1,0 @@
-language: csharp
-dist: trusty
-sudo: false
-dotnet: 2.1
-install:
-  - ./scripts/setup
-script:
-  - ./scripts/ci

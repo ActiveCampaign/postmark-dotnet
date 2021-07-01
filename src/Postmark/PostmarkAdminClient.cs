@@ -336,7 +336,7 @@ namespace PostmarkDotNet
         public async Task<PostmarkCompleteDomain> VerifyDomainDkim(int domainId)
         {
             return await this.ProcessNoBodyRequestAsync<PostmarkCompleteDomain>
-               ($"/domains/{domainId}/verifyreturnpath", verb: HttpMethod.Put);
+               ($"/domains/{domainId}/verifydkim", verb: HttpMethod.Put);
         }
 
         /// <summary>
@@ -347,7 +347,7 @@ namespace PostmarkDotNet
         public async Task<PostmarkCompleteDomain> VerifyDomainReturnPath(int domainId)
         {
             return await this.ProcessNoBodyRequestAsync<PostmarkCompleteDomain>
-               ($"/domains/{domainId}/verifydkim", verb: HttpMethod.Put);
+               ($"/domains/{domainId}/verifyreturnpath", verb: HttpMethod.Put);
         }
 
 

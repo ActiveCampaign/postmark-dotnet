@@ -31,7 +31,7 @@ namespace PostmarkDotNet
         /// Provides a base implementation of core request/response interactions.
         /// </summary>
         /// <param name="apiBaseUri"></param>
-        /// <param name="requestTimeoutInSeconds"></param>
+        /// <param name="client"><see cref="ISimpleHttpClient"/> to processes HTTP interactions.</param>
         public PostmarkClientBase(string apiBaseUri = "https://api.postmarkapp.com", ISimpleHttpClient client = null)
         {
             baseUri = new Uri(apiBaseUri);

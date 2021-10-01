@@ -19,8 +19,8 @@ namespace PostmarkDotNet
         /// </summary>
         /// <param name="accountToken">The "accountToken" can be found by logging into your Postmark and navigating to https://postmarkapp.com/account/edit - Keep this token secret and safe.</param>
         /// <param name="apiBaseUri">Optionally override the base url to the API. For example, you may fallback to HTTP (non-SSL) if your app requires it, though, this is not recommended.</param>
-        public PostmarkAdminClient(string accountToken, string apiBaseUri = "https://api.postmarkapp.com")
-            : base(apiBaseUri)
+        public PostmarkAdminClient(string accountToken, string apiBaseUri = "https://api.postmarkapp.com", ISimpleHttpClient client = null)
+            : base(apiBaseUri, client)
         {
             _authToken = accountToken;
         }
@@ -112,7 +112,7 @@ namespace PostmarkDotNet
         public async Task<PostmarkServer> EditServerAsync(int serverId, String name = null, string color = null,
             bool? rawEmailEnabled = null, bool? smtpApiActivated = null, string inboundHookUrl = null,
             string bounceHookUrl = null, string openHookUrl = null, bool? postFirstOpenOnly = null,
-            bool? trackOpens = null, string inboundDomain = null, int? inboundSpamThreshold = null, 
+            bool? trackOpens = null, string inboundDomain = null, int? inboundSpamThreshold = null,
             LinkTrackingOptions? trackLinks = null, string clickHookUrl = null, string deliveryHookUrl = null, bool? enableSmtpApiErrorHooks = null)
         {
 

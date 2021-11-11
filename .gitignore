@@ -45,3 +45,4 @@ testing_keys.json
 .testrunner/
 .vs/
 tools/
+.idea

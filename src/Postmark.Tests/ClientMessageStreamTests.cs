@@ -74,8 +74,8 @@ namespace Postmark.Tests
 
             // Listing All stream types
             var listing = await Client.ListMessageStreams(MessageStreamTypeFilter.All);
-            Assert.Equal(4, listing.TotalCount); // includes the default streams
-            Assert.Equal(4, listing.MessageStreams.Count());
+            Assert.Equal(5, listing.TotalCount); // includes the default streams
+            Assert.Equal(5, listing.MessageStreams.Count());
             Assert.Contains(transactionalStream.ID, listing.MessageStreams.Select(k => k.ID));
             Assert.Contains(broadcastsStream.ID, listing.MessageStreams.Select(k => k.ID));
 
@@ -89,21 +89,21 @@ namespace Postmark.Tests
         [Fact]
         public async Task ClientCanListArchivedStreams()
         {
-            var transactionalStream = await CreateDummyMessageStream(MessageStreamType.Broadcasts);
+            var broadcastStream = await CreateDummyMessageStream(MessageStreamType.Broadcasts);
 
-            await Client.ArchiveMessageStream(transactionalStream.ID);
+            await Client.ArchiveMessageStream(broadcastStream.ID);
 
             // By default we are not including archived streams
             var filteredListing = await Client.ListMessageStreams(MessageStreamTypeFilter.Broadcasts, includeArchivedStreams: false);
-            Assert.Equal(0, filteredListing.TotalCount);
-            Assert.Empty(filteredListing.MessageStreams);
+            Assert.Equal(1, filteredListing.TotalCount);
+            Assert.NotEmpty(filteredListing.MessageStreams);
 
             // Including archived streams
             var completeListing = await Client.ListMessageStreams(MessageStreamTypeFilter.Broadcasts, includeArchivedStreams: true);
-            Assert.Equal(1, completeListing.TotalCount);
-            Assert.Single(completeListing.MessageStreams);
-            Assert.Equal(transactionalStream.ID, completeListing.MessageStreams.First().ID);
-            Assert.NotNull(completeListing.MessageStreams.First().ArchivedAt);
+            Assert.Equal(2, completeListing.TotalCount);
+            Assert.Equal(2, completeListing.MessageStreams.Count());
+            Assert.Equal(broadcastStream.ID, completeListing.MessageStreams.First(s => s.ID.Contains("test")).ID);
+            Assert.NotNull(completeListing.MessageStreams.First(s => s.ID.Contains("test")).ArchivedAt);
         }
 
         [Fact]

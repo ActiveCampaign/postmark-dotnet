@@ -20,13 +20,13 @@ namespace Postmark.Tests
 
         protected override void Setup()
         {
-            _adminClient = new PostmarkAdminClient(WRITE_ACCOUNT_TOKEN);
+            _adminClient = new PostmarkAdminClient(WriteAccountToken, BaseUrl);
             var id = Guid.NewGuid();
             _senderprefix = "test-sender-";
-            _returnPath = "test." + WRITE_TEST_SENDER_SIGNATURE_PROTOTYPE.Split('@')[1];
-            _senderEmail = WRITE_TEST_SENDER_SIGNATURE_PROTOTYPE.Replace("[TOKEN]", String.Format(_senderprefix + "{0:n}", id));
-            _replyToAddress = WRITE_TEST_SENDER_SIGNATURE_PROTOTYPE.Replace("[TOKEN]", String.Format(_senderprefix + "replyto-{0:n}", id));
-            _senderName = String.Format("Test Sender {0}", TESTING_DATE);
+            _returnPath = "test." + WriteTestSenderSignaturePrototype.Split('@')[1];
+            _senderEmail = WriteTestSenderSignaturePrototype.Replace("[TOKEN]", String.Format(_senderprefix + "{0:n}", id));
+            _replyToAddress = WriteTestSenderSignaturePrototype.Replace("[TOKEN]", String.Format(_senderprefix + "replyto-{0:n}", id));
+            _senderName = String.Format("Test Sender {0}", TestingDate);
         }
 
 
@@ -186,6 +186,12 @@ namespace Postmark.Tests
             Assert.NotNull(response);
         }
 
-
+        [Fact]
+        public async void CreateSignatureAsync_WithConfirmationPersonalNote_CreatesProperly()
+        {
+            const string note = "Test Note";
+            var signature = await _adminClient.CreateSignatureAsync(_senderEmail, _senderName, _replyToAddress, null, note);
+            Assert.Equal(note, signature.ConfirmationPersonalNote);
+        }
     }
 }

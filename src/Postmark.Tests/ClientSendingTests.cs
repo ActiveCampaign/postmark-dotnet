@@ -14,7 +14,7 @@ namespace Postmark.Tests
     {
         protected override void Setup()
         {
-            _client = new PostmarkClient(WRITE_TEST_SERVER_TOKEN);
+            Client = new PostmarkClient(WriteTestServerToken, BaseUrl);
         }
 
         [Fact]
@@ -26,17 +26,17 @@ namespace Postmark.Tests
                     {"client-test", "value-goes-here"}
                 };
 
-            await _client.SendMessageAsync(
-                WRITE_TEST_SENDER_EMAIL_ADDRESS,
-                WRITE_TEST_EMAIL_RECIPIENT_ADDRESS,
-                $"Integration Test - {TESTING_DATE}",
-                $"Plain text body, {TESTING_DATE}",
-                $"Testing the Postmark .net client, <b>{TESTING_DATE}</b>",
+            await Client.SendMessageAsync(
+                WriteTestSenderEmailAddress,
+                WriteTestEmailRecipientAddress,
+                $"Integration Test - {TestingDate}",
+                $"Plain text body, {TestingDate}",
+                $"Testing the Postmark .net client, <b>{TestingDate}</b>",
                 null,
                 metadata
             );
 
-            var result = await _client.GetOutboundMessagesAsync(metadata: metadata);
+            var result = await Client.GetOutboundMessagesAsync(metadata: metadata);
             
             Assert.True(result.TotalCount > 0, 
                 "Messages with the supplied metadata were not found. " +
@@ -47,14 +47,14 @@ namespace Postmark.Tests
         [Fact]
         public async void Client_CanSendASingleMessage()
         {
-            var result = await _client.SendMessageAsync(WRITE_TEST_SENDER_EMAIL_ADDRESS,
-                WRITE_TEST_EMAIL_RECIPIENT_ADDRESS,
-                String.Format("Integration Test - {0}", TESTING_DATE),
-                String.Format("Plain text body, {0}", TESTING_DATE),
-                String.Format("Testing the Postmark .net client, <b>{0}</b>", TESTING_DATE),
+            var result = await Client.SendMessageAsync(WriteTestSenderEmailAddress,
+                WriteTestEmailRecipientAddress,
+                String.Format("Integration Test - {0}", TestingDate),
+                String.Format("Plain text body, {0}", TestingDate),
+                String.Format("Testing the Postmark .net client, <b>{0}</b>", TestingDate),
                 new Dictionary<string, string>()
                 {
-                  {  "X-Integration-Testing" , TESTING_DATE.ToString("o")}
+                  {  "X-Integration-Testing" , TestingDate.ToString("o")}
                 },
                 new Dictionary<string, string>() {
                     {"test-metadata", "value-goes-here"},
@@ -69,9 +69,9 @@ namespace Postmark.Tests
         [Fact]
         public async void Client_CanSendAPostmarkMessage()
         {
-            var inboundAddress = (await _client.GetServerAsync()).InboundAddress;
+            var inboundAddress = (await Client.GetServerAsync()).InboundAddress;
             var message = ConstructMessage(inboundAddress);
-            var result = await _client.SendMessageAsync(message);
+            var result = await Client.SendMessageAsync(message);
 
             Assert.Equal(PostmarkStatus.Success, result.Status);
             Assert.Equal(0, result.ErrorCode);
@@ -81,9 +81,9 @@ namespace Postmark.Tests
         [Fact]
         public async void Client_CanSendAPostmarkMessageWithEmptyTrackLinks()
         {
-            var inboundAddress = (await _client.GetServerAsync()).InboundAddress;
+            var inboundAddress = (await Client.GetServerAsync()).InboundAddress;
             var message = ConstructMessage(inboundAddress, 0, null);
-            var result = await _client.SendMessageAsync(message);
+            var result = await Client.SendMessageAsync(message);
 
             Assert.Equal(PostmarkStatus.Success, result.Status);
             Assert.Equal(0, result.ErrorCode);
@@ -93,12 +93,12 @@ namespace Postmark.Tests
         [Fact]
         public async void UnknownMessageStream_ThrowsException()
         {
-            var inboundAddress = (await _client.GetServerAsync()).InboundAddress;
+            var inboundAddress = (await Client.GetServerAsync()).InboundAddress;
             var message = ConstructMessage(inboundAddress, 0, null);
             message.MessageStream = "outbound";
 
             // Testing the default transactional stream
-            var result = await _client.SendMessageAsync(message);
+            var result = await Client.SendMessageAsync(message);
             Assert.Equal(PostmarkStatus.Success, result.Status);
             Assert.Equal(0, result.ErrorCode);
             Assert.NotEqual(Guid.Empty, result.MessageID);
@@ -106,24 +106,24 @@ namespace Postmark.Tests
             // Testing an invalid non-existing stream
             message.MessageStream = "unknown-stream";
 
-            await Assert.ThrowsAsync<PostmarkValidationException>(() => _client.SendMessageAsync(message));
+            await Assert.ThrowsAsync<PostmarkValidationException>(() => Client.SendMessageAsync(message));
         }
 
         private PostmarkMessage ConstructMessage(string inboundAddress, int number = 0, LinkTrackingOptions? trackLinks = LinkTrackingOptions.HtmlAndText)
         {
             var message = new PostmarkMessage()
             {
-                From = WRITE_TEST_SENDER_EMAIL_ADDRESS,
-                To = WRITE_TEST_SENDER_EMAIL_ADDRESS,
-                Cc = WRITE_TEST_EMAIL_RECIPIENT_ADDRESS,
+                From = WriteTestSenderEmailAddress,
+                To = WriteTestSenderEmailAddress,
+                Cc = WriteTestEmailRecipientAddress,
                 Bcc = "testing@example.com",
-                Subject = String.Format("Integration Test - {0} - Message #{1}", TESTING_DATE, number),
-                HtmlBody = String.Format("Testing the Postmark .net client, <b>{0}</b>", TESTING_DATE),
+                Subject = String.Format("Integration Test - {0} - Message #{1}", TestingDate, number),
+                HtmlBody = String.Format("Testing the Postmark .net client, <b>{0}</b>", TestingDate),
                 TextBody = "This is plain text.",
                 TrackOpens = true,
                 TrackLinks = trackLinks,
                 Headers = new HeaderCollection(){
-                  new MailHeader( "X-Integration-Testing-Postmark-Type-Message" , TESTING_DATE.ToString("o"))
+                  new MailHeader( "X-Integration-Testing-Postmark-Type-Message" , TestingDate.ToString("o"))
                 },
                 Metadata = new Dictionary<string, string>() { { "stuff", "very-interesting" }, {"client-id", "42"} },
                 ReplyTo = inboundAddress,
@@ -144,11 +144,11 @@ namespace Postmark.Tests
         [Fact]
         public async void Client_CanSendABatchOfMessages()
         {
-            var inboundAddress = (await _client.GetServerAsync()).InboundAddress;
+            var inboundAddress = (await Client.GetServerAsync()).InboundAddress;
             var messages = Enumerable.Range(0, 10)
                 .Select(k => ConstructMessage(inboundAddress, k)).ToArray();
 
-            var results = await _client.SendMessagesAsync(messages);
+            var results = await Client.SendMessagesAsync(messages);
 
             Assert.True(results.All(k => k.ErrorCode == 0));
             Assert.True(results.All(k => k.Status == PostmarkStatus.Success));

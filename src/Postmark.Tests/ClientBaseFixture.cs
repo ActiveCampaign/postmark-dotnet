@@ -2,7 +2,6 @@
 using PostmarkDotNet;
 using System;
 using System.IO;
-using System.Threading.Tasks;
 using Newtonsoft.Json;
 using System.Collections.Generic;
 using System.Reflection;
@@ -12,21 +11,20 @@ namespace Postmark.Tests
 {
     public abstract class ClientBaseFixture
     {
-        private static string AssemblyLocation = typeof(ClientBaseFixture).GetTypeInfo().Assembly.Location;
+        private static string _assemblyLocation = typeof(ClientBaseFixture).GetTypeInfo().Assembly.Location;
 
         private static void AssertSettingsAvailable()
         {
-            Assert.NotNull(READ_INBOUND_TEST_SERVER_TOKEN);
-            Assert.NotNull(READ_SELENIUM_TEST_SERVER_TOKEN);
-            Assert.NotNull(READ_SELENIUM_OPEN_TRACKING_TOKEN);
-            Assert.NotNull(READ_LINK_TRACKING_TEST_SERVER_TOKEN);
+            Assert.NotNull(ReadSeleniumTestServerToken);
+            Assert.NotNull(ReadSeleniumOpenTrackingToken);
+            Assert.NotNull(ReadLinkTrackingTestServerToken);
             
-            Assert.NotNull(WRITE_ACCOUNT_TOKEN);
-            Assert.NotNull(WRITE_TEST_SERVER_TOKEN);
-            Assert.NotNull(WRITE_TEST_SENDER_EMAIL_ADDRESS);
-            Assert.NotNull(WRITE_TEST_EMAIL_RECIPIENT_ADDRESS);
-            Assert.NotNull(WRITE_TEST_SENDER_SIGNATURE_PROTOTYPE);
-            Assert.NotNull(BASE_URL);
+            Assert.NotNull(WriteAccountToken);
+            Assert.NotNull(WriteTestServerToken);
+            Assert.NotNull(WriteTestSenderEmailAddress);
+            Assert.NotNull(WriteTestEmailRecipientAddress);
+            Assert.NotNull(WriteTestSenderSignaturePrototype);
+            Assert.NotNull(BaseUrl);
         }
 
         /// <summary>
@@ -40,18 +38,22 @@ namespace Postmark.Tests
             string retval = null;
             //this is here to allow us to have a config that isn't committed to source control, but still allows the project to build
             try
-            {   
-                var location = Path.GetFullPath(AssemblyLocation);
+            {
+                var location = Path.GetFullPath(_assemblyLocation);
                 var pathComponents = location.Split(Path.DirectorySeparatorChar).ToList();
                 var componentsCount = pathComponents.Count;
                 var keyPath = "";
-                while(componentsCount > 0){
-                    keyPath = Path.Combine(new string[]{ Path.DirectorySeparatorChar.ToString() }
+                while (componentsCount > 0)
+                {
+                    keyPath = Path.Combine(new[] {Path.DirectorySeparatorChar.ToString()}
                         .Concat(pathComponents.Take(componentsCount)
-                        .Concat(new string[] { "testing_keys.json" })).ToArray());
-                    if(File.Exists(keyPath)){
+                            .Concat(new[] {"testing_keys.json"}))
+                        .ToArray());
+                    if (File.Exists(keyPath))
+                    {
                         break;
                     }
+
                     componentsCount--;
                 }
 
@@ -65,25 +67,22 @@ namespace Postmark.Tests
             return string.IsNullOrWhiteSpace(retval) ? Environment.GetEnvironmentVariable(variableName) : retval;
         }
 
-        public static readonly DateTime TESTING_DATE = DateTime.Now;
+        protected static readonly DateTime TestingDate = DateTime.Now;
 
-        public static readonly string READ_INBOUND_TEST_SERVER_TOKEN = ConfigVariable("READ_INBOUND_TEST_SERVER_TOKEN");
-        public static readonly string READ_SELENIUM_TEST_SERVER_TOKEN = ConfigVariable("READ_SELENIUM_TEST_SERVER_TOKEN");
-        public static readonly string READ_LINK_TRACKING_TEST_SERVER_TOKEN = ConfigVariable("READ_LINK_TRACKING_TEST_SERVER_TOKEN");
-        public static readonly string READ_SELENIUM_OPEN_TRACKING_TOKEN = ConfigVariable("READ_SELENIUM_OPEN_TRACKING_TOKEN");
-        public static readonly string READ_TEST_SENDER_EMAIL_ADDRESS = ConfigVariable("READ_TEST_SENDER_EMAIL_ADDRESS");
-        public static readonly string READ_TEST_RECIPIENT_EMAIL_ADDRESS = ConfigVariable("READ_TEST_RECIPIENT_EMAIL_ADDRESS");
+        protected static readonly string ReadSeleniumTestServerToken = ConfigVariable("READ_SELENIUM_TEST_SERVER_TOKEN");
+        protected static readonly string ReadLinkTrackingTestServerToken = ConfigVariable("READ_LINK_TRACKING_TEST_SERVER_TOKEN");
+        protected static readonly string ReadSeleniumOpenTrackingToken = ConfigVariable("READ_SELENIUM_OPEN_TRACKING_TOKEN");
 
-        public static readonly string WRITE_ACCOUNT_TOKEN = ConfigVariable("WRITE_ACCOUNT_TOKEN");
-        public static readonly string WRITE_TEST_SERVER_TOKEN = ConfigVariable("WRITE_TEST_SERVER_TOKEN");
-        public static readonly string WRITE_TEST_SENDER_EMAIL_ADDRESS = ConfigVariable("WRITE_TEST_SENDER_EMAIL_ADDRESS");
-        public static readonly string WRITE_TEST_EMAIL_RECIPIENT_ADDRESS = ConfigVariable("WRITE_TEST_EMAIL_RECIPIENT_ADDRESS");
-        public static readonly string WRITE_TEST_SENDER_SIGNATURE_PROTOTYPE = ConfigVariable("WRITE_TEST_SENDER_SIGNATURE_PROTOTYPE");
-        public static readonly string BASE_URL = ConfigVariable("BASE_URL");
+        protected static readonly string WriteAccountToken = ConfigVariable("WRITE_ACCOUNT_TOKEN");
+        protected static readonly string WriteTestServerToken = ConfigVariable("WRITE_TEST_SERVER_TOKEN");
+        protected static readonly string WriteTestSenderEmailAddress = ConfigVariable("WRITE_TEST_SENDER_EMAIL_ADDRESS");
+        protected static readonly string WriteTestEmailRecipientAddress = ConfigVariable("WRITE_TEST_EMAIL_RECIPIENT_ADDRESS");
+        protected static readonly string WriteTestSenderSignaturePrototype = ConfigVariable("WRITE_TEST_SENDER_SIGNATURE_PROTOTYPE");
+        protected static readonly string BaseUrl = ConfigVariable("BASE_URL");
 
-        protected PostmarkClient _client;
+        protected PostmarkClient Client;
 
-        public ClientBaseFixture()
+        protected ClientBaseFixture()
         {
             AssertSettingsAvailable();
             Setup();

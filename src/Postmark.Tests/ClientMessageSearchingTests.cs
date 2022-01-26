@@ -11,7 +11,7 @@ namespace Postmark.Tests
     {
         protected override void Setup()
         {
-            _client = new PostmarkClient(READ_SELENIUM_TEST_SERVER_TOKEN);
+            Client = new PostmarkClient(ReadSeleniumTestServerToken, BaseUrl);
         }
 
         [Fact]
@@ -21,7 +21,7 @@ namespace Postmark.Tests
             //but necessary so that we don't need to commit expicit
             //addresses/subjects to git.
 
-            var baseList = (await _client.GetOutboundMessagesAsync());
+            var baseList = (await Client.GetOutboundMessagesAsync());
 
             var fromemail = baseList.Messages
                 .First(k => !string.IsNullOrWhiteSpace(k.From)).From;
@@ -29,25 +29,25 @@ namespace Postmark.Tests
             var tag = "test_tag";
             var subject = baseList.Messages.First().Subject;
 
-            var searchedList = await _client.GetOutboundMessagesAsync(0, 33);
+            var searchedList = await Client.GetOutboundMessagesAsync(0, 33);
             Assert.Equal(33,searchedList.Messages.Count);
 
-            searchedList = await _client.GetOutboundMessagesAsync(0, 20, recipient);
+            searchedList = await Client.GetOutboundMessagesAsync(0, 20, recipient);
             Assert.True(searchedList.Messages.Count > 0);
             Assert.True(searchedList.TotalCount > 0);
             Assert.True(searchedList.Messages.All(k => k.Recipients.Contains(recipient)));
 
-            searchedList = await _client.GetOutboundMessagesAsync(0, 20, subject: subject);
+            searchedList = await Client.GetOutboundMessagesAsync(0, 20, subject: subject);
             Assert.True(searchedList.Messages.Count > 0);
             Assert.True(searchedList.TotalCount > 0);
             Assert.True(searchedList.Messages.All(k => k.Subject == subject));
 
-            searchedList = await _client.GetOutboundMessagesAsync(0, 20, tag: tag);
+            searchedList = await Client.GetOutboundMessagesAsync(0, 20, tag: tag);
             Assert.True(searchedList.Messages.Count > 0);
             Assert.True(searchedList.TotalCount > 0);
             Assert.True(searchedList.Messages.All(k => k.Tag == tag));
 
-            searchedList = await _client.GetOutboundMessagesAsync(0, 20, subject: subject);
+            searchedList = await Client.GetOutboundMessagesAsync(0, 20, subject: subject);
             Assert.True(searchedList.Messages.Count > 0);
             Assert.True(searchedList.TotalCount > 0);
             Assert.True(searchedList.Messages.All(k => k.Subject == subject));
@@ -56,9 +56,9 @@ namespace Postmark.Tests
         [Fact]
         public async void Client_CanGetOutboundMessageDetails()
         {
-            var baseMessage = (await _client.GetOutboundMessagesAsync()).Messages.Last();
+            var baseMessage = (await Client.GetOutboundMessagesAsync()).Messages.Last();
 
-            var requestedMessage = await _client.GetOutboundMessageDetailsAsync(baseMessage.MessageID);
+            var requestedMessage = await Client.GetOutboundMessageDetailsAsync(baseMessage.MessageID);
 
             Assert.NotNull(requestedMessage);
             Assert.Equal(baseMessage.MessageID, requestedMessage.MessageID);
@@ -67,8 +67,8 @@ namespace Postmark.Tests
         [Fact]
         public async void Client_CanGetMessageDump()
         {
-            var baseDetails = (await _client.GetOutboundMessagesAsync()).Messages.First();
-            var messageDump = await _client.GetOutboundMessageDumpAsync(baseDetails.MessageID);
+            var baseDetails = (await Client.GetOutboundMessagesAsync()).Messages.First();
+            var messageDump = await Client.GetOutboundMessageDumpAsync(baseDetails.MessageID);
             Assert.NotNull(messageDump);
             Assert.NotNull(messageDump.Body);
         }
@@ -76,7 +76,7 @@ namespace Postmark.Tests
         [Fact]
         public async void Client_CanSearchInboundMessages()
         {
-            var messages = await _client.GetInboundMessagesAsync(0, 10);
+            var messages = await Client.GetInboundMessagesAsync(0, 10);
             Assert.True(messages.TotalCount > 0);
             Assert.True(messages.InboundMessages.Count > 0);
         }
@@ -84,9 +84,9 @@ namespace Postmark.Tests
         [Fact]
         public async void Client_CanGetInboundMessageDetail()
         {
-            var messages = await _client.GetInboundMessagesAsync(0, 10);
+            var messages = await Client.GetInboundMessagesAsync(0, 10);
             var inboundMessageId = messages.InboundMessages.First().MessageID;
-            var inboundMessage = await _client.GetInboundMessageDetailsAsync(inboundMessageId);
+            var inboundMessage = await Client.GetInboundMessageDetailsAsync(inboundMessageId);
 
             Assert.NotNull(inboundMessage);
             Assert.NotNull(inboundMessage.To);

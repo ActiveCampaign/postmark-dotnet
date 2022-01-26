@@ -1,8 +1,6 @@
 ﻿using Xunit;
 using PostmarkDotNet;
-using System;
 using System.Linq;
-using System.Threading.Tasks;
 
 namespace Postmark.Tests
 {
@@ -10,30 +8,30 @@ namespace Postmark.Tests
     {
         protected override void Setup()
         {
-            _client = new PostmarkClient(READ_SELENIUM_TEST_SERVER_TOKEN);
+            Client = new PostmarkClient(ReadSeleniumTestServerToken, BaseUrl);
         }
 
         [Fact]
         public async void Client_CanGetBounceDeliveryStats()
         {
-            var result = await _client.GetDeliveryStatsAsync();
+            var result = await Client.GetDeliveryStatsAsync();
             Assert.True(result.Bounces.Count > 0);
         }
 
         [Fact]
         public async void Client_CanGetBounces()
         {
-            var result = await _client.GetBouncesAsync();
+            var result = await Client.GetBouncesAsync();
             Assert.True(result.Bounces.Count > 0);
         }
 
         [Fact]
         public async void Client_CanRetrieveSingleBounce()
         {
-            var bounces = await _client.GetBouncesAsync(0, 20);
+            var bounces = await Client.GetBouncesAsync(0, 20);
             var firstBounce = bounces.Bounces.First();
 
-            var retrievedBounce = await _client.GetBounceAsync(firstBounce.ID);
+            var retrievedBounce = await Client.GetBounceAsync(firstBounce.ID);
             Assert.NotNull(retrievedBounce);
         }
 
@@ -41,9 +39,9 @@ namespace Postmark.Tests
         [Fact]
         public async void Client_CanGetABounceDump()
         {
-            var bounces = await _client.GetBouncesAsync();
+            var bounces = await Client.GetBouncesAsync();
             var firstBounceWithDump = bounces.Bounces.First(g => g.DumpAvailable);
-            var dump = await _client.GetBounceDumpAsync(firstBounceWithDump.ID);
+            var dump = await Client.GetBounceDumpAsync(firstBounceWithDump.ID);
             Assert.NotNull(dump);
         }
 

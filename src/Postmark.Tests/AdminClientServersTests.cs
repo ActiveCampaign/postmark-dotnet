@@ -29,7 +29,7 @@ namespace Postmark.Tests
 
         protected override void Setup()
         {
-            _adminClient = new PostmarkAdminClient(WRITE_ACCOUNT_TOKEN);
+            _adminClient = new PostmarkAdminClient(WriteAccountToken, BaseUrl);
             var id = Guid.NewGuid().ToString("n");
             _serverPrefix = "admin-client-integration-test-server-";
 

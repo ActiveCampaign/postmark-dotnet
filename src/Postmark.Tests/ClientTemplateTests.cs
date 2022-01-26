@@ -15,7 +15,7 @@ namespace Postmark.Tests
 
         protected override void Setup()
         {
-            _client = new PostmarkClient(WRITE_TEST_SERVER_TOKEN, BASE_URL);
+            Client = new PostmarkClient(WriteTestServerToken, BaseUrl);
         }
 
         [Fact]
@@ -26,7 +26,7 @@ namespace Postmark.Tests
             var htmlBody = "<b>Hello, {{name}}</b>";
             var textBody = "Hello, {{name}}!";
 
-            var newTemplate = await _client.CreateTemplateAsync(name, subject, htmlBody, textBody);
+            var newTemplate = await Client.CreateTemplateAsync(name, subject, htmlBody, textBody);
 
             Assert.Equal(name, newTemplate.Name);
         }
@@ -52,13 +52,13 @@ namespace Postmark.Tests
             var htmlbody = "<b>Hello, {{name}}</b>";
             var textBody = "Hello, {{name}}!";
 
-            var newTemplate = await _client.CreateTemplateAsync(name, subject, htmlbody, textBody);
+            var newTemplate = await Client.CreateTemplateAsync(name, subject, htmlbody, textBody);
 
-            var existingTemplate = await _client.GetTemplateAsync(newTemplate.TemplateId);
+            var existingTemplate = await Client.GetTemplateAsync(newTemplate.TemplateId);
 
-            await _client.EditTemplateAsync(existingTemplate.TemplateId, name + name, subject + subject, htmlbody + htmlbody, textBody + textBody);
+            await Client.EditTemplateAsync(existingTemplate.TemplateId, name + name, subject + subject, htmlbody + htmlbody, textBody + textBody);
 
-            var updatedTemplate = await _client.GetTemplateAsync(existingTemplate.TemplateId);
+            var updatedTemplate = await Client.GetTemplateAsync(existingTemplate.TemplateId);
 
             Assert.Equal(existingTemplate.Name + existingTemplate.Name, updatedTemplate.Name);
             Assert.Equal(existingTemplate.HtmlBody + existingTemplate.HtmlBody, updatedTemplate.HtmlBody);
@@ -73,11 +73,11 @@ namespace Postmark.Tests
             var newStandardTemplate = await GenerateStandardTemplate(newLayoutTemplate.Alias);
 
             // Setting the LayoutTemplate to null
-            var templateWithNoLayoutTemplate = await _client.EditTemplateAsync(newStandardTemplate.TemplateId, layoutTemplate: "");
+            var templateWithNoLayoutTemplate = await Client.EditTemplateAsync(newStandardTemplate.TemplateId, layoutTemplate: "");
             Assert.Null(templateWithNoLayoutTemplate.LayoutTemplate);
 
             // Setting the LayoutTemplate back to the layout template that was created
-            var templateWithLayoutTemplate = await _client.EditTemplateAsync(newStandardTemplate.TemplateId,
+            var templateWithLayoutTemplate = await Client.EditTemplateAsync(newStandardTemplate.TemplateId,
                 layoutTemplate: newLayoutTemplate.Alias);
             Assert.Equal(newLayoutTemplate.Alias, templateWithLayoutTemplate.LayoutTemplate);
         }
@@ -90,9 +90,9 @@ namespace Postmark.Tests
             var htmlbody = "<b>Hello, {{name}}</b>";
             var textBody = "Hello, {{name}}!";
 
-            var newTemplate = await _client.CreateTemplateAsync(name, subject, htmlbody, textBody);
-            await _client.DeleteTemplateAsync(newTemplate.TemplateId);
-            var deletedTemplate = await _client.GetTemplateAsync(newTemplate.TemplateId);
+            var newTemplate = await Client.CreateTemplateAsync(name, subject, htmlbody, textBody);
+            await Client.DeleteTemplateAsync(newTemplate.TemplateId);
+            var deletedTemplate = await Client.GetTemplateAsync(newTemplate.TemplateId);
 
             Assert.False(deletedTemplate.Active);
         }
@@ -105,9 +105,9 @@ namespace Postmark.Tests
             var htmlbody = "<b>Hello, {{name}}</b>";
             var textBody = "Hello, {{name}}!";
 
-            var newTemplate = await _client.CreateTemplateAsync(name, subject, htmlbody, textBody);
+            var newTemplate = await Client.CreateTemplateAsync(name, subject, htmlbody, textBody);
 
-            var result = await _client.GetTemplateAsync(newTemplate.TemplateId);
+            var result = await Client.GetTemplateAsync(newTemplate.TemplateId);
 
             Assert.Equal(name, result.Name);
             Assert.Equal(htmlbody, result.HtmlBody);
@@ -125,17 +125,17 @@ namespace Postmark.Tests
         {
             for (var i = 0; i < 10; i++)
             {
-                await _client.CreateTemplateAsync("test " + i, "test subject" + i, "body");
+                await Client.CreateTemplateAsync("test " + i, "test subject" + i, "body");
             }
 
-            var result = await _client.GetTemplatesAsync();
+            var result = await Client.GetTemplatesAsync();
             Assert.Equal(10, result.TotalCount);
             var toDelete = result.Templates.First().TemplateId;
-            await _client.DeleteTemplateAsync(toDelete);
-            result = await _client.GetTemplatesAsync();
+            await Client.DeleteTemplateAsync(toDelete);
+            result = await Client.GetTemplatesAsync();
             Assert.Equal(9, result.TotalCount);
             Assert.False(result.Templates.FirstOrDefault(k => k.TemplateId == toDelete) != null);
-            var offsetResults = await _client.GetTemplatesAsync(5);
+            var offsetResults = await Client.GetTemplatesAsync(5);
             Assert.True(result.Templates.Skip(5).Select(k => k.TemplateId).SequenceEqual(offsetResults.Templates.Select(k => k.TemplateId)));
         }
 
@@ -145,7 +145,7 @@ namespace Postmark.Tests
             var newLayoutTemplate = await GenerateLayoutTemplate();
             var newStandardTemplate = await GenerateStandardTemplate(newLayoutTemplate.Alias);
 
-            var result = await _client.GetTemplatesAsync();
+            var result = await Client.GetTemplatesAsync();
             Assert.Equal(2, result.TotalCount);
 
             var standardTemplateFromResult = result.Templates.First(t => t.TemplateId == newStandardTemplate.TemplateId);
@@ -162,17 +162,17 @@ namespace Postmark.Tests
             Assert.Equal(TemplateType.Layout, layoutTemplateFromResult.TemplateType);
             Assert.Null(layoutTemplateFromResult.LayoutTemplate);
 
-            var filteredResultByType = await _client.GetTemplatesAsync(0, 100, TemplateTypeFilter.Layout);
+            var filteredResultByType = await Client.GetTemplatesAsync(0, 100, TemplateTypeFilter.Layout);
             Assert.Equal(1, filteredResultByType.TotalCount);
 
-            var filteredResultByLayoutAlias = await _client.GetTemplatesAsync(0, 100, TemplateTypeFilter.All, newLayoutTemplate.Alias);
+            var filteredResultByLayoutAlias = await Client.GetTemplatesAsync(0, 100, TemplateTypeFilter.All, newLayoutTemplate.Alias);
             Assert.Equal(1, filteredResultByLayoutAlias.TotalCount);
         }
 
         [Fact]
         public async void ClientCanValidateTemplate()
         {
-            var result = await _client.ValidateTemplateAsync("{{name}}", "<html><body>{{content}}{{company.address}}{{#each products}}{{/each}}{{^competitors}}There are no substitutes.{{/competitors}}</body></html>", "{{content}}", new { name = "Johnny", content = "hello, world!" });
+            var result = await Client.ValidateTemplateAsync("{{name}}", "<html><body>{{content}}{{company.address}}{{#each products}}{{/each}}{{^competitors}}There are no substitutes.{{/competitors}}</body></html>", "{{content}}", new { name = "Johnny", content = "hello, world!" });
 
             Assert.True(result.AllContentIsValid);
             Assert.True(result.HtmlBody.ContentIsValid);
@@ -190,7 +190,7 @@ namespace Postmark.Tests
             var layoutTemplate = await GenerateLayoutTemplate();
 
             var content = "Mr. Jones";
-            var result = await _client.ValidateTemplateAsync("Subject", null, content, new { }, true, TemplateType.Standard, layoutTemplate.Alias);
+            var result = await Client.ValidateTemplateAsync("Subject", null, content, new { }, true, TemplateType.Standard, layoutTemplate.Alias);
 
             Assert.True(result.AllContentIsValid);
             Assert.True(result.TextBody.ContentIsValid);
@@ -204,28 +204,28 @@ namespace Postmark.Tests
         [Fact]
         public async void ClientCanSendWithTemplate()
         {
-            var template = await _client.CreateTemplateAsync("test template name", "test subject", "test html body");
-            var sendResult = await _client.SendEmailWithTemplateAsync(template.TemplateId, new { name = "Andrew" }, WRITE_TEST_SENDER_EMAIL_ADDRESS, WRITE_TEST_SENDER_EMAIL_ADDRESS, false);
+            var template = await Client.CreateTemplateAsync("test template name", "test subject", "test html body");
+            var sendResult = await Client.SendEmailWithTemplateAsync(template.TemplateId, new { name = "Andrew" }, WriteTestSenderEmailAddress, WriteTestSenderEmailAddress, false);
             Assert.NotEqual(Guid.Empty, sendResult.MessageID);
         }
 
         [Fact]
         public async void ClientCanSendTemplateWithStringModel()
         {
-            var template = await _client.CreateTemplateAsync("test template name", "test subject", "test html body");
-            var sendResult = await _client.SendEmailWithTemplateAsync(template.TemplateId, "{ \"name\" : \"Andrew\" }", WRITE_TEST_SENDER_EMAIL_ADDRESS, WRITE_TEST_SENDER_EMAIL_ADDRESS, false);
+            var template = await Client.CreateTemplateAsync("test template name", "test subject", "test html body");
+            var sendResult = await Client.SendEmailWithTemplateAsync(template.TemplateId, "{ \"name\" : \"Andrew\" }", WriteTestSenderEmailAddress, WriteTestSenderEmailAddress, false);
             Assert.NotEqual(Guid.Empty, sendResult.MessageID);
         }
 
         [Fact]
         public async void ClientCanSendBatchWithTemplates()
         {
-            var template = await _client.CreateTemplateAsync("test template name", "Test Message - #{{testKey}}", "test html body");
+            var template = await Client.CreateTemplateAsync("test template name", "Test Message - #{{testKey}}", "test html body");
 
             var messages = Enumerable.Range(0, 10)
                 .Select(k => BuildTemplatedMessage(template.TemplateId, k.ToString())).ToArray();
 
-            var results = (await _client.SendEmailsWithTemplateAsync(messages)).ToList();
+            var results = (await Client.SendEmailsWithTemplateAsync(messages)).ToList();
 
             Assert.True(results.All(k => k.ErrorCode == 0));
             Assert.True(results.All(k => k.Status == PostmarkStatus.Success));
@@ -238,11 +238,11 @@ namespace Postmark.Tests
             {
                 TemplateId = templateId,
                 TemplateModel = new { testKey = $"{testValue}" },
-                From = WRITE_TEST_SENDER_EMAIL_ADDRESS,
-                To = WRITE_TEST_SENDER_EMAIL_ADDRESS,
+                From = WriteTestSenderEmailAddress,
+                To = WriteTestSenderEmailAddress,
                 Headers = new HeaderCollection
                 {
-                    new MailHeader( "X-Integration-Testing-Postmark-Type-Message" , TESTING_DATE.ToString("o"))
+                    new MailHeader( "X-Integration-Testing-Postmark-Type-Message" , TestingDate.ToString("o"))
                 },
                 Metadata = new Dictionary<string, string> { { "test-key", "test-value" }, { "client-id", "42" } },
                 Tag = "integration-testing"
@@ -266,11 +266,11 @@ namespace Postmark.Tests
                 try
                 {
                     var tasks = new List<Task>();
-                    var templates = await _client.GetTemplatesAsync();
+                    var templates = await Client.GetTemplatesAsync();
 
                     foreach (var t in templates.Templates)
                     {
-                        tasks.Add(_client.DeleteTemplateAsync(t.TemplateId));
+                        tasks.Add(Client.DeleteTemplateAsync(t.TemplateId));
                     }
                     await Task.WhenAll(tasks);
                 }
@@ -284,8 +284,8 @@ namespace Postmark.Tests
             var layoutHtmlBody = $"<b>header</b> {_layoutContentPlaceholder} <b>footer</b>";
             var layoutTextBody = $"header {_layoutContentPlaceholder} footer";
 
-            var newLayoutTemplate = await _client.CreateTemplateAsync(layoutName, null, layoutHtmlBody, layoutTextBody, null, TemplateType.Layout);
-            return await _client.GetTemplateAsync(newLayoutTemplate.TemplateId);
+            var newLayoutTemplate = await Client.CreateTemplateAsync(layoutName, null, layoutHtmlBody, layoutTextBody, null, TemplateType.Layout);
+            return await Client.GetTemplateAsync(newLayoutTemplate.TemplateId);
         }
 
         private async Task<PostmarkTemplate> GenerateStandardTemplate(string layoutTemplateAlias = null)
@@ -295,10 +295,10 @@ namespace Postmark.Tests
             var htmlBody = "<b>Hello, {{name}}!</b>";
             var textBody = "Hello, {{name}}!";
 
-            var newStandardTemplate = await _client.CreateTemplateAsync(name, subject, htmlBody, textBody, null,
+            var newStandardTemplate = await Client.CreateTemplateAsync(name, subject, htmlBody, textBody, null,
                 TemplateType.Standard, layoutTemplateAlias);
 
-            return await _client.GetTemplateAsync(newStandardTemplate.TemplateId);
+            return await Client.GetTemplateAsync(newStandardTemplate.TemplateId);
         }
 
         public void Dispose()

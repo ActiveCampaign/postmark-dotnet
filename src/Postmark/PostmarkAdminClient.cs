@@ -237,14 +237,16 @@ namespace PostmarkDotNet
         /// <param name="name"></param>
         /// <param name="replyToEmail"></param>
         /// <param name="returnPathDomain"></param>
+        /// <param name="confirmationPersonalNote"></param>
         /// <returns></returns>
         public async Task<PostmarkCompleteSenderSignature> UpdateSignatureAsync
-            (int signatureId, string name = null, string replyToEmail = null, string returnPathDomain = null)
+            (int signatureId, string name = null, string replyToEmail = null, string returnPathDomain = null, string confirmationPersonalNote = null)
         {
             var parameters = new Dictionary<string, object>();
             parameters["Name"] = name;
             parameters["ReplyToEmail"] = replyToEmail;
             parameters["ReturnPathDomain"] = returnPathDomain;
+            parameters["ConfirmationPersonalNote"] = confirmationPersonalNote;
 
             return await this.ProcessRequestAsync<Dictionary<string, object>, PostmarkCompleteSenderSignature>
                ("/senders/" + signatureId, HttpMethod.Put, parameters);

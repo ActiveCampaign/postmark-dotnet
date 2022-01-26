@@ -190,8 +190,28 @@ namespace Postmark.Tests
         public async void CreateSignatureAsync_WithConfirmationPersonalNote_CreatesProperly()
         {
             const string note = "Test Note";
+
             var signature = await _adminClient.CreateSignatureAsync(_senderEmail, _senderName, _replyToAddress, null, note);
+
+            var retrievedSignature = await _adminClient.GetSenderSignatureAsync(signature.ID);
+
             Assert.Equal(note, signature.ConfirmationPersonalNote);
+            Assert.Equal(note, retrievedSignature.ConfirmationPersonalNote);
+        }
+
+        [Fact]
+        public async void UpdateSignatureAsync_WithConfirmationPersonalNote_UpdatesProperly()
+        {
+            const string note = "Test Note";
+            const string noteUpdated = "Test Note Updated";
+
+            var signature = await _adminClient.CreateSignatureAsync(_senderEmail, _senderName, _replyToAddress, null, note);
+            var updatedSignature = await _adminClient.UpdateSignatureAsync(signature.ID, _senderName, _replyToAddress, null, noteUpdated);
+
+            var retrievedSignature = await _adminClient.GetSenderSignatureAsync(signature.ID);
+
+            Assert.Equal(noteUpdated, updatedSignature.ConfirmationPersonalNote);
+            Assert.Equal(noteUpdated, retrievedSignature.ConfirmationPersonalNote);
         }
     }
 }

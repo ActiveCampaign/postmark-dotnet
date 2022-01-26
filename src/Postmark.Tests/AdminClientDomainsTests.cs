@@ -17,7 +17,7 @@ namespace Postmark.Tests
 
         protected override void Setup()
         {
-            _adminClient = new PostmarkAdminClient(WRITE_ACCOUNT_TOKEN);
+            _adminClient = new PostmarkAdminClient(WriteAccountToken, BaseUrl);
             var id = Guid.NewGuid();
             _domainName = "dotnet-lib-test.com";
             _returnPath = $"return-path.{_domainName}";

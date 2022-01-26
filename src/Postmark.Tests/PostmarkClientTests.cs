@@ -15,9 +15,9 @@ namespace Postmark.Tests
         [Fact]
         public async void ClientCanSendMessage()
         {
-            var client = new PostmarkClient(WRITE_TEST_SERVER_TOKEN);
+            var client = new PostmarkClient(WriteTestServerToken, BaseUrl);
             var response = await client
-                .SendMessageAsync(WRITE_TEST_SENDER_EMAIL_ADDRESS, WRITE_TEST_EMAIL_RECIPIENT_ADDRESS,
+                .SendMessageAsync(WriteTestSenderEmailAddress, WriteTestEmailRecipientAddress,
                 "Testing the postmark client: " + DateTime.Now, "Plain text body", "<b>This is only a test!</b>");
 
             // This should successfully send.
@@ -28,7 +28,7 @@ namespace Postmark.Tests
         [Fact]
         public async void ClientProducesDeliveryStats()
         {
-            var client = new PostmarkClient(WRITE_TEST_SERVER_TOKEN);
+            var client = new PostmarkClient(WriteTestServerToken);
             var stats = await client.GetDeliveryStatsAsync();
             Assert.True(stats.Bounces.Any());
         }
@@ -36,7 +36,7 @@ namespace Postmark.Tests
         [Fact]
         public async void ClientCanRetrieveBounces()
         {
-            var client = new PostmarkClient(WRITE_TEST_SERVER_TOKEN);
+            var client = new PostmarkClient(WriteTestServerToken);
             var bounces = await client.GetBouncesAsync();
             Assert.NotNull(bounces);
         }
@@ -44,18 +44,18 @@ namespace Postmark.Tests
         [Fact]
         public async void ClientCanRetrieveServerInformation()
         {
-            var client = new PostmarkClient(WRITE_TEST_SERVER_TOKEN);
+            var client = new PostmarkClient(WriteTestServerToken);
             var server = await client.GetServerAsync();
 
             Assert.NotNull(server);
-            Assert.Contains(WRITE_TEST_SERVER_TOKEN, server.ApiTokens);
+            Assert.Contains(WriteTestServerToken, server.ApiTokens);
         }
 
 
         [Fact]
         public async void ClientCanGetClientUsageStats()
         {
-            var client = new PostmarkClient(WRITE_TEST_SERVER_TOKEN);
+            var client = new PostmarkClient(WriteTestServerToken);
             var stats = await client.GetOutboundClientUsageCountsAsync();
             Assert.NotNull(stats);
         }
@@ -63,7 +63,7 @@ namespace Postmark.Tests
         [Fact]
         public async void ClientCanGetReadtimeStats()
         {
-            var client = new PostmarkClient(WRITE_TEST_SERVER_TOKEN);
+            var client = new PostmarkClient(WriteTestServerToken);
             var stats = await client.GetOutboundReadtimeStatsAsync();
             Assert.NotNull(stats);
         }

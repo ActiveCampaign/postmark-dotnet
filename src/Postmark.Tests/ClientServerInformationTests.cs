@@ -21,7 +21,7 @@ namespace Postmark.Tests
 
         protected override void Setup()
         {
-            _client = new PostmarkClient(WRITE_TEST_SERVER_TOKEN);
+            Client = new PostmarkClient(WriteTestServerToken, BaseUrl);
             var id = Guid.NewGuid().ToString("n");
             _serverBaseName = "dotnet-integration-test-server";
 
@@ -39,7 +39,7 @@ namespace Postmark.Tests
         [Fact]
         public async void Client_CanGetServerInformation()
         {
-            var server = await _client.GetServerAsync();
+            var server = await Client.GetServerAsync();
 
             Assert.True(server.ApiTokens.Any());
             Assert.NotNull(server.Name);
@@ -50,7 +50,7 @@ namespace Postmark.Tests
         [Fact]
         public async void ClientCanUpdateServerName()
         {
-            var client = new PostmarkClient(WRITE_TEST_SERVER_TOKEN);
+            var client = new PostmarkClient(WriteTestServerToken);
             var serverName = _serverBaseName + DateTime.Now.ToString("o");
             var nonModifiedServer = await client.GetServerAsync();
             var updatedServer = await client.EditServerAsync(name: serverName);
@@ -64,12 +64,12 @@ namespace Postmark.Tests
         [Fact]
         public async void Client_CanGetEditAServerInformation()
         {
-            var existingServer = await _client.GetServerAsync();
+            var existingServer = await Client.GetServerAsync();
             var updatedAffix = "updated";
 
             var inboundThreshold = 10;
 
-            var updatedServer = await _client.EditServerAsync(
+            var updatedServer = await Client.EditServerAsync(
                 _name + updatedAffix, ServerColors.Purple,
                 !existingServer.RawEmailEnabled, !existingServer.SmtpApiActivated,
                 _inboundHookUrl + updatedAffix, _bounceHookUrl + updatedAffix,
@@ -78,10 +78,10 @@ namespace Postmark.Tests
                 _clickHookUrl + updatedAffix, _deliveryHookUrl + updatedAffix);
 
             //go get a fresh copy from the API.
-            var retrievedServer = await _client.GetServerAsync();
+            var retrievedServer = await Client.GetServerAsync();
 
             //reset this server
-            await _client.EditServerAsync(
+            await Client.EditServerAsync(
                 existingServer.Name, ServerColors.Yellow,
                 existingServer.RawEmailEnabled, existingServer.SmtpApiActivated,
                 existingServer.InboundHookUrl, existingServer.BounceHookUrl,
@@ -112,7 +112,7 @@ namespace Postmark.Tests
             {
                 try
                 {
-                    await _client.EditServerAsync(name: _serverBaseName);
+                    await Client.EditServerAsync(name: _serverBaseName);
                 }catch{}
             }).Wait();
         }

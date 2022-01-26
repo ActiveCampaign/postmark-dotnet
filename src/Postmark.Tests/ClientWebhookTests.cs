@@ -17,9 +17,9 @@ namespace Postmark.Tests
 
         protected override void Setup()
         {
-            _adminClient = new PostmarkAdminClient(WRITE_ACCOUNT_TOKEN, BASE_URL);
+            _adminClient = new PostmarkAdminClient(WriteAccountToken, BaseUrl);
             _server = TestUtils.MakeSynchronous(() => _adminClient.CreateServerAsync($"integration-test-webhooks-{Guid.NewGuid()}"));
-            _client = new PostmarkClient(_server.ApiTokens.First(), BASE_URL);
+            Client = new PostmarkClient(_server.ApiTokens.First(), BaseUrl);
         }
 
         [Fact]
@@ -37,7 +37,7 @@ namespace Postmark.Tests
                 Delivery = new WebhookConfigurationDeliveryTrigger { Enabled = true },
                 SpamComplaint = new WebhookConfigurationSpamComplaintTrigger { Enabled = true, IncludeContent = true }
             };
-            var newConfiguration = await _client.CreateWebhookConfigurationAsync(url, messageStream, httpAuth, httpHeaders, triggers);
+            var newConfiguration = await Client.CreateWebhookConfigurationAsync(url, messageStream, httpAuth, httpHeaders, triggers);
 
             Assert.NotNull(newConfiguration.ID);
             Assert.Equal(url, newConfiguration.Url);
@@ -61,9 +61,9 @@ namespace Postmark.Tests
         {
             var url = "http://www.test123.com/webhook";
 
-            var expectedConfiguration = await _client.CreateWebhookConfigurationAsync(url);
+            var expectedConfiguration = await Client.CreateWebhookConfigurationAsync(url);
 
-            var actualConfiguration = await _client.GetWebhookConfigurationAsync(expectedConfiguration.ID.Value);
+            var actualConfiguration = await Client.GetWebhookConfigurationAsync(expectedConfiguration.ID.Value);
 
             Assert.Equal(expectedConfiguration.ID, actualConfiguration.ID);
             Assert.Equal(expectedConfiguration.Url, actualConfiguration.Url);
@@ -75,10 +75,10 @@ namespace Postmark.Tests
         {
             var url1 = "http://www.test1.com/hook" + Guid.NewGuid();
             var url2 = "http://www.test2.com/hook" + Guid.NewGuid();
-            await _client.CreateWebhookConfigurationAsync(url1);
-            await _client.CreateWebhookConfigurationAsync(url2);
+            await Client.CreateWebhookConfigurationAsync(url1);
+            await Client.CreateWebhookConfigurationAsync(url2);
 
-            var configurations = await _client.GetWebhookConfigurationsAsync();
+            var configurations = await Client.GetWebhookConfigurationsAsync();
 
             Assert.Equal(2, configurations.Webhooks.Count());
             Assert.Contains(configurations.Webhooks, k => k.Url == url1);
@@ -88,15 +88,15 @@ namespace Postmark.Tests
         [Fact]
         public async Task ClientCanDeleteWebhookConfigurations()
         {
-            var createdResponse = await _client.CreateWebhookConfigurationAsync("http://www.test.com/delete-hook");
-            var configuration = await _client.GetWebhookConfigurationAsync(createdResponse.ID.Value);
+            var createdResponse = await Client.CreateWebhookConfigurationAsync("http://www.test.com/delete-hook");
+            var configuration = await Client.GetWebhookConfigurationAsync(createdResponse.ID.Value);
 
-            var response = await _client.DeleteWebhookConfigurationAsync(configuration.ID.Value);
+            var response = await Client.DeleteWebhookConfigurationAsync(configuration.ID.Value);
 
             Assert.Equal(PostmarkStatus.Success, response.Status);
 
             await Assert.ThrowsAsync<PostmarkValidationException>(async () =>
-                await _client.GetWebhookConfigurationAsync(configuration.ID.Value));
+                await Client.GetWebhookConfigurationAsync(configuration.ID.Value));
         }
 
         [Fact]
@@ -111,7 +111,7 @@ namespace Postmark.Tests
                 Bounce = new WebhookConfigurationBounceTrigger { Enabled = true, IncludeContent = true },
                 Click = new WebhookConfigurationClickTrigger { Enabled = true },
             };
-            var oldConfig = await _client.CreateWebhookConfigurationAsync(url, messageStream, httpAuth, httpHeaders, triggers);
+            var oldConfig = await Client.CreateWebhookConfigurationAsync(url, messageStream, httpAuth, httpHeaders, triggers);
 
             var newUrl = "http://www.test.com/new-webhook";
             var newHttpAuth = new HttpAuth { Username = "updatedUser", Password = "updatedPassword" };
@@ -120,7 +120,7 @@ namespace Postmark.Tests
             {
                 Click = new WebhookConfigurationClickTrigger { Enabled = false }
             };
-            var updatedConfig = await _client.EditWebhookConfigurationAsync(oldConfig.ID.Value, newUrl, newHttpAuth,
+            var updatedConfig = await Client.EditWebhookConfigurationAsync(oldConfig.ID.Value, newUrl, newHttpAuth,
                 newHeaders, triggersUpdate);
 
             Assert.Equal(oldConfig.ID, updatedConfig.ID);

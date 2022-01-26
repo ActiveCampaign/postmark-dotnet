@@ -22,5 +22,7 @@ namespace PostmarkDotNet.Model
         public string ReturnPathDomainCNAMEValue { get; set; }
 
         public bool SafeToRemoveRevokedKeyFromDNS { get; set; }
+        
+        public string ConfirmationPersonalNote { get; set; }
     }
 }

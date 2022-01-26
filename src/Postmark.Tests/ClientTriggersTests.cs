@@ -14,7 +14,7 @@ namespace Postmark.Tests
 
         protected override void Setup()
         {
-            _client = new PostmarkClient(WRITE_TEST_SERVER_TOKEN);
+            Client = new PostmarkClient(WriteTestServerToken, BaseUrl);
         }
 
         public ClientTriggersTests() : base()
@@ -30,12 +30,12 @@ namespace Postmark.Tests
                 {
                     var tasks = new List<Task>();
 
-                    var inboundTriggers = await _client.GetAllInboundRuleTriggers();
+                    var inboundTriggers = await Client.GetAllInboundRuleTriggers();
                     foreach (var inboundRule in inboundTriggers.InboundRules)
                     {
                         if (inboundRule.Rule.StartsWith(_inboundRulePrefix))
                         {
-                            var dt = _client.DeleteInboundRuleTrigger(inboundRule.ID);
+                            var dt = Client.DeleteInboundRuleTrigger(inboundRule.ID);
                             tasks.Add(dt);
                         }
                     }
@@ -55,7 +55,7 @@ namespace Postmark.Tests
             var rule = String.Format("{0}+{1:n}@example.com",
                 _inboundRulePrefix, Guid.NewGuid());
 
-            var newrule = await _client.CreateInboundRuleTriggerAsync(rule);
+            var newrule = await Client.CreateInboundRuleTriggerAsync(rule);
 
             Assert.NotNull(newrule);
             Assert.Equal(rule, newrule.Rule);
@@ -66,9 +66,9 @@ namespace Postmark.Tests
         public async void Client_CanDeleteInboundTrigger()
         {
             var rule = String.Format("{0}+{1:n}@example.com", _inboundRulePrefix, Guid.NewGuid());
-            var newrule = await _client.CreateInboundRuleTriggerAsync(rule);
-            await _client.DeleteInboundRuleTrigger(newrule.ID);
-            var results = await _client.GetAllInboundRuleTriggers();
+            var newrule = await Client.CreateInboundRuleTriggerAsync(rule);
+            await Client.DeleteInboundRuleTrigger(newrule.ID);
+            var results = await Client.GetAllInboundRuleTriggers();
             Assert.True(results.InboundRules.All(k => k.Rule != rule));
         }
 
@@ -79,10 +79,10 @@ namespace Postmark.Tests
                 .Select(k => String.Format("{0}+{1:n}@example.com",
                     _inboundRulePrefix, Guid.NewGuid())).ToArray();
 
-            var awaitables = names.Select(name => _client.CreateInboundRuleTriggerAsync(name)).ToArray();
+            var awaitables = names.Select(name => Client.CreateInboundRuleTriggerAsync(name)).ToArray();
             await Task.WhenAll(awaitables);
 
-            var inbound = await _client.GetAllInboundRuleTriggers();
+            var inbound = await Client.GetAllInboundRuleTriggers();
             var rules = inbound.InboundRules.Select(k => k.Rule).ToArray();
 
             Assert.True(rules.Length >= names.Length);
@@ -93,8 +93,8 @@ namespace Postmark.Tests
         public async void Client_CanGetInboundTrigger()
         {
             var rule = String.Format("{0}+{1:n}@example.com", _inboundRulePrefix, Guid.NewGuid());
-            var newRule = await _client.CreateInboundRuleTriggerAsync(rule);
-            var rules = await _client.GetAllInboundRuleTriggers();
+            var newRule = await Client.CreateInboundRuleTriggerAsync(rule);
+            var rules = await Client.GetAllInboundRuleTriggers();
 
             var retrievedRule = rules.InboundRules.First(k => k.ID == newRule.ID);
 

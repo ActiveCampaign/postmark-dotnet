@@ -6,7 +6,7 @@ namespace Postmark.Tests
 {
     public class ClientBounceTests : ClientBaseFixture
     {
-        protected override void Setup()
+        public ClientBounceTests()
         {
             Client = new PostmarkClient(ReadSeleniumTestServerToken, BaseUrl);
         }
@@ -50,7 +50,5 @@ namespace Postmark.Tests
         {
             //Unfortunately, can't activate bounces on the testing server account.
         }
-
-
     }
 }

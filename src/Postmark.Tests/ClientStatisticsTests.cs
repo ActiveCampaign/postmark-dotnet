@@ -2,22 +2,20 @@
 using PostmarkDotNet;
 using System;
 using System.Linq;
-using System.Threading.Tasks;
 
 namespace Postmark.Tests
 {
     public class ClientStatisticsTests : ClientBaseFixture
     {
-        private DateTime _lastMonth;
-        public DateTime _windowStartDate { get; set; }
+        private readonly DateTime _lastMonth;
+        private DateTime WindowStartDate { get; set; }
 
-        protected override void Setup()
+        public ClientStatisticsTests()
         {
             Client = new PostmarkClient(ReadSeleniumTestServerToken, BaseUrl);
             _lastMonth = TestingDate - TimeSpan.FromDays(30);
-            _windowStartDate = TestingDate - TimeSpan.FromDays(35);
+            WindowStartDate = TestingDate - TimeSpan.FromDays(35);
         }
-
 
         [Fact]
         public async void Client_CanGetOutboundStatisticsOverview()
@@ -43,8 +41,8 @@ namespace Postmark.Tests
         {
             var allOutboundStats = await Client.GetOutboundOverviewStatsAsync();
             var allStatsThroughLastMonth = await Client.GetOutboundOverviewStatsAsync(null, _lastMonth);
-            var windowFromLastMonth = await Client.GetOutboundOverviewStatsAsync(null, _windowStartDate, _lastMonth);
-            var windowFromLastMonthWithTag = await Client.GetOutboundOverviewStatsAsync("test_tag", _windowStartDate, _lastMonth);
+            var windowFromLastMonth = await Client.GetOutboundOverviewStatsAsync(null, WindowStartDate, _lastMonth);
+            var windowFromLastMonthWithTag = await Client.GetOutboundOverviewStatsAsync("test_tag", WindowStartDate, _lastMonth);
 
             AssertStats(allOutboundStats, allStatsThroughLastMonth, windowFromLastMonth, windowFromLastMonthWithTag, f => f.Sent);
         }
@@ -67,8 +65,8 @@ namespace Postmark.Tests
         {
             var allOutboundStats = await Client.GetOutboundSentCountsAsync();
             var allStatsThroughLastMonth = await Client.GetOutboundSentCountsAsync(null, _lastMonth);
-            var windowFromLastMonth = await Client.GetOutboundSentCountsAsync(null, _windowStartDate, _lastMonth);
-            var windowFromLastMonthWithTag = await Client.GetOutboundSentCountsAsync("test_tag", _windowStartDate, _lastMonth);
+            var windowFromLastMonth = await Client.GetOutboundSentCountsAsync(null, WindowStartDate, _lastMonth);
+            var windowFromLastMonthWithTag = await Client.GetOutboundSentCountsAsync("test_tag", WindowStartDate, _lastMonth);
 
             AssertStats(allOutboundStats, allStatsThroughLastMonth, windowFromLastMonth, windowFromLastMonthWithTag, f => f.Sent);
 
@@ -124,8 +122,8 @@ namespace Postmark.Tests
         {
             var allOutboundStats = await Client.GetOutboundClientUsageCountsAsync();
             var allStatsThroughLastMonth = await Client.GetOutboundClientUsageCountsAsync(null, _lastMonth);
-            var windowFromLastMonth = await Client.GetOutboundClientUsageCountsAsync(null, _windowStartDate, _lastMonth);
-            var windowFromLastMonthWithTag = await Client.GetOutboundClientUsageCountsAsync("test_tag", _windowStartDate, _lastMonth);
+            var windowFromLastMonth = await Client.GetOutboundClientUsageCountsAsync(null, WindowStartDate, _lastMonth);
+            var windowFromLastMonthWithTag = await Client.GetOutboundClientUsageCountsAsync("test_tag", WindowStartDate, _lastMonth);
 
             AssertStats(allOutboundStats, allStatsThroughLastMonth, windowFromLastMonth,
                 windowFromLastMonthWithTag, f => f.ClientCounts.Sum(k => k.Value));
@@ -144,7 +142,5 @@ namespace Postmark.Tests
             Assert.True(readingTimes.ReadCounts.Any());
             Assert.True(readingTimes.Days.All(f => f.ReadCounts.Any()));
         }
-
-
     }
 }

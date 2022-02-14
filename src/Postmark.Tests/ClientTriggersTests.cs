@@ -12,9 +12,34 @@ namespace Postmark.Tests
         private string _triggerPrefix = "integration-testing-";
         private string _inboundRulePrefix = "integration-test";
 
-        protected override void Setup()
+        public Task InitializeAsync()
         {
             Client = new PostmarkClient(WriteTestServerToken, BaseUrl);
+            return Task.CompletedTask;
+        }
+
+        public async Task DisposeAsync()
+        {
+            try
+            {
+                var tasks = new List<Task>();
+
+                var inboundTriggers = await Client.GetAllInboundRuleTriggers();
+                foreach (var inboundRule in inboundTriggers.InboundRules)
+                {
+                    if (inboundRule.Rule.StartsWith(_inboundRulePrefix))
+                    {
+                        var dt = Client.DeleteInboundRuleTrigger(inboundRule.ID);
+                        tasks.Add(dt);
+                    }
+                }
+
+                await Task.WhenAll(tasks);
+            }
+            catch
+            {
+                //don't fail the tests because cleanup didn't happen.
+            }
         }
 
         [Fact]
@@ -68,35 +93,6 @@ namespace Postmark.Tests
 
             Assert.Equal(newRule.ID, retrievedRule.ID);
             Assert.Equal(newRule.Rule, retrievedRule.Rule);
-        }
-
-        public Task InitializeAsync()
-        {
-            return Task.CompletedTask;
-        }
-
-        public async Task DisposeAsync()
-        {
-            try
-            {
-                var tasks = new List<Task>();
-
-                var inboundTriggers = await Client.GetAllInboundRuleTriggers();
-                foreach (var inboundRule in inboundTriggers.InboundRules)
-                {
-                    if (inboundRule.Rule.StartsWith(_inboundRulePrefix))
-                    {
-                        var dt = Client.DeleteInboundRuleTrigger(inboundRule.ID);
-                        tasks.Add(dt);
-                    }
-                }
-
-                await Task.WhenAll(tasks);
-            }
-            catch
-            {
-                //don't fail the tests because cleanup didn't happen.
-            }
         }
     }
 }

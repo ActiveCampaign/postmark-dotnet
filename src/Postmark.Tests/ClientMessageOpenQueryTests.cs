@@ -1,6 +1,4 @@
 ﻿using Xunit;
-using System;
-using System.Threading.Tasks;
 using System.Linq;
 using PostmarkDotNet;
 
@@ -8,7 +6,7 @@ namespace Postmark.Tests
 {
     public class ClientMessageOpenQueryTests : ClientBaseFixture
     {
-        protected override void Setup()
+        public ClientMessageOpenQueryTests()
         {
             Client = new PostmarkClient(ReadSeleniumOpenTrackingToken, BaseUrl);
         }

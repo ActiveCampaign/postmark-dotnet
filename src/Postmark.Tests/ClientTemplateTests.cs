@@ -13,9 +13,26 @@ namespace Postmark.Tests
     {
         private readonly string _layoutContentPlaceholder = "{{{@content}}}";
 
-        protected override void Setup()
+        public Task InitializeAsync()
         {
             Client = new PostmarkClient(WriteTestServerToken, BaseUrl);
+            return Task.CompletedTask;
+        }
+
+        public async Task DisposeAsync()
+        {
+            try
+            {
+                var tasks = new List<Task>();
+                var templates = await Client.GetTemplatesAsync();
+
+                foreach (var t in templates.Templates)
+                {
+                    tasks.Add(Client.DeleteTemplateAsync(t.TemplateId));
+                }
+                await Task.WhenAll(tasks);
+            }
+            catch { }
         }
 
         [Fact]
@@ -280,27 +297,6 @@ namespace Postmark.Tests
                 TemplateType.Standard, layoutTemplateAlias);
 
             return await Client.GetTemplateAsync(newStandardTemplate.TemplateId);
-        }
-
-        public Task InitializeAsync()
-        {
-            return Task.CompletedTask;
-        }
-
-        public async Task DisposeAsync()
-        {
-            try
-            {
-                var tasks = new List<Task>();
-                var templates = await Client.GetTemplatesAsync();
-
-                foreach (var t in templates.Templates)
-                {
-                    tasks.Add(Client.DeleteTemplateAsync(t.TemplateId));
-                }
-                await Task.WhenAll(tasks);
-            }
-            catch { }
         }
     }
 }

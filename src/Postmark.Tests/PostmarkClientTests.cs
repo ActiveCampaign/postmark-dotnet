@@ -7,11 +7,6 @@ namespace Postmark.Tests
 {
     public class PostmarkClientTests : ClientBaseFixture
     {
-        protected override void Setup()
-        {
-            //no setup needed.
-        }
-
         [Fact]
         public async void ClientCanSendMessage()
         {
@@ -67,7 +62,5 @@ namespace Postmark.Tests
             var stats = await client.GetOutboundReadtimeStatsAsync();
             Assert.NotNull(stats);
         }
-
-
     }
 }

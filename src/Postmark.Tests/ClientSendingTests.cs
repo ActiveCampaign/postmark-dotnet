@@ -5,14 +5,13 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using System.Threading.Tasks;
 using PostmarkDotNet.Exceptions;
 
 namespace Postmark.Tests
 {
     public class ClientSendingTests : ClientBaseFixture
     {
-        protected override void Setup()
+        public ClientSendingTests()
         {
             Client = new PostmarkClient(WriteTestServerToken, BaseUrl);
         }

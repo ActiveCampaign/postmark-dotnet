@@ -26,8 +26,8 @@ namespace Postmark.Tests
         private string _bounceHookUrl;
         private string _deliveryHookUrl;
         private bool? _enableSmtpApiErrorHooks;
-
-        protected override void Setup()
+        
+        public Task InitializeAsync()
         {
             _adminClient = new PostmarkAdminClient(WriteAccountToken, BaseUrl);
             var id = Guid.NewGuid().ToString("n");
@@ -46,6 +46,26 @@ namespace Postmark.Tests
             _trackOpens = true;
             _inboundSpamThreshold = 30;
             _enableSmtpApiErrorHooks = true;
+            
+            return Task.CompletedTask;
+        }
+
+        public async Task DisposeAsync()
+        {
+            try
+            {
+                var servers = await _adminClient.GetServersAsync();
+                var pendingDeletes = new List<Task>();
+                foreach (var server in servers.Servers)
+                {
+                    if (Regex.IsMatch(server.Name, _serverPrefix))
+                    {
+                        var deleteTask = _adminClient.DeleteServerAsync(server.ID);
+                        pendingDeletes.Add(deleteTask);
+                    }
+                }
+                Task.WaitAll(pendingDeletes.ToArray());
+            }catch{}
         }
 
         [Fact]
@@ -133,29 +153,6 @@ namespace Postmark.Tests
             var response = await _adminClient.DeleteServerAsync(server.ID);
             Assert.Equal(PostmarkStatus.Success, response.Status);
             Assert.Equal(0, response.ErrorCode);
-        }
-
-        public Task InitializeAsync()
-        {
-            return Task.CompletedTask;
-        }
-
-        public async Task DisposeAsync()
-        {
-            try
-            {
-                var servers = await _adminClient.GetServersAsync();
-                var pendingDeletes = new List<Task>();
-                foreach (var server in servers.Servers)
-                {
-                    if (Regex.IsMatch(server.Name, _serverPrefix))
-                    {
-                        var deleteTask = _adminClient.DeleteServerAsync(server.ID);
-                        pendingDeletes.Add(deleteTask);
-                    }
-                }
-                Task.WaitAll(pendingDeletes.ToArray());
-            }catch{}
         }
     }
 }

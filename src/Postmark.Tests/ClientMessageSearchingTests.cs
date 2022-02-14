@@ -1,7 +1,4 @@
 ﻿using Xunit;
-using System;
-using System.Collections.Generic;
-using System.Threading.Tasks;
 using System.Linq;
 using PostmarkDotNet;
 
@@ -9,7 +6,7 @@ namespace Postmark.Tests
 {
     public class ClientMessageSearchingTests : ClientBaseFixture
     {
-        protected override void Setup()
+        public ClientMessageSearchingTests()
         {
             Client = new PostmarkClient(ReadSeleniumTestServerToken, BaseUrl);
         }

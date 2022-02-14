@@ -85,9 +85,6 @@ namespace Postmark.Tests
         protected ClientBaseFixture()
         {
             AssertSettingsAvailable();
-            Setup();
         }
-
-        protected abstract void Setup();
     }
 }

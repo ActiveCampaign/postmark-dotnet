@@ -14,12 +14,17 @@ namespace Postmark.Tests
     {
         private PostmarkAdminClient _adminClient;
         private PostmarkServer _server;
-
-        protected override void Setup()
+        
+        public async Task InitializeAsync()
         {
             _adminClient = new PostmarkAdminClient(WriteAccountToken, BaseUrl);
-            _server = TestUtils.MakeSynchronous(() => _adminClient.CreateServerAsync($"integration-test-webhooks-{Guid.NewGuid()}"));
+            _server = await _adminClient.CreateServerAsync($"integration-test-webhooks-{Guid.NewGuid()}");
             Client = new PostmarkClient(_server.ApiTokens.First(), BaseUrl);
+        }
+
+        public async Task DisposeAsync()
+        {
+            await _adminClient.DeleteServerAsync(_server.ID);
         }
 
         [Fact]
@@ -131,16 +136,6 @@ namespace Postmark.Tests
             Assert.Equal(newHeaders, updatedConfig.HttpHeaders);
             Assert.Equal(triggersUpdate.Click.Enabled, updatedConfig.Triggers.Click.Enabled);
             Assert.Equal(triggers.Bounce.Enabled, updatedConfig.Triggers.Bounce.Enabled);
-        }
-
-        public Task InitializeAsync()
-        {
-            return Task.CompletedTask;
-        }
-
-        public async Task DisposeAsync()
-        {
-            await _adminClient.DeleteServerAsync(_server.ID);
         }
     }
 }

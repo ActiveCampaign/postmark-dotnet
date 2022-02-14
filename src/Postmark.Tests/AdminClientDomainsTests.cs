@@ -1,52 +1,44 @@
 ﻿using Xunit;
 using PostmarkDotNet;
 using PostmarkDotNet.Exceptions;
-using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 
 namespace Postmark.Tests
 {
-    public class AdminClientDomainsTests : ClientBaseFixture
+    public class AdminClientDomainsTests : ClientBaseFixture, IAsyncLifetime
     {
         private PostmarkAdminClient _adminClient;
         private string _domainName;
         private string _returnPath;
-
-        protected override void Setup()
+        
+        public Task InitializeAsync()
         {
             _adminClient = new PostmarkAdminClient(WriteAccountToken, BaseUrl);
-            var id = Guid.NewGuid();
             _domainName = "dotnet-lib-test.com";
             _returnPath = $"return-path.{_domainName}";
+
+            return Task.CompletedTask;
         }
 
-        public AdminClientDomainsTests():base()
+        public async Task DisposeAsync()
         {
-            this.Cleanup().Wait();
-        }
-
-        private Task Cleanup(){
-            return Task.Run(async () =>
+            try
             {
-                try
+                var domains = await _adminClient.GetDomainsAsync();
+                var pendingDeletes = new List<Task>();
+                foreach (var d in domains.Domains)
                 {
-                    var domains = await _adminClient.GetDomainsAsync();
-                    var pendingDeletes = new List<Task>();
-                    foreach (var d in domains.Domains)
+                    if (d.Name == _domainName)
                     {
-                        if (d.Name == _domainName)
-                        {
-                            var deleteTask = _adminClient.DeleteDomainAsync(d.ID);
-                            pendingDeletes.Add(deleteTask);
-                        }
+                        var deleteTask = _adminClient.DeleteDomainAsync(d.ID);
+                        pendingDeletes.Add(deleteTask);
                     }
-                    Task.WaitAll(pendingDeletes.ToArray());
                 }
-                catch{}
-            });
+                Task.WaitAll(pendingDeletes.ToArray());
+            }
+            catch{}
         }
 
         [Fact]

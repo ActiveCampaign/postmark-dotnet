@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 
 namespace Postmark.Tests
 {
-    public class AdminClientSenderSignatureTests : ClientBaseFixture
+    public class AdminClientSenderSignatureTests : ClientBaseFixture, IAsyncLifetime
     {
         private PostmarkAdminClient _adminClient;
         private string _senderEmail;
@@ -17,8 +17,8 @@ namespace Postmark.Tests
         private string _senderName;
         private string _senderprefix;
         private string _returnPath;
-
-        protected override void Setup()
+        
+        public Task InitializeAsync()
         {
             _adminClient = new PostmarkAdminClient(WriteAccountToken, BaseUrl);
             var id = Guid.NewGuid();
@@ -27,33 +27,27 @@ namespace Postmark.Tests
             _senderEmail = WriteTestSenderSignaturePrototype.Replace("[TOKEN]", String.Format(_senderprefix + "{0:n}", id));
             _replyToAddress = WriteTestSenderSignaturePrototype.Replace("[TOKEN]", String.Format(_senderprefix + "replyto-{0:n}", id));
             _senderName = String.Format("Test Sender {0}", TestingDate);
+
+            return Task.CompletedTask;
         }
 
-
-        public AdminClientSenderSignatureTests():base()
+        public async Task DisposeAsync()
         {
-            this.Cleanup().Wait();
-        }
-
-        private Task Cleanup(){
-            return Task.Run(async () =>
+            try
             {
-                try
+                var signatures = await _adminClient.GetSenderSignaturesAsync();
+                var pendingDeletes = new List<Task>();
+                foreach (var f in signatures.SenderSignatures)
                 {
-                    var signatures = await _adminClient.GetSenderSignaturesAsync();
-                    var pendingDeletes = new List<Task>();
-                    foreach (var f in signatures.SenderSignatures)
+                    if (Regex.IsMatch(f.EmailAddress, _senderprefix))
                     {
-                        if (Regex.IsMatch(f.EmailAddress, _senderprefix))
-                        {
-                            var deleteTask = _adminClient.DeleteSignatureAsync(f.ID);
-                            pendingDeletes.Add(deleteTask);
-                        }
+                        var deleteTask = _adminClient.DeleteSignatureAsync(f.ID);
+                        pendingDeletes.Add(deleteTask);
                     }
-                    Task.WaitAll(pendingDeletes.ToArray());
                 }
-                catch{}
-            });
+                Task.WaitAll(pendingDeletes.ToArray());
+            }
+            catch{}
         }
 
         [Fact]

@@ -8,7 +8,7 @@ using PostmarkDotNet.Model;
 
 namespace Postmark.Tests
 {
-    public class ClientMessageStreamTests : ClientBaseFixture, IDisposable
+    public class ClientMessageStreamTests : ClientBaseFixture, IAsyncDisposable
     {
         private PostmarkAdminClient _adminClient;
         private PostmarkServer _server;
@@ -144,17 +144,9 @@ namespace Postmark.Tests
             return await Client.CreateMessageStream(id, streamType, streamName, description);
         }
 
-        private Task Cleanup()
+        public async ValueTask DisposeAsync()
         {
-            return Task.Run(async () =>
-            {
-                await _adminClient.DeleteServerAsync(_server.ID);
-            });
-        }
-
-        public void Dispose()
-        {
-            Cleanup().Wait();
+            await _adminClient.DeleteServerAsync(_server.ID);
         }
     }
 }

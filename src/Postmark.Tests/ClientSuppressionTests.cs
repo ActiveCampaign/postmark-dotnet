@@ -9,7 +9,7 @@ using PostmarkDotNet.Model;
 
 namespace Postmark.Tests
 {
-    public class ClientSuppressionTests : ClientBaseFixture, IDisposable
+    public class ClientSuppressionTests : ClientBaseFixture, IAsyncDisposable
     {
         private PostmarkAdminClient _adminClient;
         private PostmarkServer _server;
@@ -115,17 +115,9 @@ namespace Postmark.Tests
             Assert.Equal("ManualSuppression", actualSuppression.SuppressionReason);
         }
 
-        private Task Cleanup()
+        public async ValueTask DisposeAsync()
         {
-            return Task.Run(async () =>
-            {
-                await _adminClient.DeleteServerAsync(_server.ID);
-            });
-        }
-
-        public void Dispose()
-        {
-            Cleanup().Wait();
+            await _adminClient.DeleteServerAsync(_server.ID);
         }
     }
 }

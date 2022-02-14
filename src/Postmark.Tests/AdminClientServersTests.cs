@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 
 namespace Postmark.Tests
 {
-    public class AdminClientServersTests : ClientBaseFixture, IDisposable
+    public class AdminClientServersTests : ClientBaseFixture, IAsyncDisposable
     {
         private PostmarkAdminClient _adminClient;
         private string _serverPrefix;
@@ -46,28 +46,6 @@ namespace Postmark.Tests
             _trackOpens = true;
             _inboundSpamThreshold = 30;
             _enableSmtpApiErrorHooks = true;
-        }
-
-
-        private Task Cleanup()
-        {
-            return Task.Run(async () =>
-            {
-                try
-                {
-                    var servers = await _adminClient.GetServersAsync();
-                    var pendingDeletes = new List<Task>();
-                    foreach (var server in servers.Servers)
-                    {
-                        if (Regex.IsMatch(server.Name, _serverPrefix))
-                        {
-                            var deleteTask = _adminClient.DeleteServerAsync(server.ID);
-                            pendingDeletes.Add(deleteTask);
-                        }
-                    }
-                    Task.WaitAll(pendingDeletes.ToArray());
-                }catch{}
-            });
         }
 
         [Fact]
@@ -157,9 +135,22 @@ namespace Postmark.Tests
             Assert.Equal(0, response.ErrorCode);
         }
 
-        public void Dispose()
+        public async ValueTask DisposeAsync()
         {
-            this.Cleanup().Wait();
+            try
+            {
+                var servers = await _adminClient.GetServersAsync();
+                var pendingDeletes = new List<Task>();
+                foreach (var server in servers.Servers)
+                {
+                    if (Regex.IsMatch(server.Name, _serverPrefix))
+                    {
+                        var deleteTask = _adminClient.DeleteServerAsync(server.ID);
+                        pendingDeletes.Add(deleteTask);
+                    }
+                }
+                Task.WaitAll(pendingDeletes.ToArray());
+            }catch{}
         }
     }
 }

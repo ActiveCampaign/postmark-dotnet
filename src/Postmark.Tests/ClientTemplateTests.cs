@@ -9,7 +9,7 @@ using PostmarkDotNet.Model;
 
 namespace Postmark.Tests
 {
-    public class ClientTemplateTests : ClientBaseFixture, IDisposable
+    public class ClientTemplateTests : ClientBaseFixture, IAsyncDisposable
     {
         private readonly string _layoutContentPlaceholder = "{{{@content}}}";
 
@@ -259,25 +259,6 @@ namespace Postmark.Tests
             return message;
         }
 
-        private Task Cleanup()
-        {
-            return Task.Run(async () =>
-            {
-                try
-                {
-                    var tasks = new List<Task>();
-                    var templates = await Client.GetTemplatesAsync();
-
-                    foreach (var t in templates.Templates)
-                    {
-                        tasks.Add(Client.DeleteTemplateAsync(t.TemplateId));
-                    }
-                    await Task.WhenAll(tasks);
-                }
-                catch { }
-            });
-        }
-
         private async Task<PostmarkTemplate> GenerateLayoutTemplate()
         {
             var layoutName = Guid.NewGuid().ToString();
@@ -301,9 +282,20 @@ namespace Postmark.Tests
             return await Client.GetTemplateAsync(newStandardTemplate.TemplateId);
         }
 
-        public void Dispose()
+        public async ValueTask DisposeAsync()
         {
-            Cleanup().Wait();
+            try
+            {
+                var tasks = new List<Task>();
+                var templates = await Client.GetTemplatesAsync();
+
+                foreach (var t in templates.Templates)
+                {
+                    tasks.Add(Client.DeleteTemplateAsync(t.TemplateId));
+                }
+                await Task.WhenAll(tasks);
+            }
+            catch { }
         }
     }
 }

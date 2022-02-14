@@ -70,7 +70,8 @@ namespace Postmark.Tests
         {
             var names = Enumerable.Range(0, 5)
                 .Select(k => String.Format("{0}+{1:n}@example.com",
-                    _inboundRulePrefix, Guid.NewGuid())).ToArray();
+                    _inboundRulePrefix, Guid.NewGuid()))
+                .ToArray();
 
             var awaitables = names.Select(name => Client.CreateInboundRuleTriggerAsync(name)).ToArray();
             await Task.WhenAll(awaitables);

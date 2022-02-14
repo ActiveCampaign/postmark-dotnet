@@ -21,13 +21,14 @@ namespace Postmark.Tests
             var baseList = (await Client.GetOutboundMessagesAsync());
 
             var fromemail = baseList.Messages
-                .First(k => !string.IsNullOrWhiteSpace(k.From)).From;
+                .First(k => !string.IsNullOrWhiteSpace(k.From))
+                .From;
             var recipient = baseList.Messages.First().Recipients.First();
             var tag = "test_tag";
             var subject = baseList.Messages.First().Subject;
 
             var searchedList = await Client.GetOutboundMessagesAsync(0, 33);
-            Assert.Equal(33,searchedList.Messages.Count);
+            Assert.Equal(33, searchedList.Messages.Count);
 
             searchedList = await Client.GetOutboundMessagesAsync(0, 20, recipient);
             Assert.True(searchedList.Messages.Count > 0);
@@ -90,7 +91,7 @@ namespace Postmark.Tests
             Assert.Equal(inboundMessageId, inboundMessage.MessageID);
         }
 
-        [Fact(Skip="We can't run this test because can't do a write on the inbound testing server.")]
+        [Fact(Skip = "We can't run this test because can't do a write on the inbound testing server.")]
         public void Client_CanBypassRulesForInboundMessage()
         {
             //_client.BypassBlockedInboundMessage(/*a message id to bypass*/);

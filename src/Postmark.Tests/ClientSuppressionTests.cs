@@ -13,7 +13,7 @@ namespace Postmark.Tests
     {
         private PostmarkAdminClient _adminClient;
         private PostmarkServer _server;
-        
+
         public async Task InitializeAsync()
         {
             _adminClient = new PostmarkAdminClient(WriteAccountToken, BaseUrl);
@@ -29,8 +29,8 @@ namespace Postmark.Tests
         [Fact]
         public async Task ClientCanSuppressRecipients()
         {
-            var suppressionRequest = new PostmarkSuppressionChangeRequest { EmailAddress = $"test-{Guid.NewGuid().ToString()}@gmail.com" };
-            var result = await Client.CreateSuppressions(new List<PostmarkSuppressionChangeRequest> { suppressionRequest });
+            var suppressionRequest = new PostmarkSuppressionChangeRequest {EmailAddress = $"test-{Guid.NewGuid().ToString()}@gmail.com"};
+            var result = await Client.CreateSuppressions(new List<PostmarkSuppressionChangeRequest> {suppressionRequest});
 
             Assert.Single(result.Suppressions);
 
@@ -43,8 +43,8 @@ namespace Postmark.Tests
         [Fact]
         public async Task InvalidRequest_HasFailedStatus()
         {
-            var suppressionRequest = new PostmarkSuppressionChangeRequest { EmailAddress = "not-a-correct-email-address" };
-            var result = await Client.CreateSuppressions(new List<PostmarkSuppressionChangeRequest> { suppressionRequest });
+            var suppressionRequest = new PostmarkSuppressionChangeRequest {EmailAddress = "not-a-correct-email-address"};
+            var result = await Client.CreateSuppressions(new List<PostmarkSuppressionChangeRequest> {suppressionRequest});
 
             Assert.Single(result.Suppressions);
 
@@ -57,8 +57,8 @@ namespace Postmark.Tests
         [Fact]
         public async Task ClientCanDeleteSuppressions()
         {
-            var reactivationRequest = new PostmarkSuppressionChangeRequest { EmailAddress = $"test-{Guid.NewGuid().ToString()}@gmail.com" };
-            var result = await Client.DeleteSuppressions(new List<PostmarkSuppressionChangeRequest> { reactivationRequest });
+            var reactivationRequest = new PostmarkSuppressionChangeRequest {EmailAddress = $"test-{Guid.NewGuid().ToString()}@gmail.com"};
+            var result = await Client.DeleteSuppressions(new List<PostmarkSuppressionChangeRequest> {reactivationRequest});
 
             Assert.Single(result.Suppressions);
 
@@ -75,7 +75,7 @@ namespace Postmark.Tests
 
             for (var i = 0; i < 5; i++)
             {
-                var suppressionRequest = new PostmarkSuppressionChangeRequest { EmailAddress = $"test-{Guid.NewGuid().ToString()}@gmail.com" };
+                var suppressionRequest = new PostmarkSuppressionChangeRequest {EmailAddress = $"test-{Guid.NewGuid().ToString()}@gmail.com"};
                 suppressionRequests.Add(suppressionRequest);
             }
 
@@ -97,7 +97,7 @@ namespace Postmark.Tests
 
             for (var i = 0; i < 3; i++)
             {
-                var suppressionRequest = new PostmarkSuppressionChangeRequest { EmailAddress = $"test-{Guid.NewGuid().ToString()}@gmail.com" };
+                var suppressionRequest = new PostmarkSuppressionChangeRequest {EmailAddress = $"test-{Guid.NewGuid().ToString()}@gmail.com"};
                 suppressionRequests.Add(suppressionRequest);
             }
 

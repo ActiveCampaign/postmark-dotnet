@@ -47,7 +47,8 @@ namespace Postmark.Tests
             AssertStats(allOutboundStats, allStatsThroughLastMonth, windowFromLastMonth, windowFromLastMonthWithTag, f => f.Sent);
         }
 
-        private void AssertStats<T>(T alltimeStats, T allstatsThroughLastMonth, T windowFromLastMonth, T windowFromLastMonthWithTag, Func<T, int> statGetter)
+        private void AssertStats<T>(
+            T alltimeStats, T allstatsThroughLastMonth, T windowFromLastMonth, T windowFromLastMonthWithTag, Func<T, int> statGetter)
         {
             Assert.True(statGetter(alltimeStats) > 0, "Stat should be greater than 0");
             Assert.True(statGetter(allstatsThroughLastMonth) > 0, "All Last Month Stat should be greater than 0");
@@ -60,7 +61,7 @@ namespace Postmark.Tests
         }
 
 
-        [Fact(Skip="Not possible to test this easily, due to infrequent test runs.")]
+        [Fact(Skip = "Not possible to test this easily, due to infrequent test runs.")]
         public async void Client_CanGetOutboundStatisticsSentCounts()
         {
             var allOutboundStats = await Client.GetOutboundSentCountsAsync();
@@ -72,7 +73,6 @@ namespace Postmark.Tests
 
             Assert.True(allOutboundStats.Days.Count() > 0);
             Assert.Equal(allOutboundStats.Sent, allOutboundStats.Days.Sum(k => k.Sent));
-
         }
 
         [Fact]
@@ -82,7 +82,7 @@ namespace Postmark.Tests
             Assert.True(allOutboundStats.Days.Count() > 0);
         }
 
-        [Fact(Skip="There is no suitable test data for this test.")]
+        [Fact(Skip = "There is no suitable test data for this test.")]
         public async void Client_CanGetOutboundStatisticsSpamComplaints()
         {
             var allOutboundStats = await Client.GetOutboundSpamComplaintCountsAsync();
@@ -114,10 +114,9 @@ namespace Postmark.Tests
             //Assert.Greater(allOutboundStats.WebMail, 0);
             //Assert.Greater(allOutboundStats.Mobile, 0);
             //Assert.Greater(allOutboundStats.Unknown, 0);
-
         }
 
-        [Fact(Skip="There is no suitable test data for this test.")]
+        [Fact(Skip = "There is no suitable test data for this test.")]
         public async void Client_CanGetOutboundStatisticsClientCounts()
         {
             var allOutboundStats = await Client.GetOutboundClientUsageCountsAsync();

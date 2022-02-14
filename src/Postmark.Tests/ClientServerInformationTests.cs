@@ -21,9 +21,8 @@ namespace Postmark.Tests
 
         public ClientServerInformationTests()
         {
-            
         }
-        
+
         public Task InitializeAsync()
         {
             Client = new PostmarkClient(WriteTestServerToken, BaseUrl);

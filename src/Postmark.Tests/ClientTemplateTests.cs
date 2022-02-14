@@ -30,6 +30,7 @@ namespace Postmark.Tests
                 {
                     tasks.Add(Client.DeleteTemplateAsync(t.TemplateId));
                 }
+
                 await Task.WhenAll(tasks);
             }
             catch { }
@@ -189,7 +190,9 @@ namespace Postmark.Tests
         [Fact]
         public async void ClientCanValidateTemplate()
         {
-            var result = await Client.ValidateTemplateAsync("{{name}}", "<html><body>{{content}}{{company.address}}{{#each products}}{{/each}}{{^competitors}}There are no substitutes.{{/competitors}}</body></html>", "{{content}}", new { name = "Johnny", content = "hello, world!" });
+            var result = await Client.ValidateTemplateAsync("{{name}}",
+                "<html><body>{{content}}{{company.address}}{{#each products}}{{/each}}{{^competitors}}There are no substitutes.{{/competitors}}</body></html>",
+                "{{content}}", new {name = "Johnny", content = "hello, world!"});
 
             Assert.True(result.AllContentIsValid);
             Assert.True(result.HtmlBody.ContentIsValid);
@@ -222,7 +225,8 @@ namespace Postmark.Tests
         public async void ClientCanSendWithTemplate()
         {
             var template = await Client.CreateTemplateAsync("test template name", "test subject", "test html body");
-            var sendResult = await Client.SendEmailWithTemplateAsync(template.TemplateId, new { name = "Andrew" }, WriteTestSenderEmailAddress, WriteTestSenderEmailAddress, false);
+            var sendResult = await Client.SendEmailWithTemplateAsync(template.TemplateId, new {name = "Andrew"}, WriteTestSenderEmailAddress,
+                WriteTestSenderEmailAddress, false);
             Assert.NotEqual(Guid.Empty, sendResult.MessageID);
         }
 
@@ -230,7 +234,8 @@ namespace Postmark.Tests
         public async void ClientCanSendTemplateWithStringModel()
         {
             var template = await Client.CreateTemplateAsync("test template name", "test subject", "test html body");
-            var sendResult = await Client.SendEmailWithTemplateAsync(template.TemplateId, "{ \"name\" : \"Andrew\" }", WriteTestSenderEmailAddress, WriteTestSenderEmailAddress, false);
+            var sendResult = await Client.SendEmailWithTemplateAsync(template.TemplateId, "{ \"name\" : \"Andrew\" }", WriteTestSenderEmailAddress,
+                WriteTestSenderEmailAddress, false);
             Assert.NotEqual(Guid.Empty, sendResult.MessageID);
         }
 
@@ -240,7 +245,8 @@ namespace Postmark.Tests
             var template = await Client.CreateTemplateAsync("test template name", "Test Message - #{{testKey}}", "test html body");
 
             var messages = Enumerable.Range(0, 10)
-                .Select(k => BuildTemplatedMessage(template.TemplateId, k.ToString())).ToArray();
+                .Select(k => BuildTemplatedMessage(template.TemplateId, k.ToString()))
+                .ToArray();
 
             var results = (await Client.SendEmailsWithTemplateAsync(messages)).ToList();
 
@@ -254,14 +260,14 @@ namespace Postmark.Tests
             var message = new TemplatedPostmarkMessage
             {
                 TemplateId = templateId,
-                TemplateModel = new { testKey = $"{testValue}" },
+                TemplateModel = new {testKey = $"{testValue}"},
                 From = WriteTestSenderEmailAddress,
                 To = WriteTestSenderEmailAddress,
                 Headers = new HeaderCollection
                 {
-                    new MailHeader( "X-Integration-Testing-Postmark-Type-Message" , TestingDate.ToString("o"))
+                    new MailHeader("X-Integration-Testing-Postmark-Type-Message", TestingDate.ToString("o"))
                 },
-                Metadata = new Dictionary<string, string> { { "test-key", "test-value" }, { "client-id", "42" } },
+                Metadata = new Dictionary<string, string> {{"test-key", "test-value"}, {"client-id", "42"}},
                 Tag = "integration-testing"
             };
 

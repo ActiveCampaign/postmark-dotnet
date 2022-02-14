@@ -12,7 +12,7 @@ namespace Postmark.Tests
         private PostmarkAdminClient _adminClient;
         private string _domainName;
         private string _returnPath;
-        
+
         public Task InitializeAsync()
         {
             _adminClient = new PostmarkAdminClient(WriteAccountToken, BaseUrl);
@@ -36,9 +36,10 @@ namespace Postmark.Tests
                         pendingDeletes.Add(deleteTask);
                     }
                 }
+
                 Task.WaitAll(pendingDeletes.ToArray());
             }
-            catch{}
+            catch { }
         }
 
         [Fact]
@@ -152,7 +153,7 @@ namespace Postmark.Tests
             Assert.Equal(_returnPath, domain.ReturnPathDomain);
         }
 
-        [Fact(Skip="DKIM renewal cannot be triggered frequently.")]
+        [Fact(Skip = "DKIM renewal cannot be triggered frequently.")]
         public async void AdminClient_CanRequestNewDKIM()
         {
             var domain = await _adminClient.CreateDomainAsync(_domainName);

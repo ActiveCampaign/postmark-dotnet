@@ -17,7 +17,7 @@ namespace Postmark.Tests
         private string _senderName;
         private string _senderprefix;
         private string _returnPath;
-        
+
         public Task InitializeAsync()
         {
             _adminClient = new PostmarkAdminClient(WriteAccountToken, BaseUrl);
@@ -45,9 +45,10 @@ namespace Postmark.Tests
                         pendingDeletes.Add(deleteTask);
                     }
                 }
+
                 Task.WaitAll(pendingDeletes.ToArray());
             }
-            catch{}
+            catch { }
         }
 
         [Fact]
@@ -81,7 +82,7 @@ namespace Postmark.Tests
             try
             {
                 await _adminClient.CreateSignatureAsync(Guid.NewGuid().ToString("n") + "@example.com",
-                            _senderName, _replyToAddress);
+                    _senderName, _replyToAddress);
             }
             catch (PostmarkValidationException ex)
             {
@@ -119,7 +120,7 @@ namespace Postmark.Tests
             var prefix = "updated-";
 
             var updateResult = await _adminClient.UpdateSignatureAsync(signature.ID,
-            prefix + signature.Name, prefix + _replyToAddress);
+                prefix + signature.Name, prefix + _replyToAddress);
 
             var updatedSignature = await _adminClient.GetSenderSignatureAsync(signature.ID);
 
@@ -148,7 +149,6 @@ namespace Postmark.Tests
         [Fact]
         public async void AdminClient_CanCreateSignatureWithReturnPath()
         {
-
             var signature = await _adminClient.CreateSignatureAsync(_senderEmail, _senderName, _replyToAddress, _returnPath);
             Assert.Equal(_returnPath, signature.ReturnPathDomain);
         }
@@ -162,7 +162,7 @@ namespace Postmark.Tests
             Assert.Equal(0, response.ErrorCode);
         }
 
-        [Fact(Skip="DKIM renewal cannot be triggered frequently.")]
+        [Fact(Skip = "DKIM renewal cannot be triggered frequently.")]
         public async void AdminClient_CanRequestNewDKIM()
         {
             var signature = await _adminClient.CreateSignatureAsync(_senderEmail, _senderName, _replyToAddress);

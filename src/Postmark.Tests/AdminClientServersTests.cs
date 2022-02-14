@@ -26,7 +26,7 @@ namespace Postmark.Tests
         private string _bounceHookUrl;
         private string _deliveryHookUrl;
         private bool? _enableSmtpApiErrorHooks;
-        
+
         public Task InitializeAsync()
         {
             _adminClient = new PostmarkAdminClient(WriteAccountToken, BaseUrl);
@@ -46,7 +46,7 @@ namespace Postmark.Tests
             _trackOpens = true;
             _inboundSpamThreshold = 30;
             _enableSmtpApiErrorHooks = true;
-            
+
             return Task.CompletedTask;
         }
 
@@ -64,8 +64,10 @@ namespace Postmark.Tests
                         pendingDeletes.Add(deleteTask);
                     }
                 }
+
                 Task.WaitAll(pendingDeletes.ToArray());
-            }catch{}
+            }
+            catch { }
         }
 
         [Fact]

@@ -12,7 +12,7 @@ namespace Postmark.Tests
     {
         private PostmarkAdminClient _adminClient;
         private PostmarkServer _server;
-        
+
         public async Task InitializeAsync()
         {
             _adminClient = new PostmarkAdminClient(WriteAccountToken, BaseUrl);

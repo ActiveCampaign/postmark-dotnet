@@ -13,7 +13,7 @@ namespace Postmark.Tests
             var client = new PostmarkClient(WriteTestServerToken, BaseUrl);
             var response = await client
                 .SendMessageAsync(WriteTestSenderEmailAddress, WriteTestEmailRecipientAddress,
-                "Testing the postmark client: " + DateTime.Now, "Plain text body", "<b>This is only a test!</b>");
+                    "Testing the postmark client: " + DateTime.Now, "Plain text body", "<b>This is only a test!</b>");
 
             // This should successfully send.
             Assert.Equal(0, response.ErrorCode);

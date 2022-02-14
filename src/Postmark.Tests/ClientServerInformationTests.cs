@@ -7,11 +7,10 @@ using PostmarkDotNet.Model;
 
 namespace Postmark.Tests
 {
-    public class ClientServerInformationTests : ClientBaseFixture
+    public class ClientServerInformationTests : ClientBaseFixture, IAsyncLifetime
     {
         private string _serverBaseName;
         private string _name;
-        private string _color;
 
         private string _inboundHookUrl;
         private string _bounceHookUrl;
@@ -19,21 +18,26 @@ namespace Postmark.Tests
         private string _clickHookUrl;
         private string _deliveryHookUrl;
 
-        protected override void Setup()
+        public Task InitializeAsync()
         {
             Client = new PostmarkClient(WriteTestServerToken, BaseUrl);
             var id = Guid.NewGuid().ToString("n");
             _serverBaseName = "dotnet-integration-test-server";
 
             _name = $"{_serverBaseName}-{id}";
-            _color = ServerColors.Purple;
 
             _inboundHookUrl = "http://www.example.com/inbound/" + id;
             _bounceHookUrl = "http://www.example.com/bounce/" + id;
             _openHookUrl = "http://www.example.com/opened/" + id;
             _clickHookUrl = "http://www.example.com/click/" + id;
             _deliveryHookUrl = "http://www.example.com/delivery/" + id;
-            //_inboundDomain = "inbound-" + id + ".exmaple.com";
+
+            return Task.CompletedTask;
+        }
+
+        public async Task DisposeAsync()
+        {
+            await Client.EditServerAsync(name: _serverBaseName);
         }
 
         [Fact]
@@ -106,16 +110,5 @@ namespace Postmark.Tests
             Assert.NotEqual(existingServer.InboundSpamThreshold, retrievedServer.InboundSpamThreshold);
             Assert.Equal(LinkTrackingOptions.HtmlOnly, retrievedServer.TrackLinks);
         }
-
-        void Dispose(){
-            Task.Run(async () =>
-            {
-                try
-                {
-                    await Client.EditServerAsync(name: _serverBaseName);
-                }catch{}
-            }).Wait();
-        }
-
     }
 }

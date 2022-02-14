@@ -18,7 +18,7 @@ namespace Postmark.Tests
             Assert.NotNull(ReadSeleniumTestServerToken);
             Assert.NotNull(ReadSeleniumOpenTrackingToken);
             Assert.NotNull(ReadLinkTrackingTestServerToken);
-            
+
             Assert.NotNull(WriteAccountToken);
             Assert.NotNull(WriteTestServerToken);
             Assert.NotNull(WriteTestSenderEmailAddress);
@@ -64,6 +64,7 @@ namespace Postmark.Tests
             {
                 //This is OK, it just doesn't exist.. no big deal.
             }
+
             return string.IsNullOrWhiteSpace(retval) ? Environment.GetEnvironmentVariable(variableName) : retval;
         }
 
@@ -85,9 +86,6 @@ namespace Postmark.Tests
         protected ClientBaseFixture()
         {
             AssertSettingsAvailable();
-            Setup();
         }
-
-        protected abstract void Setup();
     }
 }

@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 
 namespace Postmark.Tests
 {
-    public class AdminClientServersTests : ClientBaseFixture, IDisposable
+    public class AdminClientServersTests : ClientBaseFixture, IAsyncLifetime
     {
         private PostmarkAdminClient _adminClient;
         private string _serverPrefix;
@@ -27,7 +27,7 @@ namespace Postmark.Tests
         private string _deliveryHookUrl;
         private bool? _enableSmtpApiErrorHooks;
 
-        protected override void Setup()
+        public Task InitializeAsync()
         {
             _adminClient = new PostmarkAdminClient(WriteAccountToken, BaseUrl);
             var id = Guid.NewGuid().ToString("n");
@@ -46,28 +46,28 @@ namespace Postmark.Tests
             _trackOpens = true;
             _inboundSpamThreshold = 30;
             _enableSmtpApiErrorHooks = true;
+
+            return Task.CompletedTask;
         }
 
-
-        private Task Cleanup()
+        public async Task DisposeAsync()
         {
-            return Task.Run(async () =>
+            try
             {
-                try
+                var servers = await _adminClient.GetServersAsync();
+                var pendingDeletes = new List<Task>();
+                foreach (var server in servers.Servers)
                 {
-                    var servers = await _adminClient.GetServersAsync();
-                    var pendingDeletes = new List<Task>();
-                    foreach (var server in servers.Servers)
+                    if (Regex.IsMatch(server.Name, _serverPrefix))
                     {
-                        if (Regex.IsMatch(server.Name, _serverPrefix))
-                        {
-                            var deleteTask = _adminClient.DeleteServerAsync(server.ID);
-                            pendingDeletes.Add(deleteTask);
-                        }
+                        var deleteTask = _adminClient.DeleteServerAsync(server.ID);
+                        pendingDeletes.Add(deleteTask);
                     }
-                    Task.WaitAll(pendingDeletes.ToArray());
-                }catch{}
-            });
+                }
+
+                Task.WaitAll(pendingDeletes.ToArray());
+            }
+            catch { }
         }
 
         [Fact]
@@ -155,11 +155,6 @@ namespace Postmark.Tests
             var response = await _adminClient.DeleteServerAsync(server.ID);
             Assert.Equal(PostmarkStatus.Success, response.Status);
             Assert.Equal(0, response.ErrorCode);
-        }
-
-        public void Dispose()
-        {
-            this.Cleanup().Wait();
         }
     }
 }

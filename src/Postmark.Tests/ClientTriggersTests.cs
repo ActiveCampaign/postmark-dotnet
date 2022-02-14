@@ -7,46 +7,39 @@ using System.Threading.Tasks;
 
 namespace Postmark.Tests
 {
-    public class ClientTriggersTests : ClientBaseFixture, IDisposable
+    public class ClientTriggersTests : ClientBaseFixture, IAsyncLifetime
     {
         private string _triggerPrefix = "integration-testing-";
         private string _inboundRulePrefix = "integration-test";
 
-        protected override void Setup()
+        public Task InitializeAsync()
         {
             Client = new PostmarkClient(WriteTestServerToken, BaseUrl);
+            return Task.CompletedTask;
         }
 
-        public ClientTriggersTests() : base()
+        public async Task DisposeAsync()
         {
-            this.Cleanup().Wait();
-        }
-
-        private Task Cleanup()
-        {
-            return Task.Run(async () =>
+            try
             {
-                try
-                {
-                    var tasks = new List<Task>();
+                var tasks = new List<Task>();
 
-                    var inboundTriggers = await Client.GetAllInboundRuleTriggers();
-                    foreach (var inboundRule in inboundTriggers.InboundRules)
+                var inboundTriggers = await Client.GetAllInboundRuleTriggers();
+                foreach (var inboundRule in inboundTriggers.InboundRules)
+                {
+                    if (inboundRule.Rule.StartsWith(_inboundRulePrefix))
                     {
-                        if (inboundRule.Rule.StartsWith(_inboundRulePrefix))
-                        {
-                            var dt = Client.DeleteInboundRuleTrigger(inboundRule.ID);
-                            tasks.Add(dt);
-                        }
+                        var dt = Client.DeleteInboundRuleTrigger(inboundRule.ID);
+                        tasks.Add(dt);
                     }
+                }
 
-                    await Task.WhenAll(tasks);
-                }
-                catch
-                {
-                    //don't fail the tests because cleanup didn't happen.
-                }
-            });
+                await Task.WhenAll(tasks);
+            }
+            catch
+            {
+                //don't fail the tests because cleanup didn't happen.
+            }
         }
 
         [Fact]
@@ -77,7 +70,8 @@ namespace Postmark.Tests
         {
             var names = Enumerable.Range(0, 5)
                 .Select(k => String.Format("{0}+{1:n}@example.com",
-                    _inboundRulePrefix, Guid.NewGuid())).ToArray();
+                    _inboundRulePrefix, Guid.NewGuid()))
+                .ToArray();
 
             var awaitables = names.Select(name => Client.CreateInboundRuleTriggerAsync(name)).ToArray();
             await Task.WhenAll(awaitables);
@@ -100,11 +94,6 @@ namespace Postmark.Tests
 
             Assert.Equal(newRule.ID, retrievedRule.ID);
             Assert.Equal(newRule.Rule, retrievedRule.Rule);
-        }
-
-        public void Dispose()
-        {
-            this.Cleanup().Wait();
         }
     }
 }

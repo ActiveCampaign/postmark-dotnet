@@ -6,7 +6,7 @@ namespace Postmark.Tests
 {
     public class ClientBounceTests : ClientBaseFixture
     {
-        protected override void Setup()
+        public ClientBounceTests()
         {
             Client = new PostmarkClient(ReadSeleniumTestServerToken, BaseUrl);
         }
@@ -45,12 +45,10 @@ namespace Postmark.Tests
             Assert.NotNull(dump);
         }
 
-        [Fact(Skip="We can't run this test because can't do a write on the testing server account.")]
+        [Fact(Skip = "We can't run this test because can't do a write on the testing server account.")]
         public void Client_CanActivateABounce()
         {
             //Unfortunately, can't activate bounces on the testing server account.
         }
-
-
     }
 }

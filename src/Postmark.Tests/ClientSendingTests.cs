@@ -5,14 +5,13 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using System.Threading.Tasks;
 using PostmarkDotNet.Exceptions;
 
 namespace Postmark.Tests
 {
     public class ClientSendingTests : ClientBaseFixture
     {
-        protected override void Setup()
+        public ClientSendingTests()
         {
             Client = new PostmarkClient(WriteTestServerToken, BaseUrl);
         }
@@ -22,9 +21,10 @@ namespace Postmark.Tests
         {
             // prime the test for a future go-round (this ensures this test can run quickly,
             // but it's also a bit of a hack.
-            var metadata = new Dictionary<string, string>() {
-                    {"client-test", "value-goes-here"}
-                };
+            var metadata = new Dictionary<string, string>()
+            {
+                {"client-test", "value-goes-here"}
+            };
 
             await Client.SendMessageAsync(
                 WriteTestSenderEmailAddress,
@@ -37,8 +37,8 @@ namespace Postmark.Tests
             );
 
             var result = await Client.GetOutboundMessagesAsync(metadata: metadata);
-            
-            Assert.True(result.TotalCount > 0, 
+
+            Assert.True(result.TotalCount > 0,
                 "Messages with the supplied metadata were not found. " +
                 "If it has been more than 45 days since these tests have been run on this server, try re-running this test."
             );
@@ -54,9 +54,10 @@ namespace Postmark.Tests
                 String.Format("Testing the Postmark .net client, <b>{0}</b>", TestingDate),
                 new Dictionary<string, string>()
                 {
-                  {  "X-Integration-Testing" , TestingDate.ToString("o")}
+                    {"X-Integration-Testing", TestingDate.ToString("o")}
                 },
-                new Dictionary<string, string>() {
+                new Dictionary<string, string>()
+                {
                     {"test-metadata", "value-goes-here"},
                     {"more-metadata", "more-goes-here"}
                 });
@@ -109,7 +110,8 @@ namespace Postmark.Tests
             await Assert.ThrowsAsync<PostmarkValidationException>(() => Client.SendMessageAsync(message));
         }
 
-        private PostmarkMessage ConstructMessage(string inboundAddress, int number = 0, LinkTrackingOptions? trackLinks = LinkTrackingOptions.HtmlAndText)
+        private PostmarkMessage ConstructMessage(
+            string inboundAddress, int number = 0, LinkTrackingOptions? trackLinks = LinkTrackingOptions.HtmlAndText)
         {
             var message = new PostmarkMessage()
             {
@@ -122,10 +124,11 @@ namespace Postmark.Tests
                 TextBody = "This is plain text.",
                 TrackOpens = true,
                 TrackLinks = trackLinks,
-                Headers = new HeaderCollection(){
-                  new MailHeader( "X-Integration-Testing-Postmark-Type-Message" , TestingDate.ToString("o"))
+                Headers = new HeaderCollection()
+                {
+                    new MailHeader("X-Integration-Testing-Postmark-Type-Message", TestingDate.ToString("o"))
                 },
-                Metadata = new Dictionary<string, string>() { { "stuff", "very-interesting" }, {"client-id", "42"} },
+                Metadata = new Dictionary<string, string>() {{"stuff", "very-interesting"}, {"client-id", "42"}},
                 ReplyTo = inboundAddress,
                 Tag = "integration-testing"
             };
@@ -146,7 +149,8 @@ namespace Postmark.Tests
         {
             var inboundAddress = (await Client.GetServerAsync()).InboundAddress;
             var messages = Enumerable.Range(0, 10)
-                .Select(k => ConstructMessage(inboundAddress, k)).ToArray();
+                .Select(k => ConstructMessage(inboundAddress, k))
+                .ToArray();
 
             var results = await Client.SendMessagesAsync(messages);
 

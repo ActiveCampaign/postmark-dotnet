@@ -2,22 +2,20 @@
 using PostmarkDotNet;
 using System;
 using System.Linq;
-using System.Threading.Tasks;
 
 namespace Postmark.Tests
 {
     public class ClientStatisticsTests : ClientBaseFixture
     {
-        private DateTime _lastMonth;
-        public DateTime _windowStartDate { get; set; }
+        private readonly DateTime _lastMonth;
+        private DateTime WindowStartDate { get; set; }
 
-        protected override void Setup()
+        public ClientStatisticsTests()
         {
             Client = new PostmarkClient(ReadSeleniumTestServerToken, BaseUrl);
             _lastMonth = TestingDate - TimeSpan.FromDays(30);
-            _windowStartDate = TestingDate - TimeSpan.FromDays(35);
+            WindowStartDate = TestingDate - TimeSpan.FromDays(35);
         }
-
 
         [Fact]
         public async void Client_CanGetOutboundStatisticsOverview()
@@ -43,13 +41,14 @@ namespace Postmark.Tests
         {
             var allOutboundStats = await Client.GetOutboundOverviewStatsAsync();
             var allStatsThroughLastMonth = await Client.GetOutboundOverviewStatsAsync(null, _lastMonth);
-            var windowFromLastMonth = await Client.GetOutboundOverviewStatsAsync(null, _windowStartDate, _lastMonth);
-            var windowFromLastMonthWithTag = await Client.GetOutboundOverviewStatsAsync("test_tag", _windowStartDate, _lastMonth);
+            var windowFromLastMonth = await Client.GetOutboundOverviewStatsAsync(null, WindowStartDate, _lastMonth);
+            var windowFromLastMonthWithTag = await Client.GetOutboundOverviewStatsAsync("test_tag", WindowStartDate, _lastMonth);
 
             AssertStats(allOutboundStats, allStatsThroughLastMonth, windowFromLastMonth, windowFromLastMonthWithTag, f => f.Sent);
         }
 
-        private void AssertStats<T>(T alltimeStats, T allstatsThroughLastMonth, T windowFromLastMonth, T windowFromLastMonthWithTag, Func<T, int> statGetter)
+        private void AssertStats<T>(
+            T alltimeStats, T allstatsThroughLastMonth, T windowFromLastMonth, T windowFromLastMonthWithTag, Func<T, int> statGetter)
         {
             Assert.True(statGetter(alltimeStats) > 0, "Stat should be greater than 0");
             Assert.True(statGetter(allstatsThroughLastMonth) > 0, "All Last Month Stat should be greater than 0");
@@ -62,19 +61,18 @@ namespace Postmark.Tests
         }
 
 
-        [Fact(Skip="Not possible to test this easily, due to infrequent test runs.")]
+        [Fact(Skip = "Not possible to test this easily, due to infrequent test runs.")]
         public async void Client_CanGetOutboundStatisticsSentCounts()
         {
             var allOutboundStats = await Client.GetOutboundSentCountsAsync();
             var allStatsThroughLastMonth = await Client.GetOutboundSentCountsAsync(null, _lastMonth);
-            var windowFromLastMonth = await Client.GetOutboundSentCountsAsync(null, _windowStartDate, _lastMonth);
-            var windowFromLastMonthWithTag = await Client.GetOutboundSentCountsAsync("test_tag", _windowStartDate, _lastMonth);
+            var windowFromLastMonth = await Client.GetOutboundSentCountsAsync(null, WindowStartDate, _lastMonth);
+            var windowFromLastMonthWithTag = await Client.GetOutboundSentCountsAsync("test_tag", WindowStartDate, _lastMonth);
 
             AssertStats(allOutboundStats, allStatsThroughLastMonth, windowFromLastMonth, windowFromLastMonthWithTag, f => f.Sent);
 
             Assert.True(allOutboundStats.Days.Count() > 0);
             Assert.Equal(allOutboundStats.Sent, allOutboundStats.Days.Sum(k => k.Sent));
-
         }
 
         [Fact]
@@ -84,7 +82,7 @@ namespace Postmark.Tests
             Assert.True(allOutboundStats.Days.Count() > 0);
         }
 
-        [Fact(Skip="There is no suitable test data for this test.")]
+        [Fact(Skip = "There is no suitable test data for this test.")]
         public async void Client_CanGetOutboundStatisticsSpamComplaints()
         {
             var allOutboundStats = await Client.GetOutboundSpamComplaintCountsAsync();
@@ -116,16 +114,15 @@ namespace Postmark.Tests
             //Assert.Greater(allOutboundStats.WebMail, 0);
             //Assert.Greater(allOutboundStats.Mobile, 0);
             //Assert.Greater(allOutboundStats.Unknown, 0);
-
         }
 
-        [Fact(Skip="There is no suitable test data for this test.")]
+        [Fact(Skip = "There is no suitable test data for this test.")]
         public async void Client_CanGetOutboundStatisticsClientCounts()
         {
             var allOutboundStats = await Client.GetOutboundClientUsageCountsAsync();
             var allStatsThroughLastMonth = await Client.GetOutboundClientUsageCountsAsync(null, _lastMonth);
-            var windowFromLastMonth = await Client.GetOutboundClientUsageCountsAsync(null, _windowStartDate, _lastMonth);
-            var windowFromLastMonthWithTag = await Client.GetOutboundClientUsageCountsAsync("test_tag", _windowStartDate, _lastMonth);
+            var windowFromLastMonth = await Client.GetOutboundClientUsageCountsAsync(null, WindowStartDate, _lastMonth);
+            var windowFromLastMonthWithTag = await Client.GetOutboundClientUsageCountsAsync("test_tag", WindowStartDate, _lastMonth);
 
             AssertStats(allOutboundStats, allStatsThroughLastMonth, windowFromLastMonth,
                 windowFromLastMonthWithTag, f => f.ClientCounts.Sum(k => k.Value));
@@ -144,7 +141,5 @@ namespace Postmark.Tests
             Assert.True(readingTimes.ReadCounts.Any());
             Assert.True(readingTimes.Days.All(f => f.ReadCounts.Any()));
         }
-
-
     }
 }

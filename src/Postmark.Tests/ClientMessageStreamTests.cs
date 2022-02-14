@@ -8,16 +8,21 @@ using PostmarkDotNet.Model;
 
 namespace Postmark.Tests
 {
-    public class ClientMessageStreamTests : ClientBaseFixture, IDisposable
+    public class ClientMessageStreamTests : ClientBaseFixture, IAsyncLifetime
     {
         private PostmarkAdminClient _adminClient;
         private PostmarkServer _server;
 
-        protected override void Setup()
+        public async Task InitializeAsync()
         {
             _adminClient = new PostmarkAdminClient(WriteAccountToken, BaseUrl);
-            _server = TestUtils.MakeSynchronous(() => _adminClient.CreateServerAsync($"integration-test-message-stream-{Guid.NewGuid()}"));
+            _server = await _adminClient.CreateServerAsync($"integration-test-message-stream-{Guid.NewGuid()}");
             Client = new PostmarkClient(_server.ApiTokens.First(), BaseUrl);
+        }
+
+        public async Task DisposeAsync()
+        {
+            await _adminClient.DeleteServerAsync(_server.ID);
         }
 
         [Fact]
@@ -142,19 +147,6 @@ namespace Postmark.Tests
             var description = "This is a dummy description.";
 
             return await Client.CreateMessageStream(id, streamType, streamName, description);
-        }
-
-        private Task Cleanup()
-        {
-            return Task.Run(async () =>
-            {
-                await _adminClient.DeleteServerAsync(_server.ID);
-            });
-        }
-
-        public void Dispose()
-        {
-            Cleanup().Wait();
         }
     }
 }

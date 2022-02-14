@@ -24,7 +24,8 @@ namespace Postmark.Tests
         /// <param name="retriesLeft">Number of retries left. Defaults to 5.</param>
         /// <param name="delayInMs">Number of milliseconds to add delay before the next poll attempt. Defaults to 1500ms.</param>
         /// <returns></returns>
-        public static async Task<T> PollUntil<T>(Func<Task<T>> pollingTaskFunc, Func<T, bool> isComplete, int retriesLeft = 5,
+        public static async Task<T> PollUntil<T>(
+            Func<Task<T>> pollingTaskFunc, Func<T, bool> isComplete, int retriesLeft = 5,
             int delayInMs = 1500)
         {
             var result = await pollingTaskFunc();

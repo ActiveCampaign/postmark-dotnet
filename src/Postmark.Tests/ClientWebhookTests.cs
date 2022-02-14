@@ -10,16 +10,21 @@ using PostmarkDotNet.Model.Webhooks;
 
 namespace Postmark.Tests
 {
-    public class ClientWebhookTests : ClientBaseFixture, IDisposable
+    public class ClientWebhookTests : ClientBaseFixture, IAsyncLifetime
     {
         private PostmarkAdminClient _adminClient;
         private PostmarkServer _server;
 
-        protected override void Setup()
+        public async Task InitializeAsync()
         {
             _adminClient = new PostmarkAdminClient(WriteAccountToken, BaseUrl);
-            _server = TestUtils.MakeSynchronous(() => _adminClient.CreateServerAsync($"integration-test-webhooks-{Guid.NewGuid()}"));
+            _server = await _adminClient.CreateServerAsync($"integration-test-webhooks-{Guid.NewGuid()}");
             Client = new PostmarkClient(_server.ApiTokens.First(), BaseUrl);
+        }
+
+        public async Task DisposeAsync()
+        {
+            await _adminClient.DeleteServerAsync(_server.ID);
         }
 
         [Fact]
@@ -27,15 +32,15 @@ namespace Postmark.Tests
         {
             var url = "http://www.test.com/webhook";
             var messageStream = "outbound";
-            var httpAuth = new HttpAuth { Username = "testUser", Password = "testPassword" };
-            var httpHeaders = new List<HttpHeader> { new HttpHeader { Name = "testName", Value = "testValue" } };
+            var httpAuth = new HttpAuth {Username = "testUser", Password = "testPassword"};
+            var httpHeaders = new List<HttpHeader> {new HttpHeader {Name = "testName", Value = "testValue"}};
             var triggers = new WebhookConfigurationTriggers
             {
-                Bounce = new WebhookConfigurationBounceTrigger { Enabled = true, IncludeContent = true },
-                Click = new WebhookConfigurationClickTrigger { Enabled = true },
-                Open = new WebhookConfigurationOpenTrigger { Enabled = true, PostFirstOpenOnly = true },
-                Delivery = new WebhookConfigurationDeliveryTrigger { Enabled = true },
-                SpamComplaint = new WebhookConfigurationSpamComplaintTrigger { Enabled = true, IncludeContent = true }
+                Bounce = new WebhookConfigurationBounceTrigger {Enabled = true, IncludeContent = true},
+                Click = new WebhookConfigurationClickTrigger {Enabled = true},
+                Open = new WebhookConfigurationOpenTrigger {Enabled = true, PostFirstOpenOnly = true},
+                Delivery = new WebhookConfigurationDeliveryTrigger {Enabled = true},
+                SpamComplaint = new WebhookConfigurationSpamComplaintTrigger {Enabled = true, IncludeContent = true}
             };
             var newConfiguration = await Client.CreateWebhookConfigurationAsync(url, messageStream, httpAuth, httpHeaders, triggers);
 
@@ -104,21 +109,21 @@ namespace Postmark.Tests
         {
             var url = "http://www.test.com/webhook";
             var messageStream = "outbound";
-            var httpAuth = new HttpAuth { Username = "testUser", Password = "testPassword" };
-            var httpHeaders = new List<HttpHeader> { new HttpHeader { Name = "testName", Value = "testValue" } };
+            var httpAuth = new HttpAuth {Username = "testUser", Password = "testPassword"};
+            var httpHeaders = new List<HttpHeader> {new HttpHeader {Name = "testName", Value = "testValue"}};
             var triggers = new WebhookConfigurationTriggers
             {
-                Bounce = new WebhookConfigurationBounceTrigger { Enabled = true, IncludeContent = true },
-                Click = new WebhookConfigurationClickTrigger { Enabled = true },
+                Bounce = new WebhookConfigurationBounceTrigger {Enabled = true, IncludeContent = true},
+                Click = new WebhookConfigurationClickTrigger {Enabled = true},
             };
             var oldConfig = await Client.CreateWebhookConfigurationAsync(url, messageStream, httpAuth, httpHeaders, triggers);
 
             var newUrl = "http://www.test.com/new-webhook";
-            var newHttpAuth = new HttpAuth { Username = "updatedUser", Password = "updatedPassword" };
+            var newHttpAuth = new HttpAuth {Username = "updatedUser", Password = "updatedPassword"};
             var newHeaders = new List<HttpHeader>();
             var triggersUpdate = new WebhookConfigurationTriggers
             {
-                Click = new WebhookConfigurationClickTrigger { Enabled = false }
+                Click = new WebhookConfigurationClickTrigger {Enabled = false}
             };
             var updatedConfig = await Client.EditWebhookConfigurationAsync(oldConfig.ID.Value, newUrl, newHttpAuth,
                 newHeaders, triggersUpdate);
@@ -131,19 +136,6 @@ namespace Postmark.Tests
             Assert.Equal(newHeaders, updatedConfig.HttpHeaders);
             Assert.Equal(triggersUpdate.Click.Enabled, updatedConfig.Triggers.Click.Enabled);
             Assert.Equal(triggers.Bounce.Enabled, updatedConfig.Triggers.Bounce.Enabled);
-        }
-
-        private Task Cleanup()
-        {
-            return Task.Run(async () =>
-            {
-                await _adminClient.DeleteServerAsync(_server.ID);
-            });
-        }
-
-        public void Dispose()
-        {
-            Cleanup().Wait();
         }
     }
 }

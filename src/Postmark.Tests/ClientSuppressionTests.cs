@@ -9,23 +9,28 @@ using PostmarkDotNet.Model;
 
 namespace Postmark.Tests
 {
-    public class ClientSuppressionTests : ClientBaseFixture, IDisposable
+    public class ClientSuppressionTests : ClientBaseFixture, IAsyncLifetime
     {
         private PostmarkAdminClient _adminClient;
         private PostmarkServer _server;
 
-        protected override void Setup()
+        public async Task InitializeAsync()
         {
             _adminClient = new PostmarkAdminClient(WriteAccountToken, BaseUrl);
-            _server = TestUtils.MakeSynchronous(() => _adminClient.CreateServerAsync($"integration-test-suppressions-{Guid.NewGuid()}"));
+            _server = await _adminClient.CreateServerAsync($"integration-test-suppressions-{Guid.NewGuid()}");
             Client = new PostmarkClient(_server.ApiTokens.First(), BaseUrl);
+        }
+
+        public async Task DisposeAsync()
+        {
+            await _adminClient.DeleteServerAsync(_server.ID);
         }
 
         [Fact]
         public async Task ClientCanSuppressRecipients()
         {
-            var suppressionRequest = new PostmarkSuppressionChangeRequest { EmailAddress = $"test-{Guid.NewGuid().ToString()}@gmail.com" };
-            var result = await Client.CreateSuppressions(new List<PostmarkSuppressionChangeRequest> { suppressionRequest });
+            var suppressionRequest = new PostmarkSuppressionChangeRequest {EmailAddress = $"test-{Guid.NewGuid().ToString()}@gmail.com"};
+            var result = await Client.CreateSuppressions(new List<PostmarkSuppressionChangeRequest> {suppressionRequest});
 
             Assert.Single(result.Suppressions);
 
@@ -38,8 +43,8 @@ namespace Postmark.Tests
         [Fact]
         public async Task InvalidRequest_HasFailedStatus()
         {
-            var suppressionRequest = new PostmarkSuppressionChangeRequest { EmailAddress = "not-a-correct-email-address" };
-            var result = await Client.CreateSuppressions(new List<PostmarkSuppressionChangeRequest> { suppressionRequest });
+            var suppressionRequest = new PostmarkSuppressionChangeRequest {EmailAddress = "not-a-correct-email-address"};
+            var result = await Client.CreateSuppressions(new List<PostmarkSuppressionChangeRequest> {suppressionRequest});
 
             Assert.Single(result.Suppressions);
 
@@ -52,8 +57,8 @@ namespace Postmark.Tests
         [Fact]
         public async Task ClientCanDeleteSuppressions()
         {
-            var reactivationRequest = new PostmarkSuppressionChangeRequest { EmailAddress = $"test-{Guid.NewGuid().ToString()}@gmail.com" };
-            var result = await Client.DeleteSuppressions(new List<PostmarkSuppressionChangeRequest> { reactivationRequest });
+            var reactivationRequest = new PostmarkSuppressionChangeRequest {EmailAddress = $"test-{Guid.NewGuid().ToString()}@gmail.com"};
+            var result = await Client.DeleteSuppressions(new List<PostmarkSuppressionChangeRequest> {reactivationRequest});
 
             Assert.Single(result.Suppressions);
 
@@ -70,7 +75,7 @@ namespace Postmark.Tests
 
             for (var i = 0; i < 5; i++)
             {
-                var suppressionRequest = new PostmarkSuppressionChangeRequest { EmailAddress = $"test-{Guid.NewGuid().ToString()}@gmail.com" };
+                var suppressionRequest = new PostmarkSuppressionChangeRequest {EmailAddress = $"test-{Guid.NewGuid().ToString()}@gmail.com"};
                 suppressionRequests.Add(suppressionRequest);
             }
 
@@ -92,7 +97,7 @@ namespace Postmark.Tests
 
             for (var i = 0; i < 3; i++)
             {
-                var suppressionRequest = new PostmarkSuppressionChangeRequest { EmailAddress = $"test-{Guid.NewGuid().ToString()}@gmail.com" };
+                var suppressionRequest = new PostmarkSuppressionChangeRequest {EmailAddress = $"test-{Guid.NewGuid().ToString()}@gmail.com"};
                 suppressionRequests.Add(suppressionRequest);
             }
 
@@ -113,19 +118,6 @@ namespace Postmark.Tests
             Assert.Equal(suppressionRequests.First().EmailAddress, actualSuppression.EmailAddress);
             Assert.Equal("Customer", actualSuppression.Origin);
             Assert.Equal("ManualSuppression", actualSuppression.SuppressionReason);
-        }
-
-        private Task Cleanup()
-        {
-            return Task.Run(async () =>
-            {
-                await _adminClient.DeleteServerAsync(_server.ID);
-            });
-        }
-
-        public void Dispose()
-        {
-            Cleanup().Wait();
         }
     }
 }

@@ -7,18 +7,13 @@ namespace Postmark.Tests
 {
     public class PostmarkClientTests : ClientBaseFixture
     {
-        protected override void Setup()
-        {
-            //no setup needed.
-        }
-
         [Fact]
         public async void ClientCanSendMessage()
         {
             var client = new PostmarkClient(WriteTestServerToken, BaseUrl);
             var response = await client
                 .SendMessageAsync(WriteTestSenderEmailAddress, WriteTestEmailRecipientAddress,
-                "Testing the postmark client: " + DateTime.Now, "Plain text body", "<b>This is only a test!</b>");
+                    "Testing the postmark client: " + DateTime.Now, "Plain text body", "<b>This is only a test!</b>");
 
             // This should successfully send.
             Assert.Equal(0, response.ErrorCode);
@@ -67,7 +62,5 @@ namespace Postmark.Tests
             var stats = await client.GetOutboundReadtimeStatsAsync();
             Assert.NotNull(stats);
         }
-
-
     }
 }

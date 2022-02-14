@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace Postmark.Tests
 {
-    public class ClientTriggersTests : ClientBaseFixture, IAsyncDisposable
+    public class ClientTriggersTests : ClientBaseFixture, IAsyncLifetime
     {
         private string _triggerPrefix = "integration-testing-";
         private string _inboundRulePrefix = "integration-test";
@@ -70,7 +70,12 @@ namespace Postmark.Tests
             Assert.Equal(newRule.Rule, retrievedRule.Rule);
         }
 
-        public async ValueTask DisposeAsync()
+        public Task InitializeAsync()
+        {
+            return Task.CompletedTask;
+        }
+
+        public async Task DisposeAsync()
         {
             try
             {

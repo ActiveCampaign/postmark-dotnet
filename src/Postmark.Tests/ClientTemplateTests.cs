@@ -9,7 +9,7 @@ using PostmarkDotNet.Model;
 
 namespace Postmark.Tests
 {
-    public class ClientTemplateTests : ClientBaseFixture, IAsyncDisposable
+    public class ClientTemplateTests : ClientBaseFixture, IAsyncLifetime
     {
         private readonly string _layoutContentPlaceholder = "{{{@content}}}";
 
@@ -282,7 +282,12 @@ namespace Postmark.Tests
             return await Client.GetTemplateAsync(newStandardTemplate.TemplateId);
         }
 
-        public async ValueTask DisposeAsync()
+        public Task InitializeAsync()
+        {
+            return Task.CompletedTask;
+        }
+
+        public async Task DisposeAsync()
         {
             try
             {

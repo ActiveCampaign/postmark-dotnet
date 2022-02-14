@@ -10,7 +10,7 @@ using PostmarkDotNet.Model.Webhooks;
 
 namespace Postmark.Tests
 {
-    public class ClientWebhookTests : ClientBaseFixture, IAsyncDisposable
+    public class ClientWebhookTests : ClientBaseFixture, IAsyncLifetime
     {
         private PostmarkAdminClient _adminClient;
         private PostmarkServer _server;
@@ -133,7 +133,12 @@ namespace Postmark.Tests
             Assert.Equal(triggers.Bounce.Enabled, updatedConfig.Triggers.Bounce.Enabled);
         }
 
-        public async ValueTask DisposeAsync()
+        public Task InitializeAsync()
+        {
+            return Task.CompletedTask;
+        }
+
+        public async Task DisposeAsync()
         {
             await _adminClient.DeleteServerAsync(_server.ID);
         }

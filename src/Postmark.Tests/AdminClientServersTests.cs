@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 
 namespace Postmark.Tests
 {
-    public class AdminClientServersTests : ClientBaseFixture, IAsyncDisposable
+    public class AdminClientServersTests : ClientBaseFixture, IAsyncLifetime
     {
         private PostmarkAdminClient _adminClient;
         private string _serverPrefix;
@@ -135,7 +135,12 @@ namespace Postmark.Tests
             Assert.Equal(0, response.ErrorCode);
         }
 
-        public async ValueTask DisposeAsync()
+        public Task InitializeAsync()
+        {
+            return Task.CompletedTask;
+        }
+
+        public async Task DisposeAsync()
         {
             try
             {

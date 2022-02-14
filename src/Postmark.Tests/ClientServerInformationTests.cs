@@ -11,17 +11,12 @@ namespace Postmark.Tests
     {
         private string _serverBaseName;
         private string _name;
-        private string _color;
 
         private string _inboundHookUrl;
         private string _bounceHookUrl;
         private string _openHookUrl;
         private string _clickHookUrl;
         private string _deliveryHookUrl;
-
-        public ClientServerInformationTests()
-        {
-        }
 
         public Task InitializeAsync()
         {
@@ -30,7 +25,6 @@ namespace Postmark.Tests
             _serverBaseName = "dotnet-integration-test-server";
 
             _name = $"{_serverBaseName}-{id}";
-            _color = ServerColors.Purple;
 
             _inboundHookUrl = "http://www.example.com/inbound/" + id;
             _bounceHookUrl = "http://www.example.com/bounce/" + id;

@@ -14,19 +14,6 @@ namespace PostmarkDotNet
     /// </summary>
     public abstract class PostmarkClientBase
     {
-        private static Lazy<ISimpleHttpClient> _staticClient = 
-            new Lazy<ISimpleHttpClient>(()=>new SimpleHttpClient()) ;
-
-        /// <summary>
-        /// Configure a global connection factory to to process HTTP interactions.
-        /// </summary>
-        /// <remarks>
-        /// In most cases, you should not need to modify this property, but it's useful
-        /// in cases where you want to use another http client, or to mock the http processing
-        /// (for tests).
-        /// </remarks>
-        public static Func<ISimpleHttpClient> ClientFactory {get;set;} = () => _staticClient.Value;
-
         protected static readonly string DATE_FORMAT = "yyyy-MM-dd";
 
         /// <summary>
@@ -38,15 +25,17 @@ namespace PostmarkDotNet
               typeof(PostmarkClient).AssemblyQualifiedName + ")";
 
         private Uri baseUri;
+        private readonly ISimpleHttpClient client;
 
         /// <summary>
         /// Provides a base implementation of core request/response interactions.
         /// </summary>
         /// <param name="apiBaseUri"></param>
-        /// <param name="requestTimeoutInSeconds"></param>
-        public PostmarkClientBase(string apiBaseUri = "https://api.postmarkapp.com")
+        /// <param name="client"><see cref="ISimpleHttpClient"/> to processes HTTP interactions.</param>
+        public PostmarkClientBase(string apiBaseUri = "https://api.postmarkapp.com", ISimpleHttpClient client = null)
         {
             baseUri = new Uri(apiBaseUri);
+            this.client = client ?? new SimpleHttpClient();
         }
 
         protected abstract string AuthHeaderName { get; }
@@ -68,8 +57,6 @@ namespace PostmarkDotNet
         {
             TResponse retval = default(TResponse);
 
-            var client = ClientFactory();
-            
             var request = new HttpRequestMessage(verb, baseUri + apiPath.TrimStart('/'));
 
             //if the message is not a string, or the message is a non-empty string,

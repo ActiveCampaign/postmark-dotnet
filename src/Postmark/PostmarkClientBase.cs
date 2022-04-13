@@ -109,7 +109,7 @@ namespace PostmarkDotNet
                 }
                 else
                 {
-                    throw new Exception("The response from the API could not be parsed.");
+                    throw new PostmarkResponseException("The response from the API could not be parsed.", body);
                 }
             }
             

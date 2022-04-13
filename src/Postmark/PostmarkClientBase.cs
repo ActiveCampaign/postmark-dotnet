@@ -6,6 +6,7 @@ using System.Collections.Generic;
 using System.Net;
 using System.Net.Http;
 using System.Threading.Tasks;
+using Postmark.Exceptions;
 
 namespace PostmarkDotNet
 {
@@ -63,13 +64,12 @@ namespace PostmarkDotNet
         /// <param name="message"></param>
         /// <returns></returns>
         /// <exception cref="System.Exception"></exception>
-        protected async Task<TResponse> ProcessRequestAsync<TRequestBody, TResponse>(string apiPath,
+        protected async Task<TResponse> ProcessRequestAsync<TRequestBody, TResponse>(
+            string apiPath,
             HttpMethod verb, TRequestBody message = null) where TRequestBody : class
         {
-            TResponse retval = default(TResponse);
-
             var client = ClientFactory();
-            
+
             var request = new HttpRequestMessage(verb, baseUri + apiPath.TrimStart('/'));
 
             //if the message is not a string, or the message is a non-empty string,
@@ -79,7 +79,7 @@ namespace PostmarkDotNet
                 var content = new JsonContent<TRequestBody>(message);
                 request.Content = content;
             }
-            
+
             request.Headers.Add("Accept", "application/json");
             request.Headers.Add(AuthHeaderName, _authToken);
             request.Headers.Add("User-Agent", _agent);
@@ -88,32 +88,31 @@ namespace PostmarkDotNet
 
             var body = await result.Content.ReadAsStringAsync();
 
-            if (!JsonNetExtensions.TryDeserializeObject<TResponse>(body, out retval) || result.StatusCode != HttpStatusCode.OK)
+            if (JsonNetExtensions.TryDeserializeObject<TResponse>(body, out TResponse parsedResponse) 
+                && result.StatusCode == HttpStatusCode.OK)
             {
-                PostmarkResponse error;
-                if (JsonNetExtensions.TryDeserializeObject<PostmarkResponse>(body, out error))
-                {
-                    switch ((int)result.StatusCode)
-                    {
-                        case 422:
-                            error.Status = PostmarkStatus.UserError;
-                            break;
-                        case 500:
-                            error.Status = PostmarkStatus.ServerError;
-                            break;
-                        default:
-                            error.Status = PostmarkStatus.Unknown;
-                            break;
-                    }
-                    throw new PostmarkValidationException(error);
-                }
-                else
-                {
-                    throw new PostmarkResponseException("The response from the API could not be parsed.", body);
-                }
+                return parsedResponse;
             }
-            
-            return retval;
+
+            if (!JsonNetExtensions.TryDeserializeObject<PostmarkResponse>(body, out PostmarkResponse error))
+            {
+                throw new PostmarkResponseException("The response from the API could not be parsed.", body);
+            }
+
+            switch ((int) result.StatusCode)
+            {
+                case 422:
+                    error.Status = PostmarkStatus.UserError;
+                    break;
+                case 500:
+                    error.Status = PostmarkStatus.ServerError;
+                    break;
+                default:
+                    error.Status = PostmarkStatus.Unknown;
+                    break;
+            }
+
+            throw new PostmarkValidationException(error);
         }
 
         /// <summary>

@@ -37,6 +37,7 @@ namespace Postmark.Tests
         {
             string retval = null;
             //this is here to allow us to have a config that isn't committed to source control, but still allows the project to build
+            var configFile = Environment.GetEnvironmentVariable("POSTMARK_SDK_CONFIG_FILE_NAME") ?? "testing_keys.json";
             try
             {
                 var location = Path.GetFullPath(_assemblyLocation);
@@ -47,7 +48,7 @@ namespace Postmark.Tests
                 {
                     keyPath = Path.Combine(new[] {Path.DirectorySeparatorChar.ToString()}
                         .Concat(pathComponents.Take(componentsCount)
-                            .Concat(new[] {"testing_keys.json"}))
+                            .Concat(new[] {configFile}))
                         .ToArray());
                     if (File.Exists(keyPath))
                     {

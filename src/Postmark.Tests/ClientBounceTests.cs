@@ -1,4 +1,5 @@
-﻿using Xunit;
+﻿using System;
+using Xunit;
 using PostmarkDotNet;
 using System.Linq;
 
@@ -9,6 +10,13 @@ namespace Postmark.Tests
         public ClientBounceTests()
         {
             Client = new PostmarkClient(ReadSeleniumTestServerToken, BaseUrl);
+        }
+
+        [Fact]
+        public async void Client_CanGetOutboundBounceCounts()
+        {
+            var result = await Client.GetOutboundBounceCountsAsync();
+            Assert.NotEmpty(result.Days);
         }
 
         [Fact]

@@ -284,7 +284,6 @@ namespace PostmarkDotNet
         /// the ServerToken supplied when the client was constructed.
         /// </summary>
         /// <returns></returns>
-        [Obsolete("This method is deprecated and may be removed in a future release. Use PostmarkAdminClient instead.")]
         public async Task<PostmarkServer> GetServerAsync()
         {
             return await this.ProcessNoBodyRequestAsync<PostmarkServer>("/server");
@@ -295,7 +294,6 @@ namespace PostmarkDotNet
         /// Any parameters that are left null will use the current value for the server.
         /// </summary>
         /// <returns></returns>
-        [Obsolete("This method is deprecated and may be removed in a future release. Use PostmarkAdminClient instead.")]
         public async Task<PostmarkServer> EditServerAsync(
             String name = null, string color = null,
             bool? rawEmailEnabled = null, bool? smtpApiActivated = null, string inboundHookUrl = null,

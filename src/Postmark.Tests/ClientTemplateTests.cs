@@ -225,7 +225,7 @@ namespace Postmark.Tests
         public async void ClientCanSendWithTemplate()
         {
             var template = await Client.CreateTemplateAsync("test template name", "test subject", "test html body");
-            var sendResult = await Client.SendEmailWithTemplateAsync(template.TemplateId, new {name = "Andrew"}, WriteTestSenderEmailAddress,
+            var sendResult = await Client.SendEmailWithTemplateAsync(template.TemplateId, new {name = "Andrew"}, WriteTestEmailRecipientAddress,
                 WriteTestSenderEmailAddress, false);
             Assert.NotEqual(Guid.Empty, sendResult.MessageID);
         }
@@ -234,7 +234,7 @@ namespace Postmark.Tests
         public async void ClientCanSendTemplateWithStringModel()
         {
             var template = await Client.CreateTemplateAsync("test template name", "test subject", "test html body");
-            var sendResult = await Client.SendEmailWithTemplateAsync(template.TemplateId, "{ \"name\" : \"Andrew\" }", WriteTestSenderEmailAddress,
+            var sendResult = await Client.SendEmailWithTemplateAsync(template.TemplateId, "{ \"name\" : \"Andrew\" }", WriteTestEmailRecipientAddress,
                 WriteTestSenderEmailAddress, false);
             Assert.NotEqual(Guid.Empty, sendResult.MessageID);
         }
@@ -262,7 +262,7 @@ namespace Postmark.Tests
                 TemplateId = templateId,
                 TemplateModel = new {testKey = $"{testValue}"},
                 From = WriteTestSenderEmailAddress,
-                To = WriteTestSenderEmailAddress,
+                To = WriteTestEmailRecipientAddress,
                 Headers = new HeaderCollection
                 {
                     new MailHeader("X-Integration-Testing-Postmark-Type-Message", TestingDate.ToString("o"))

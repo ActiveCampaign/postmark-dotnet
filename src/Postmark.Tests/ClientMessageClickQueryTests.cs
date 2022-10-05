@@ -16,7 +16,7 @@ namespace Postmark.Tests
         {
             var messagestats = await Client.GetClickEventsForMessagesAsync();
             Assert.True(messagestats.TotalCount > 0);
-            Assert.True(messagestats.Clicks.Count() > 0);
+            Assert.True(messagestats.Clicks.Any());
         }
 
         [Fact]

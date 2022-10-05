@@ -38,17 +38,12 @@ namespace Postmark.Tests
             searchedList = await Client.GetOutboundMessagesAsync(0, 20, subject: subject);
             Assert.True(searchedList.Messages.Count > 0);
             Assert.True(searchedList.TotalCount > 0);
-            Assert.True(searchedList.Messages.All(k => k.Subject == subject));
+            Assert.True(searchedList.Messages.All(k => k.Subject.ToLower().Contains(subject.ToLower())));
 
             searchedList = await Client.GetOutboundMessagesAsync(0, 20, tag: tag);
             Assert.True(searchedList.Messages.Count > 0);
             Assert.True(searchedList.TotalCount > 0);
             Assert.True(searchedList.Messages.All(k => k.Tag == tag));
-
-            searchedList = await Client.GetOutboundMessagesAsync(0, 20, subject: subject);
-            Assert.True(searchedList.Messages.Count > 0);
-            Assert.True(searchedList.TotalCount > 0);
-            Assert.True(searchedList.Messages.All(k => k.Subject == subject));
         }
 
         [Fact]

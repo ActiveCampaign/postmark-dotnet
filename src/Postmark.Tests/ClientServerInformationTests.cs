@@ -54,11 +54,10 @@ namespace Postmark.Tests
         [Fact]
         public async void ClientCanUpdateServerName()
         {
-            var client = new PostmarkClient(WriteTestServerToken);
             var serverName = _serverBaseName + DateTime.Now.ToString("o");
-            var nonModifiedServer = await client.GetServerAsync();
-            var updatedServer = await client.EditServerAsync(name: serverName);
-            var modifiedServer = await client.GetServerAsync();
+            var nonModifiedServer = await Client.GetServerAsync();
+            var updatedServer = await Client.EditServerAsync(name: serverName);
+            var modifiedServer = await Client.GetServerAsync();
 
             Assert.False(nonModifiedServer.Name == updatedServer.Name, "Updated server name should be different than current name");
             Assert.True(serverName == updatedServer.Name, "Updated server name returned from EditServer should be the same as the value passed in.");

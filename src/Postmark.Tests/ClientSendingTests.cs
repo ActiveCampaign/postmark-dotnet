@@ -116,9 +116,9 @@ namespace Postmark.Tests
             var message = new PostmarkMessage()
             {
                 From = WriteTestSenderEmailAddress,
-                To = WriteTestSenderEmailAddress,
-                Cc = WriteTestEmailRecipientAddress,
-                Bcc = "testing@example.com",
+                To = WriteTestEmailRecipientAddress,
+                Cc = "cc@blackhole.postmarkapp.com",
+                Bcc = "bcc@blackhole.postmarkapp.com",
                 Subject = String.Format("Integration Test - {0} - Message #{1}", TestingDate, number),
                 HtmlBody = String.Format("Testing the Postmark .net client, <b>{0}</b>", TestingDate),
                 TextBody = "This is plain text.",

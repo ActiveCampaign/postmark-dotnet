@@ -3,6 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.Net.Http;
 using System.Threading.Tasks;
+
 namespace PostmarkDotNet
 {
     /// <summary>
@@ -12,7 +13,7 @@ namespace PostmarkDotNet
     ///<remarks>
     /// Make sure to include "using PostmarkDotNet;" in your class file, which will include extension methods on the base client.
     ///</remarks>
-    public class PostmarkAdminClient : PostmarkDotNet.PostmarkClientBase
+    public class PostmarkAdminClient : PostmarkClientBase
     {
         /// <summary>
         /// Construct a PostmarkAdminClient.
@@ -28,10 +29,7 @@ namespace PostmarkDotNet
         /// <summary>
         /// The authentication header required for Admin API interactions, in this case: "X-Postmark-Account-Token"
         /// </summary>
-        protected override string AuthHeaderName
-        {
-            get { return "X-Postmark-Account-Token"; }
-        }
+        protected override string AuthHeaderName => "X-Postmark-Account-Token";
 
         /// <summary>
         /// Get a server with the associated serverId.

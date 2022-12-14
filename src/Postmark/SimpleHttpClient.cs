@@ -9,7 +9,7 @@ namespace PostmarkDotNet
         private HttpClient _client = new HttpClient();
 
         public SimpleHttpClient(TimeSpan? timeoutLength = null){
-            _client.Timeout = timeoutLength ?? TimeSpan.FromSeconds(30);
+            _client.Timeout = timeoutLength ?? TimeSpan.FromSeconds(60);
         }
 
         public Task<HttpResponseMessage> SendAsync(HttpRequestMessage request)

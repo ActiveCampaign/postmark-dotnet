@@ -123,8 +123,10 @@ namespace PostmarkDotNet
         /// <param name="parameters"></param>
         /// <param name="verb">The http verb to use for the request.</param>
         /// <returns></returns>
-        protected async Task<TResponse> ProcessNoBodyRequestAsync<TResponse>
-            (string apiPath, IDictionary<string, object> parameters = null, HttpMethod verb = null)
+        protected async Task<TResponse> ProcessNoBodyRequestAsync<TResponse>(
+            string apiPath,
+            IDictionary<string, object> parameters = null,
+            HttpMethod verb = null)
         {
             parameters = parameters ?? new Dictionary<string, object>();
 

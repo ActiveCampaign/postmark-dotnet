@@ -53,7 +53,23 @@ namespace PostmarkDotNet
         /// <returns></returns>
         public async Task<PostmarkResponse> DeleteServerAsync(int serverId)
         {
-            return await this.ProcessNoBodyRequestAsync<PostmarkResponse>("/servers/" + serverId, verb: HttpMethod.Delete);
+            // Adding a retry mechanism because server deletion currently fails intermittently due to deadlocks.
+            // This is a temporary fix, and should be removed once the server delete operation is more reliable.
+            var attemptsRemain = 5;
+            while (true)
+            {
+                try
+                {
+                    return await this.ProcessNoBodyRequestAsync<PostmarkResponse>("/servers/" + serverId, verb: HttpMethod.Delete);
+                }
+                catch
+                {
+                    if (--attemptsRemain == 0)
+                    {
+                        throw;
+                    }
+                }
+            }
         }
 
         /// <summary>

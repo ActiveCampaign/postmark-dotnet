@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Runtime.Serialization;
 
 namespace PostmarkDotNet
 {
@@ -38,5 +39,14 @@ namespace PostmarkDotNet
         ///   This does not map to HTTP status codes.
         /// </summary>
         public int ErrorCode { get; set; }
+
+        [OnDeserialized]
+        internal void OnDeserializedMethod(StreamingContext context)
+        {
+            if (ErrorCode != 0 && Status == PostmarkStatus.Success)
+            {
+                Status = PostmarkStatus.Unknown;
+            }
+        }
     }
 }

@@ -231,6 +231,25 @@ namespace Postmark.Tests
         }
 
         [Fact]
+        public async void ClientCantSendBatchWithInvalidTemplateAlias()
+        {
+            var sendResult = await Client.SendMessagesAsync(new[]
+            {
+                new TemplatedPostmarkMessage
+                {
+                    TemplateAlias = "invalid-alias",
+                    To = WriteTestSenderEmailAddress,
+                    From = WriteTestSenderEmailAddress
+                }
+            });
+
+            Assert.Equal(Guid.Empty, sendResult.Single().MessageID);
+            Assert.Equal(1101, sendResult.Single().ErrorCode);
+            Assert.Equal("The Template's 'Alias' associated with this request is not valid or was not found.", sendResult.Single().Message);
+            Assert.Equal(PostmarkStatus.Unknown, sendResult.Single().Status);
+        }
+
+        [Fact]
         public async void ClientCanSendTemplateWithStringModel()
         {
             var template = await Client.CreateTemplateAsync("test template name", "test subject", "test html body");

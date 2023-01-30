@@ -8,7 +8,7 @@ namespace Postmark.Tests
     {
         public ClientBounceTests()
         {
-            Client = new PostmarkClient(ReadSeleniumTestServerToken, BaseUrl);
+            Client = new PostmarkClient(WriteTestServerToken, BaseUrl);
         }
 
         [Fact]

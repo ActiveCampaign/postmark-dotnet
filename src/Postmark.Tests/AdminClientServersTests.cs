@@ -77,6 +77,7 @@ namespace Postmark.Tests
             var server = await _adminClient.GetServerAsync(allservers.Servers.First().ID);
             Assert.NotNull(server);
             Assert.NotNull(server.Name);
+            Assert.NotNull(server.DeliveryType);
         }
 
         [Fact]
@@ -121,6 +122,7 @@ namespace Postmark.Tests
             Assert.NotEqual(newServer.InboundSpamThreshold, retrievedServer.InboundSpamThreshold);
             Assert.False(newServer.EnableSmtpApiErrorHooks);
             Assert.Equal(_enableSmtpApiErrorHooks, updatedServer.EnableSmtpApiErrorHooks);
+            Assert.Equal("Live", retrievedServer.DeliveryType);
         }
 
         [Fact]
@@ -146,6 +148,7 @@ namespace Postmark.Tests
             Assert.True(String.IsNullOrEmpty(retrievedServer.InboundDomain));
             Assert.Equal(_inboundSpamThreshold, retrievedServer.InboundSpamThreshold);
             Assert.Equal(_enableSmtpApiErrorHooks, retrievedServer.EnableSmtpApiErrorHooks);
+            Assert.Equal("Live", retrievedServer.DeliveryType);
         }
 
         [Fact]

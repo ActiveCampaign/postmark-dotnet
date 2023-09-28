@@ -48,6 +48,11 @@ namespace PostmarkDotNet.Model
         /// Allow raw email to be sent with inbound.
         /// </summary>
         public bool RawEmailEnabled { get; set; }
+        
+        /// <summary>
+        /// Specifies the type of environment for your server. Possible options: Live, Sandbox. Defaults to Live if not specified. This cannot be changed after the server has been created.
+        /// </summary>
+        public string DeliveryType { get; set; }
 
         /// <summary>
         /// Inbound email address

@@ -80,7 +80,8 @@ namespace PostmarkDotNet
             bool? rawEmailEnabled = null, bool? smtpApiActivated = null, string inboundHookUrl = null,
             string bounceHookUrl = null, string openHookUrl = null, bool? postFirstOpenOnly = null,
             bool? trackOpens = null, string inboundDomain = null, int? inboundSpamThreshold = null,
-            LinkTrackingOptions? trackLinks = null, string clickHookUrl = null, string deliveryHookUrl = null, bool? enableSmtpApiErrorHooks = null)
+            LinkTrackingOptions? trackLinks = null, string clickHookUrl = null, string deliveryHookUrl = null,
+            bool? enableSmtpApiErrorHooks = null, string deliveryType = null)
         {
 
             var body = new Dictionary<string, object>();
@@ -99,6 +100,7 @@ namespace PostmarkDotNet
             body["ClickHookUrl"] = clickHookUrl;
             body["DeliveryHookUrl"] = deliveryHookUrl;
             body["EnableSmtpApiErrorHooks"] = enableSmtpApiErrorHooks;
+            body["DeliveryType"] = deliveryType;
 
             return await this.ProcessRequestAsync<Dictionary<string, object>, PostmarkServer>("/servers/", HttpMethod.Post, body);
         }

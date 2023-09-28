@@ -50,7 +50,7 @@ namespace PostmarkDotNet.Model
         public bool RawEmailEnabled { get; set; }
         
         /// <summary>
-        /// Specifies the type of environment for your server. Initial possible options: Live, Sandbox. This cannot be changed after the server has been created.
+        /// Specifies the type of environment for your server. Possible options: Live, Sandbox. Defaults to Live if not specified. This cannot be changed after the server has been created.
         /// </summary>
         public string DeliveryType { get; set; }
 

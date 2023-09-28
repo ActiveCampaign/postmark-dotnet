@@ -387,5 +387,32 @@ namespace PostmarkDotNet
 
             return await this.ProcessNoBodyRequestAsync<PostmarkServerList>("/servers", parameters);
         }
+
+        /// <summary>
+        /// Create a data removal request.
+        /// </summary>
+        /// <param name="requestedBy">The email address of the user that is making the request. This must belong to an account user in your Postmark account.</param>
+        /// <param name="requestedFor">The email address of the recipient who's asking for their data to be removed. This must be a valid email address.</param>
+        /// <param name="notifyWhenCompleted">Specifies whether the RequestedBy email address is notified when the data removal request is complete.</param>
+        /// <returns></returns>
+        public async Task<int> RequestDataRemoval(string requestedBy, string requestedFor, bool notifyWhenCompleted)
+        {
+            var parameters = new Dictionary<string, object>();
+            parameters["RequestedBy"] = requestedBy;
+            parameters["RequestedFor"] = requestedFor;
+            parameters["NotifyWhenCompleted"] = notifyWhenCompleted;
+            
+            return (await this.ProcessRequestAsync<Dictionary<string, object>, PostmarkDataRemovalRequested>("/data-removals", HttpMethod.Post, parameters)).ID;
+        }
+
+        /// <summary>
+        /// Check a data removal request status.
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
+        public async Task<PostmarkDataRemovalStatus> GetDataRemovalStatus(int id)
+        {
+            return (await this.ProcessNoBodyRequestAsync<PostmarkDataRemovalStatusResponse>($"/data-removals/{id}")).Status;
+        }
     }
 }

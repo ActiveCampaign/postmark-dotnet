@@ -6,7 +6,7 @@ namespace PostmarkDotNet.Model
         /// <summary>
         ///   The Data Removal ID.
         /// </summary>
-        public int ID { get; set; }
+        public long ID { get; set; }
 
         /// <summary>
         ///   The error code returned from Postmark.

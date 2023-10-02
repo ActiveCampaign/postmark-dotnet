@@ -3,6 +3,11 @@ namespace PostmarkDotNet.Model
     public class PostmarkDataRemovalStatusResponse
     {
         /// <summary>
+        ///   The Data Removal ID.
+        /// </summary>
+        public long ID { get; set; }
+        
+        /// <summary>
         ///   The status of Data Removal request. 
         /// </summary>
         public PostmarkDataRemovalStatus Status { get; set; }

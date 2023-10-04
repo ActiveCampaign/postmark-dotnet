@@ -1,6 +1,6 @@
 namespace PostmarkDotNet.Model
 {
-    public class PostmarkDataRemovalStatusResponse
+    public class PostmarkDataRemoval
     {
         /// <summary>
         ///   The Data Removal ID.

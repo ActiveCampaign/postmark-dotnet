@@ -391,7 +391,7 @@ namespace PostmarkDotNet
         /// <summary>
         /// Create a data removal request.
         /// </summary>
-        /// <param name="requestedBy">The email address of the user that is making the request. This must belong to an account user in your Postmark account.</param>
+        /// <param name="requestedBy">The email address of the user that is making the request.</param>
         /// <param name="requestedFor">The email address of the recipient who's asking for their data to be removed. This must be a valid email address.</param>
         /// <param name="notifyWhenCompleted">Specifies whether the RequestedBy email address is notified when the data removal request is complete.</param>
         /// <returns></returns>

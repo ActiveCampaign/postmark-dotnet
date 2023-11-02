@@ -335,7 +335,7 @@ namespace PostmarkDotNet
         /// <param name="toDate"></param>
         /// <returns></returns>
         private IDictionary<string, object>
-           ConstructSentStatsFilter(string tag, DateTime? fromDate, DateTime? toDate)
+           ConstructSentStatsFilter(string tag, DateTime? fromDate, DateTime? toDate, string messageStream)
         {
             var parameters = new Dictionary<string, object>();
             if (!string.IsNullOrWhiteSpace(tag))
@@ -349,6 +349,10 @@ namespace PostmarkDotNet
             if (toDate.HasValue)
             {
                 parameters["todate"] = toDate.Value.ToString(DATE_FORMAT);
+            }
+            if (!string.IsNullOrWhiteSpace(messageStream))
+            {
+                parameters["messagestream"] = messageStream;
             }
             return parameters;
         }
@@ -489,11 +493,12 @@ namespace PostmarkDotNet
         /// <param name="tag"></param>
         /// <param name="fromDate"></param>
         /// <param name="toDate"></param>
+        /// <param name="messageStream"></param>
         /// <returns></returns>
         public async Task<PostmarkOutboundOverviewStats> GetOutboundOverviewStatsAsync(
-            string tag = null, DateTime? fromDate = null, DateTime? toDate = null)
+            string tag = null, DateTime? fromDate = null, DateTime? toDate = null, string messageStream = null)
         {
-            var parameters = ConstructSentStatsFilter(tag, fromDate, toDate);
+            var parameters = ConstructSentStatsFilter(tag, fromDate, toDate, messageStream);
             return await this.ProcessNoBodyRequestAsync<PostmarkOutboundOverviewStats>
                 ("/stats/outbound", parameters);
         }
@@ -504,11 +509,12 @@ namespace PostmarkDotNet
         /// <param name="tag"></param>
         /// <param name="fromDate"></param>
         /// <param name="toDate"></param>
+        /// <param name="messageStream"></param>
         /// <returns></returns>
         public async Task<PostmarkOutboundSentStats>
-            GetOutboundSentCountsAsync(string tag = null, DateTime? fromDate = null, DateTime? toDate = null)
+            GetOutboundSentCountsAsync(string tag = null, DateTime? fromDate = null, DateTime? toDate = null, string messageStream = null)
         {
-            var parameters = ConstructSentStatsFilter(tag, fromDate, toDate);
+            var parameters = ConstructSentStatsFilter(tag, fromDate, toDate, messageStream);
             return await this.ProcessNoBodyRequestAsync<PostmarkOutboundSentStats>
                 ("/stats/outbound/sends", parameters);
         }
@@ -519,11 +525,12 @@ namespace PostmarkDotNet
         /// <param name="tag"></param>
         /// <param name="fromDate"></param>
         /// <param name="toDate"></param>
+        /// <param name="messageStream"></param>
         /// <returns></returns>
         public async Task<PostmarkOutboundBounceStats>
-            GetOutboundBounceCountsAsync(string tag = null, DateTime? fromDate = null, DateTime? toDate = null)
+            GetOutboundBounceCountsAsync(string tag = null, DateTime? fromDate = null, DateTime? toDate = null, string messageStream = null)
         {
-            var parameters = ConstructSentStatsFilter(tag, fromDate, toDate);
+            var parameters = ConstructSentStatsFilter(tag, fromDate, toDate, messageStream);
             return await this.ProcessNoBodyRequestAsync<PostmarkOutboundBounceStats>
                 ("/stats/outbound/bounces", parameters);
         }
@@ -534,10 +541,11 @@ namespace PostmarkDotNet
         /// <param name="tag"></param>
         /// <param name="fromDate"></param>
         /// <param name="toDate"></param>
+        /// <param name="messageStream"></param>
         /// <returns></returns>
-        public async Task<PostmarkOutboundSpamComplaintStats> GetOutboundSpamComplaintCountsAsync(string tag = null, DateTime? fromDate = null, DateTime? toDate = null)
+        public async Task<PostmarkOutboundSpamComplaintStats> GetOutboundSpamComplaintCountsAsync(string tag = null, DateTime? fromDate = null, DateTime? toDate = null, string messageStream = null)
         {
-            var parameters = ConstructSentStatsFilter(tag, fromDate, toDate);
+            var parameters = ConstructSentStatsFilter(tag, fromDate, toDate, messageStream);
             return await this.ProcessNoBodyRequestAsync<PostmarkOutboundSpamComplaintStats>
                 ("/stats/outbound/spam", parameters);
         }
@@ -548,10 +556,11 @@ namespace PostmarkDotNet
         /// <param name="tag"></param>
         /// <param name="fromDate"></param>
         /// <param name="toDate"></param>
+        /// <param name="messageStream"></param>
         /// <returns></returns>
-        public async Task<PostmarkOutboundTrackedStats> GetOutboundTrackingCountsAsync(string tag = null, DateTime? fromDate = null, DateTime? toDate = null)
+        public async Task<PostmarkOutboundTrackedStats> GetOutboundTrackingCountsAsync(string tag = null, DateTime? fromDate = null, DateTime? toDate = null, string messageStream = null)
         {
-            var parameters = ConstructSentStatsFilter(tag, fromDate, toDate);
+            var parameters = ConstructSentStatsFilter(tag, fromDate, toDate, messageStream);
             return await this.ProcessNoBodyRequestAsync<PostmarkOutboundTrackedStats>
                 ("/stats/outbound/tracked", parameters);
         }
@@ -562,10 +571,11 @@ namespace PostmarkDotNet
         /// <param name="tag"></param>
         /// <param name="fromDate"></param>
         /// <param name="toDate"></param>
+        /// <param name="messageStream"></param>
         /// <returns></returns>
-        public async Task<PostmarkOutboundOpenStats> GetOutboundOpenCountsAsync(string tag = null, DateTime? fromDate = null, DateTime? toDate = null)
+        public async Task<PostmarkOutboundOpenStats> GetOutboundOpenCountsAsync(string tag = null, DateTime? fromDate = null, DateTime? toDate = null, string messageStream = null)
         {
-            var parameters = ConstructSentStatsFilter(tag, fromDate, toDate);
+            var parameters = ConstructSentStatsFilter(tag, fromDate, toDate, messageStream);
             return await this.ProcessNoBodyRequestAsync<PostmarkOutboundOpenStats>
                 ("/stats/outbound/opens", parameters);
         }
@@ -576,10 +586,11 @@ namespace PostmarkDotNet
         /// <param name="tag"></param>
         /// <param name="fromDate"></param>
         /// <param name="toDate"></param>
+        /// <param name="messageStream"></param>
         /// <returns></returns>
-        public async Task<PostmarkOutboundPlatformStats> GetOutboundPlatformCountsAsync(string tag = null, DateTime? fromDate = null, DateTime? toDate = null)
+        public async Task<PostmarkOutboundPlatformStats> GetOutboundPlatformCountsAsync(string tag = null, DateTime? fromDate = null, DateTime? toDate = null, string messageStream = null)
         {
-            var parameters = ConstructSentStatsFilter(tag, fromDate, toDate);
+            var parameters = ConstructSentStatsFilter(tag, fromDate, toDate, messageStream);
             return await this.ProcessNoBodyRequestAsync<PostmarkOutboundPlatformStats>
                 ("/stats/outbound/opens/platforms", parameters);
         }
@@ -590,10 +601,11 @@ namespace PostmarkDotNet
         /// <param name="tag"></param>
         /// <param name="fromDate"></param>
         /// <param name="toDate"></param>
+        /// <param name="messageStream"></param>
         /// <returns></returns>
-        public async Task<PostmarkOutboundClientStats> GetOutboundClientUsageCountsAsync(string tag = null, DateTime? fromDate = null, DateTime? toDate = null)
+        public async Task<PostmarkOutboundClientStats> GetOutboundClientUsageCountsAsync(string tag = null, DateTime? fromDate = null, DateTime? toDate = null, string messageStream = null)
         {
-            var parameters = ConstructSentStatsFilter(tag, fromDate, toDate);
+            var parameters = ConstructSentStatsFilter(tag, fromDate, toDate, messageStream);
             var result = await this.ProcessNoBodyRequestAsync<Dictionary<string, object>>("/stats/outbound/opens/emailclients", parameters);
 
             var retval = new PostmarkOutboundClientStats();
@@ -638,9 +650,9 @@ namespace PostmarkDotNet
         /// <param name="fromDate"></param>
         /// <param name="toDate"></param>
         /// <returns></returns>
-        public async Task<PostmarkOutboundReadStats> GetOutboundReadtimeStatsAsync(string tag = null, DateTime? fromDate = null, DateTime? toDate = null)
+        public async Task<PostmarkOutboundReadStats> GetOutboundReadtimeStatsAsync(string tag = null, DateTime? fromDate = null, DateTime? toDate = null, string messageStream = null)
         {
-            var parameters = ConstructSentStatsFilter(tag, fromDate, toDate);
+            var parameters = ConstructSentStatsFilter(tag, fromDate, toDate, messageStream);
             var result = await this.ProcessNoBodyRequestAsync<Dictionary<string, object>>("/stats/outbound/opens/readtimes", parameters);
 
             var retval = new PostmarkOutboundReadStats();

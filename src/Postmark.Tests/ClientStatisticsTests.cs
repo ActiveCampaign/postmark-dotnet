@@ -43,17 +43,19 @@ namespace Postmark.Tests
             var allStatsThroughLastMonth = await Client.GetOutboundOverviewStatsAsync(null, _lastMonth);
             var windowFromLastMonth = await Client.GetOutboundOverviewStatsAsync(null, WindowStartDate, _lastMonth);
             var windowFromLastMonthWithTag = await Client.GetOutboundOverviewStatsAsync("test_tag", WindowStartDate, _lastMonth);
+            var outboundStatsForStream = await Client.GetOutboundOverviewStatsAsync(null, null, null, "test_stream");
 
-            AssertStats(allOutboundStats, allStatsThroughLastMonth, windowFromLastMonth, windowFromLastMonthWithTag, f => f.Sent);
+            AssertStats(allOutboundStats, allStatsThroughLastMonth, windowFromLastMonth, windowFromLastMonthWithTag, outboundStatsForStream, f => f.Sent);
         }
 
         private void AssertStats<T>(
-            T alltimeStats, T allstatsThroughLastMonth, T windowFromLastMonth, T windowFromLastMonthWithTag, Func<T, int> statGetter)
+            T alltimeStats, T allstatsThroughLastMonth, T windowFromLastMonth, T windowFromLastMonthWithTag, T outboundStatsForStream, Func<T, int> statGetter)
         {
             Assert.True(statGetter(alltimeStats) > 0, "Stat should be greater than 0");
             Assert.True(statGetter(allstatsThroughLastMonth) > 0, "All Last Month Stat should be greater than 0");
             Assert.True(statGetter(windowFromLastMonth) > 0, "Window from Last Month Stat should be greater than 0");
             Assert.True(statGetter(windowFromLastMonthWithTag) > 0, "Window from Last Month with Tag Stat should be greater than 0");
+            Assert.True(statGetter(outboundStatsForStream) > 0, "Stat for stream should be greater than 0");
 
             Assert.True(statGetter(alltimeStats) > statGetter(allstatsThroughLastMonth));
             Assert.True(statGetter(allstatsThroughLastMonth) > statGetter(windowFromLastMonth));
@@ -68,8 +70,9 @@ namespace Postmark.Tests
             var allStatsThroughLastMonth = await Client.GetOutboundSentCountsAsync(null, _lastMonth);
             var windowFromLastMonth = await Client.GetOutboundSentCountsAsync(null, WindowStartDate, _lastMonth);
             var windowFromLastMonthWithTag = await Client.GetOutboundSentCountsAsync("test_tag", WindowStartDate, _lastMonth);
+            var outboundStatsForStream = await Client.GetOutboundSentCountsAsync(null, null, null, "test_stream");
 
-            AssertStats(allOutboundStats, allStatsThroughLastMonth, windowFromLastMonth, windowFromLastMonthWithTag, f => f.Sent);
+            AssertStats(allOutboundStats, allStatsThroughLastMonth, windowFromLastMonth, windowFromLastMonthWithTag, outboundStatsForStream, f => f.Sent);
 
             Assert.True(allOutboundStats.Days.Count() > 0);
             Assert.Equal(allOutboundStats.Sent, allOutboundStats.Days.Sum(k => k.Sent));
@@ -123,9 +126,10 @@ namespace Postmark.Tests
             var allStatsThroughLastMonth = await Client.GetOutboundClientUsageCountsAsync(null, _lastMonth);
             var windowFromLastMonth = await Client.GetOutboundClientUsageCountsAsync(null, WindowStartDate, _lastMonth);
             var windowFromLastMonthWithTag = await Client.GetOutboundClientUsageCountsAsync("test_tag", WindowStartDate, _lastMonth);
+            var outboundStatsForStream = await Client.GetOutboundClientUsageCountsAsync(null, null, null, "test_stream");
 
             AssertStats(allOutboundStats, allStatsThroughLastMonth, windowFromLastMonth,
-                windowFromLastMonthWithTag, f => f.ClientCounts.Sum(k => k.Value));
+                windowFromLastMonthWithTag, outboundStatsForStream, f => f.ClientCounts.Sum(k => k.Value));
 
             Assert.True(allOutboundStats.Days.Count() > 0);
             Assert.Equal(allOutboundStats.ClientCounts.Sum(k => k.Value),

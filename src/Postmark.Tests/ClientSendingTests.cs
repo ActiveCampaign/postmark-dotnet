@@ -43,6 +43,28 @@ namespace Postmark.Tests
                 "If it has been more than 45 days since these tests have been run on this server, try re-running this test."
             );
         }
+        
+        [Fact]
+        public async void Client_CanSendASingleMessage_With_CC()
+        {
+            var result = await _client.SendMessageAsync(WRITE_TEST_SENDER_EMAIL_ADDRESS,
+                WRITE_TEST_EMAIL_RECIPIENT_ADDRESS,
+                String.Format("Integration Test - {0}", TESTING_DATE),
+                String.Format("Plain text body, {0}", TESTING_DATE),
+                String.Format("Testing the Postmark .net client, <b>{0}</b>", TESTING_DATE),
+                new Dictionary<string, string>()
+                {
+                    {  "X-Integration-Testing" , TESTING_DATE.ToString("o")}
+                },
+                new Dictionary<string, string>() {
+                    {"test-metadata", "value-goes-here"},
+                    {"more-metadata", "more-goes-here"}
+                }, cc: WRITE_TEST_EMAIL_RECIPIENT_ADDRESS);
+
+            Assert.Equal(PostmarkStatus.Success, result.Status);
+            Assert.Equal(0, result.ErrorCode);
+            Assert.NotEqual(Guid.Empty, result.MessageID);
+        }
 
         [Fact]
         public async void Client_CanSendASingleMessage()

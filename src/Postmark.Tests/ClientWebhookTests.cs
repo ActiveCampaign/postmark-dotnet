@@ -40,7 +40,9 @@ namespace Postmark.Tests
                 Click = new WebhookConfigurationClickTrigger {Enabled = true},
                 Open = new WebhookConfigurationOpenTrigger {Enabled = true, PostFirstOpenOnly = true},
                 Delivery = new WebhookConfigurationDeliveryTrigger {Enabled = true},
-                SpamComplaint = new WebhookConfigurationSpamComplaintTrigger {Enabled = true, IncludeContent = true}
+                SpamComplaint = new WebhookConfigurationSpamComplaintTrigger {Enabled = true, IncludeContent = true},
+                SubscriptionChange = new WebhookConfigurationSubscriptionChangeTrigger {Enabled = true},
+
             };
             var newConfiguration = await Client.CreateWebhookConfigurationAsync(url, messageStream, httpAuth, httpHeaders, triggers);
 
@@ -59,6 +61,7 @@ namespace Postmark.Tests
             Assert.Equal(triggers.Delivery.Enabled, newConfiguration.Triggers.Delivery.Enabled);
             Assert.Equal(triggers.SpamComplaint.Enabled, newConfiguration.Triggers.SpamComplaint.Enabled);
             Assert.Equal(triggers.SpamComplaint.IncludeContent, newConfiguration.Triggers.SpamComplaint.IncludeContent);
+            Assert.Equal(triggers.SubscriptionChange.Enabled, newConfiguration.Triggers.SubscriptionChange.Enabled);
         }
 
         [Fact]

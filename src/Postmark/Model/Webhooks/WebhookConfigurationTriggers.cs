@@ -29,5 +29,10 @@
         /// Settings for SpamComplaint webhooks
         /// </summary>
         public WebhookConfigurationSpamComplaintTrigger SpamComplaint { get; set; }
+
+        /// <summary>
+        /// Settings for SubscriptionChange webhooks
+        /// </summary>
+        public WebhookConfigurationSubscriptionChangeTrigger SubscriptionChange { get; set; }
     }
 }

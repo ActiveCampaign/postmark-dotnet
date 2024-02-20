@@ -1,7 +1,4 @@
-﻿using Newtonsoft.Json;
-using Newtonsoft.Json.Converters;
-
-namespace PostmarkDotNet
+﻿namespace PostmarkDotNet
 {
     /// <summary>
     ///   Represents an aggregate view of bounces.
@@ -12,7 +9,8 @@ namespace PostmarkDotNet
         ///   An summary for a <see cref = "PostmarkBounceType" />.
         /// </summary>
         /// <value>The type.</value>
-        [JsonConverter(typeof(StringEnumConverter))]
+        [Newtonsoft.Json.JsonConverter(typeof(Newtonsoft.Json.Converters.StringEnumConverter))]
+        [System.Text.Json.Serialization.JsonConverter(typeof(System.Text.Json.Serialization.JsonStringEnumConverter<PostmarkBounceType>))]
         public PostmarkBounceType Type { get; set; }
 
         /// <summary>

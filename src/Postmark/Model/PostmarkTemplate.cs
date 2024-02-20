@@ -1,7 +1,4 @@
-﻿using Newtonsoft.Json;
-using Newtonsoft.Json.Converters;
-
-namespace PostmarkDotNet.Model
+﻿namespace PostmarkDotNet.Model
 {
     public class PostmarkTemplate
     {
@@ -21,7 +18,8 @@ namespace PostmarkDotNet.Model
 
         public bool Active { get; set; }
 
-        [JsonConverter(typeof(StringEnumConverter))]
+        [Newtonsoft.Json.JsonConverter(typeof(Newtonsoft.Json.Converters.StringEnumConverter))]
+        [System.Text.Json.Serialization.JsonConverter(typeof(System.Text.Json.Serialization.JsonStringEnumConverter<PostmarkBounceType>))]
         public TemplateType TemplateType { get; set; }
 
         public string LayoutTemplate { get; set; }

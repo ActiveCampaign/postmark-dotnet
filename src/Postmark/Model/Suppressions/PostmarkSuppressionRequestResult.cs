@@ -16,7 +16,7 @@ namespace Postmark.Model.Suppressions
         /// Status of the request.
         /// </summary>
         [Newtonsoft.Json.JsonConverter(typeof(Newtonsoft.Json.Converters.StringEnumConverter))]
-        [System.Text.Json.Serialization.JsonConverter(typeof(System.Text.Json.Serialization.JsonStringEnumConverter<PostmarkBounceType>))]
+        [System.Text.Json.Serialization.JsonConverter(typeof(System.Text.Json.Serialization.JsonStringEnumConverter<PostmarkSuppressionRequestStatus>))]
         public PostmarkSuppressionRequestStatus Status { get; set; }
 
         /// <summary>

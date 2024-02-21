@@ -33,7 +33,7 @@ namespace Postmark.Model.MessageStreams
         /// The type of this message Stream. Can be Transactional, Inbound or Broadcasts.
         /// </summary>
         [Newtonsoft.Json.JsonConverter(typeof(Newtonsoft.Json.Converters.StringEnumConverter))]
-        [System.Text.Json.Serialization.JsonConverter(typeof(System.Text.Json.Serialization.JsonStringEnumConverter<PostmarkBounceType>))]
+        [System.Text.Json.Serialization.JsonConverter(typeof(System.Text.Json.Serialization.JsonStringEnumConverter<MessageStreamType>))]
         public MessageStreamType MessageStreamType { get; set; }
 
         /// <summary>

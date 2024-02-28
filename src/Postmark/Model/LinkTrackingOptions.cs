@@ -1,9 +1,7 @@
-﻿using Newtonsoft.Json;
-using Newtonsoft.Json.Converters;
-
-namespace PostmarkDotNet
+﻿namespace PostmarkDotNet
 {
-    [JsonConverter(typeof(StringEnumConverter))]
+    [Newtonsoft.Json.JsonConverter(typeof(Newtonsoft.Json.Converters.StringEnumConverter))]
+    [System.Text.Json.Serialization.JsonConverter(typeof(System.Text.Json.Serialization.JsonStringEnumConverter<LinkTrackingOptions>))]
     public enum LinkTrackingOptions
     {
         None = 0,

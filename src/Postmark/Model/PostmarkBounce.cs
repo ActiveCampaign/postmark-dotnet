@@ -1,6 +1,4 @@
-﻿using Newtonsoft.Json;
-using Newtonsoft.Json.Converters;
-using System;
+﻿using System;
 
 namespace PostmarkDotNet
 {
@@ -20,7 +18,8 @@ namespace PostmarkDotNet
         ///   The <see cref = "PostmarkBounceType" /> for this bounce.
         /// </summary>
         /// <value>The type</value>
-        [JsonConverter(typeof(StringEnumConverter))]
+        [Newtonsoft.Json.JsonConverter(typeof(Newtonsoft.Json.Converters.StringEnumConverter))]
+        [System.Text.Json.Serialization.JsonConverter(typeof(System.Text.Json.Serialization.JsonStringEnumConverter<PostmarkBounceType>))]
         public PostmarkBounceType Type { get; set; }
 
         /// <summary>

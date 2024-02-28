@@ -166,7 +166,7 @@ namespace PostmarkDotNet
         /// <returns>PostmarkOutboundMessageList</returns>
         public async Task<PostmarkOutboundMessageList> GetOutboundMessagesAsync(int offset = 0, int count = 100,
             string recipient = null, string fromemail = null, string tag = null, string subject = null,
-            OutboundMessageStatus status = OutboundMessageStatus.Sent, string toDate = null, string fromDate = null, IDictionary<string, string> metadata = null)
+            OutboundMessageStatus status = OutboundMessageStatus.Sent, string toDate = null, string fromDate = null, IDictionary<string, string> metadata = null, string messagestream = null)
         {
             var parameters = new Dictionary<string, object>();
             parameters["count"] = count;
@@ -178,6 +178,7 @@ namespace PostmarkDotNet
             parameters["todate"] = toDate;
             parameters["fromdate"] = fromDate;
             parameters["status"] = status.ToString().ToLower();
+            parameters["messagestream"] = messagestream;
 
             if (metadata != null)
             {

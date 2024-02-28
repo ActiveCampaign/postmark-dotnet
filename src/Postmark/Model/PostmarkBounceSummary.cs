@@ -9,7 +9,6 @@
         ///   An summary for a <see cref = "PostmarkBounceType" />.
         /// </summary>
         /// <value>The type.</value>
-        [Newtonsoft.Json.JsonConverter(typeof(Newtonsoft.Json.Converters.StringEnumConverter))]
         [System.Text.Json.Serialization.JsonConverter(typeof(System.Text.Json.Serialization.JsonStringEnumConverter<PostmarkBounceType>))]
         public PostmarkBounceType Type { get; set; }
 

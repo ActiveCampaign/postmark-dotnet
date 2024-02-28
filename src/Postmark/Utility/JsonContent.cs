@@ -1,8 +1,7 @@
-﻿using Newtonsoft.Json;
-using PostmarkDotNet.Converters;
-using System;
+﻿using PostmarkDotNet.Converters;
 using System.Net.Http;
 using System.Text;
+using System.Text.Json;
 
 namespace PostmarkDotNet.Utility
 {
@@ -11,21 +10,14 @@ namespace PostmarkDotNet.Utility
     /// </summary>
     internal class JsonContent<T> : StringContent
     {
-        private static Lazy<JsonSerializerSettings> _settings = new Lazy<JsonSerializerSettings>(() =>
+        private static JsonSerializerOptions _settings = new JsonSerializerOptions
         {
-            var retval = new JsonSerializerSettings()
-            {
-                MissingMemberHandling = MissingMemberHandling.Ignore,
-                NullValueHandling = NullValueHandling.Include,
-                DefaultValueHandling = DefaultValueHandling.Include
-            };
-
-            retval.Converters.Add(new UnicodeJsonStringConverter());
-            return retval;
-        });
+            WriteIndented = true,
+            Converters = { new UnicodeJsonStringConverter() }
+        };
 
         internal JsonContent(T content) :
-            base(JsonConvert.SerializeObject(content, Formatting.Indented, _settings.Value),
+            base(JsonSerializer.Serialize(content, _settings),
             Encoding.UTF8, "application/json")
         {
         }

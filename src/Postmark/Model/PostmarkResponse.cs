@@ -1,12 +1,12 @@
 ﻿using System;
-using System.Runtime.Serialization;
+using System.Text.Json.Serialization;
 
 namespace PostmarkDotNet
 {
     /// <summary>
     ///   A response from the Postmark API after a request sent with <see cref = "PostmarkClient" />.
     /// </summary>
-    public class PostmarkResponse
+    public class PostmarkResponse : IJsonOnDeserialized
     {
         /// <summary>
         ///   The Message ID returned from Postmark.
@@ -40,8 +40,7 @@ namespace PostmarkDotNet
         /// </summary>
         public int ErrorCode { get; set; }
 
-        [OnDeserialized]
-        internal void OnDeserializedMethod(StreamingContext context)
+        void IJsonOnDeserialized.OnDeserialized()
         {
             if (ErrorCode != 0 && Status == PostmarkStatus.Success)
             {

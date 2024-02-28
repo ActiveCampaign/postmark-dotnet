@@ -1,6 +1,5 @@
 ﻿using System;
-using Newtonsoft.Json.Linq;
-using PostmarkDotNet.Exceptions;
+using System.Text.Json.Nodes;
 
 namespace PostmarkDotNet
 {
@@ -68,7 +67,7 @@ namespace PostmarkDotNet
                 {
                     try
                     {
-                        _templateModel = JObject.Parse(value as string);
+                        _templateModel = JsonNode.Parse(value as string).AsObject();
                     }catch{
                         throw new FormatException(@"The specified string is not a valid JSON object." +
                         "The root TemplateModel must be a JSON object, scalars and arrays may not be " +

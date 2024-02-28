@@ -1,6 +1,4 @@
-﻿using PostmarkDotNet;
-
-namespace Postmark.Model.Suppressions
+﻿namespace Postmark.Model.Suppressions
 {
     /// <summary>
     /// Result of applying a reactivation request.
@@ -15,7 +13,6 @@ namespace Postmark.Model.Suppressions
         /// <summary>
         /// Status of the request.
         /// </summary>
-        [Newtonsoft.Json.JsonConverter(typeof(Newtonsoft.Json.Converters.StringEnumConverter))]
         [System.Text.Json.Serialization.JsonConverter(typeof(System.Text.Json.Serialization.JsonStringEnumConverter<PostmarkReactivationRequestStatus>))]
         public PostmarkReactivationRequestStatus Status { get; set; }
 

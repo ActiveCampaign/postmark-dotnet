@@ -1,6 +1,6 @@
-﻿using Newtonsoft.Json;
-using System;
+﻿using System;
 using System.Collections.Generic;
+using System.Text.Json.Serialization;
 
 namespace PostmarkDotNet.Webhooks
 {
@@ -13,7 +13,7 @@ namespace PostmarkDotNet.Webhooks
         /// <summary>
         /// The associated server's ID.
         /// </summary>
-        [JsonProperty("ServerId")]
+        [JsonPropertyName("ServerId")]
         public int ServerID { get; set; }
 
         /// <summary>

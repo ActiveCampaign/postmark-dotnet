@@ -1,5 +1,3 @@
-using System;
-
 namespace PostmarkDotNet.Model
 {
     public class PostmarkAgentInfo

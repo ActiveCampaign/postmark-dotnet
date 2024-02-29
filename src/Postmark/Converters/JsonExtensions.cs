@@ -1,8 +1,8 @@
-﻿using Newtonsoft.Json;
+﻿using System.Text.Json;
 
 namespace PostmarkDotNet.Converters
 {
-    internal static class JsonNetExtensions
+    internal static class JsonExtensions
     {
         /// <summary>
         /// Attempt to deserialize a string to the specified type.
@@ -17,15 +17,14 @@ namespace PostmarkDotNet.Converters
             result = default(T);
             try
             {
-                var settings = new JsonSerializerSettings()
-               {
-                   MissingMemberHandling = MissingMemberHandling.Ignore,
-                   NullValueHandling = NullValueHandling.Include,
-                   DefaultValueHandling = DefaultValueHandling.Include
-               };
-
-                settings.Converters.Add(new UnicodeJsonStringConverter());
-                result = JsonConvert.DeserializeObject<T>(json);
+                result = JsonSerializer.Deserialize<T>(json, new JsonSerializerOptions
+                {
+                    Converters =
+                    {
+                        new UnicodeJsonStringConverter(),
+                        new DateTimeConverter()
+                    }
+                });
                 retval = true;
             }
             catch

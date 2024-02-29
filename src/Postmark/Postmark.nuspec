@@ -11,10 +11,5 @@
     <requireLicenseAcceptance>false</requireLicenseAcceptance>
     <description>The official client library for PostmarkApp. (https://postmarkapp.com)</description>
     <copyright>Copyright 2012-$year$</copyright>
-    <!-- <dependencies>
-      <group targetFramework="netstandard1.2">
-        <dependency id="Newtonsoft.Json" version="10.0.0" />
-      </group>
-    </dependencies> -->
   </metadata>
 </package>

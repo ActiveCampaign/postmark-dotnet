@@ -1,9 +1,9 @@
-using Newtonsoft.Json.Linq;
 using PostmarkDotNet.Model;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net.Http;
+using System.Text.Json;
 using System.Threading.Tasks;
 using Postmark.Model.MessageStreams;
 using Postmark.Model.Suppressions;
@@ -595,7 +595,7 @@ namespace PostmarkDotNet
         public async Task<PostmarkOutboundClientStats> GetOutboundClientUsageCountsAsync(string tag = null, DateTime? fromDate = null, DateTime? toDate = null)
         {
             var parameters = ConstructSentStatsFilter(tag, fromDate, toDate);
-            var result = await this.ProcessNoBodyRequestAsync<Dictionary<string, object>>("/stats/outbound/opens/emailclients", parameters);
+            var result = await this.ProcessNoBodyRequestAsync<Dictionary<string, JsonElement>>("/stats/outbound/opens/emailclients", parameters);
 
             var retval = new PostmarkOutboundClientStats();
             var clientCounts = new Dictionary<string, int>();
@@ -603,25 +603,24 @@ namespace PostmarkDotNet
             {
                 if (a.Key != "Days")
                 {
-                    clientCounts[a.Key] = (int)(long)a.Value;
+                    clientCounts[a.Key] = a.Value.GetInt32();
                 }
             }
             retval.ClientCounts = clientCounts;
 
-            var dayCount = (JArray)result["Days"];
             var dayList = new List<PostmarkOutboundClientStats.DatedClientCount>();
-            foreach (var obj in dayCount)
+            foreach (var obj in result["Days"].EnumerateArray())
             {
                 var newCount = new PostmarkOutboundClientStats.DatedClientCount();
-                foreach (var i in (JObject)obj)
+                foreach (var i in obj.EnumerateObject())
                 {
-                    if (i.Key == "Date")
+                    if (i.Name == "Date")
                     {
-                        newCount.Date = DateTime.Parse(i.Value.ToString());
+                        newCount.Date = DateTime.Parse(i.Value.GetString());
                     }
                     else
                     {
-                        newCount.ClientCounts[i.Key] = (int)(long)i.Value;
+                        newCount.ClientCounts[i.Name] = i.Value.GetInt32();
                     }
                 }
                 dayList.Add(newCount);
@@ -642,7 +641,7 @@ namespace PostmarkDotNet
         public async Task<PostmarkOutboundReadStats> GetOutboundReadtimeStatsAsync(string tag = null, DateTime? fromDate = null, DateTime? toDate = null)
         {
             var parameters = ConstructSentStatsFilter(tag, fromDate, toDate);
-            var result = await this.ProcessNoBodyRequestAsync<Dictionary<string, object>>("/stats/outbound/opens/readtimes", parameters);
+            var result = await this.ProcessNoBodyRequestAsync<Dictionary<string, JsonElement>>("/stats/outbound/opens/readtimes", parameters);
 
             var retval = new PostmarkOutboundReadStats();
             var clientCounts = new Dictionary<string, int>();
@@ -650,25 +649,24 @@ namespace PostmarkDotNet
             {
                 if (a.Key != "Days")
                 {
-                    clientCounts[a.Key] = (int)(long)a.Value;
+                    clientCounts[a.Key] = a.Value.GetInt32();
                 }
             }
             retval.ReadCounts = clientCounts;
 
-            var dayCount = (JArray)result["Days"];
             var dayList = new List<PostmarkOutboundReadStats.DatedReadCount>();
-            foreach (var obj in dayCount)
+            foreach (var obj in result["Days"].EnumerateArray())
             {
                 var newCount = new PostmarkOutboundReadStats.DatedReadCount();
-                foreach (var i in (JObject)obj)
+                foreach (var i in obj.EnumerateObject())
                 {
-                    if (i.Key == "Date")
+                    if (i.Name == "Date")
                     {
                         newCount.Date = DateTime.Parse(i.Value.ToString());
                     }
                     else
                     {
-                        newCount.ReadCounts[i.Key] = (int)(long)i.Value;
+                        newCount.ReadCounts[i.Name] = i.Value.GetInt32();
                     }
                 }
                 dayList.Add(newCount);

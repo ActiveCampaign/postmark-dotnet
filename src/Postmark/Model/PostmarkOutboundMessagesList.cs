@@ -1,5 +1,4 @@
-﻿using PostmarkDotNet;
-using System;
+﻿using System;
 using System.Collections.Generic;
 
 namespace PostmarkDotNet.Model

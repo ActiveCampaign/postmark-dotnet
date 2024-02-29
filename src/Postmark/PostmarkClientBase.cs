@@ -88,13 +88,13 @@ namespace PostmarkDotNet
 
             var body = await result.Content.ReadAsStringAsync();
 
-            if (JsonNetExtensions.TryDeserializeObject<TResponse>(body, out TResponse parsedResponse) 
+            if (JsonExtensions.TryDeserializeObject<TResponse>(body, out TResponse parsedResponse) 
                 && result.StatusCode == HttpStatusCode.OK)
             {
                 return parsedResponse;
             }
 
-            if (!JsonNetExtensions.TryDeserializeObject<PostmarkResponse>(body, out PostmarkResponse error))
+            if (!JsonExtensions.TryDeserializeObject<PostmarkResponse>(body, out PostmarkResponse error))
             {
                 throw new PostmarkResponseException("The response from the API could not be parsed.", body);
             }

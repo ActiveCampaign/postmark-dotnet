@@ -18,7 +18,6 @@
 
         public bool Active { get; set; }
 
-        [Newtonsoft.Json.JsonConverter(typeof(Newtonsoft.Json.Converters.StringEnumConverter))]
         [System.Text.Json.Serialization.JsonConverter(typeof(System.Text.Json.Serialization.JsonStringEnumConverter<TemplateType>))]
         public TemplateType TemplateType { get; set; }
 

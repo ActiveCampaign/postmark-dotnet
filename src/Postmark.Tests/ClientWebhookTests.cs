@@ -42,7 +42,6 @@ namespace Postmark.Tests
                 Delivery = new WebhookConfigurationDeliveryTrigger {Enabled = true},
                 SpamComplaint = new WebhookConfigurationSpamComplaintTrigger {Enabled = true, IncludeContent = true},
                 SubscriptionChange = new WebhookConfigurationSubscriptionChangeTrigger {Enabled = true},
-
             };
             var newConfiguration = await Client.CreateWebhookConfigurationAsync(url, messageStream, httpAuth, httpHeaders, triggers);
 

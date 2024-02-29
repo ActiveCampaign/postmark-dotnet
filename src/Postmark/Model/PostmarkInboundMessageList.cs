@@ -66,7 +66,7 @@ namespace PostmarkDotNet.Model
         public string Name { get; set; }
         public string ContentType { get; set; }
         public string ContentID { get; set; }
-        public string ContentLength { get; set; }
+        public int ContentLength { get; set; }
     }
 
     public class Header

@@ -2,10 +2,10 @@
 using PostmarkDotNet;
 using System;
 using System.IO;
-using Newtonsoft.Json;
 using System.Collections.Generic;
 using System.Reflection;
 using System.Linq;
+using System.Text.Json;
 
 namespace Postmark.Tests
 {
@@ -58,7 +58,7 @@ namespace Postmark.Tests
                     componentsCount--;
                 }
 
-                var values = JsonConvert.DeserializeObject<Dictionary<String, String>>(File.ReadAllText(keyPath));
+                var values = JsonSerializer.Deserialize<Dictionary<String, String>>(File.ReadAllText(keyPath));
                 retval = values[variableName];
             }
             catch

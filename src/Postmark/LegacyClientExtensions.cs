@@ -467,7 +467,7 @@ namespace PostmarkDotNet.Legacy
             return Task.Run(async () => await client.GetInboundMessagesAsync(offset, count, recipient, fromemail, subject, mailboxhash)).Result;
         }
 
-        public static InboundMessageDetail GetInboundMessageDetail(this PostmarkClient client, string messageID)
+        public static PostmarkInboundMessage GetInboundMessageDetail(this PostmarkClient client, string messageID)
         {
             return Task.Run(async () => await client.GetInboundMessageDetailsAsync(messageID)).Result;
         }

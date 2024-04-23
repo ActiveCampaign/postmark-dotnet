@@ -250,9 +250,9 @@ namespace PostmarkDotNet
         /// </summary>
         /// <param name="messageID">The MessageID of a message which can be optained either from the initial API send call or a GetInboundMessages call.</param>
         /// <returns>InboundMessageDetail</returns>
-        public async Task<InboundMessageDetail> GetInboundMessageDetailsAsync(string messageID)
+        public async Task<PostmarkInboundMessage> GetInboundMessageDetailsAsync(string messageID)
         {
-            return await ProcessNoBodyRequestAsync<InboundMessageDetail>("/messages/inbound/" + messageID + "/details");
+            return await ProcessNoBodyRequestAsync<PostmarkInboundMessage>("/messages/inbound/" + messageID + "/details");
         }
 
         /// <summary>

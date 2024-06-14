@@ -106,6 +106,11 @@ namespace PostmarkDotNet.Webhooks
         public string StrippedTextReply { get; set; }
 
         /// <summary>
+        /// The raw email message. Must be enabled on the Postmark server.
+        /// </summary>
+        public string RawEmail { get; set; }
+
+        /// <summary>
         /// A list of headers from the message, fully parsed
         /// </summary>
         public List<Header> Headers { get; set; }

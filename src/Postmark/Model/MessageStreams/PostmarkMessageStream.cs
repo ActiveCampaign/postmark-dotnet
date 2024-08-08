@@ -48,5 +48,10 @@ namespace Postmark.Model.MessageStreams
         /// The date when this message stream has been archived. If null, this message stream is not in an archival state.
         /// </summary>
         public DateTime? ArchivedAt { get; set; }
+
+        /// <summary>
+        /// Subscription management options for the Stream.
+        /// </summary>
+        public PostmarkSubscriptionManagementConfiguration SubscriptionManagementConfiguration { get; set; }
     }
 }

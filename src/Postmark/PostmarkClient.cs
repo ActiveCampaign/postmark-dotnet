@@ -1128,8 +1128,9 @@ namespace PostmarkDotNet
         /// <param name="type">Type of the message stream. E.g.: Transactional or Broadcasts.</param>
         /// <param name="name">Friendly name for your message stream.</param>
         /// <param name="description">Friendly description for your message stream. (optional)</param>
+        /// <param name="unsubscriptionHandlingType">The unsubscribe management option for the stream. (optional)</param>
         /// <remarks>Currently, you cannot create multiple inbound streams.</remarks>
-        public async Task<PostmarkMessageStream> CreateMessageStream(string id, MessageStreamType type, string name, string description = null)
+        public async Task<PostmarkMessageStream> CreateMessageStream(string id, MessageStreamType type, string name, string description = null, UnsubscribeHandlingType? unsubscriptionHandlingType = null)
         {
             var body = new Dictionary<string, object>
             {
@@ -1138,6 +1139,14 @@ namespace PostmarkDotNet
                 ["Description"] = description,
                 ["MessageStreamType"] = type.ToString()
             };
+
+            if (unsubscriptionHandlingType.HasValue)
+            {
+                body["SubscriptionManagementConfiguration"] = new Dictionary<string, object>
+                {
+                    ["UnsubscribeHandlingType"] = unsubscriptionHandlingType.ToString()
+                };
+            } 
 
             var apiUrl = "/message-streams/";
 
@@ -1150,13 +1159,22 @@ namespace PostmarkDotNet
         /// <param name="id">The identifier for the stream you are trying to update.</param>
         /// <param name="name">New friendly name to use. (optional)</param>
         /// <param name="description">New description to use. (optional)</param>
-        public async Task<PostmarkMessageStream> EditMessageStream(string id, string name = null, string description = null)
+        /// <param name="unsubscriptionHandlingType">New unsubscribe management option for the stream. (optional)</param>
+        public async Task<PostmarkMessageStream> EditMessageStream(string id, string name = null, string description = null, UnsubscribeHandlingType? unsubscriptionHandlingType = null)
         {
             var body = new Dictionary<string, object>
             {
                 ["Name"] = name,
                 ["Description"] = description
             };
+
+            if (unsubscriptionHandlingType.HasValue)
+            {
+                body["SubscriptionManagementConfiguration"] = new Dictionary<string, object>
+                {
+                    ["UnsubscribeHandlingType"] = unsubscriptionHandlingType.ToString()
+                };
+            } 
 
             var apiUrl = $"/message-streams/{id}";
 

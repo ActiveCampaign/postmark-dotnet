@@ -13,7 +13,12 @@ namespace PostmarkDotNet.Converters
 
         public override DateTime Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
         {
-            return DateTime.Parse(reader.GetString());
+            var value = reader.GetString();
+            if (value.EndsWith(" (GMT)", StringComparison.Ordinal))
+            {
+                value = value.Substring(0, value.Length - " (GMT)".Length);
+            }
+            return DateTime.Parse(value);
         }
 
         public override void Write(Utf8JsonWriter writer, DateTime value, JsonSerializerOptions options)

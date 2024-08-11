@@ -18,7 +18,7 @@ namespace PostmarkDotNet
     /// <remarks>
     /// Make sure to include "using PostmarkDotNet;" in your class file, which will include extension methods on the base client.
     /// </remarks>
-    public class PostmarkClient : PostmarkClientBase
+    public class PostmarkClient : PostmarkClientBase, IPostmarkClient
     {
         /// <summary>
         /// The authorization header required, in this case, "X-Postmark-Server-Token"

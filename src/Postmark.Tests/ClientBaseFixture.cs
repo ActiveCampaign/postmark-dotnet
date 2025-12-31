@@ -74,6 +74,7 @@ namespace Postmark.Tests
         protected static readonly string ReadSeleniumTestServerToken = ConfigVariable("READ_SELENIUM_TEST_SERVER_TOKEN");
         protected static readonly string ReadLinkTrackingTestServerToken = ConfigVariable("READ_LINK_TRACKING_TEST_SERVER_TOKEN");
         protected static readonly string ReadSeleniumOpenTrackingToken = ConfigVariable("READ_SELENIUM_OPEN_TRACKING_TOKEN");
+        protected static readonly string ReadBounceTestServerToken = ConfigVariable("READ_BOUNCE_TEST_SERVER_TOKEN");
 
         protected static readonly string WriteAccountToken = ConfigVariable("WRITE_ACCOUNT_TOKEN");
         protected static readonly string WriteTestServerToken = ConfigVariable("WRITE_TEST_SERVER_TOKEN");

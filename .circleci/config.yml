@@ -27,6 +27,9 @@ jobs:
     steps:
       - checkout
       - run:
+          name: Restore dependencies
+          command: dotnet restore src/
+      - run:
           name: Install Snyk CLI
           command: |
             curl -Lo ./snyk "https://static.snyk.io/cli/latest/snyk-linux"

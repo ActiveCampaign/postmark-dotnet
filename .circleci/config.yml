@@ -21,6 +21,25 @@ jobs:
           name: "Run the Tests"
           command:
             dotnet test --configuration release src/
+  security-scan:
+    docker:
+      - image: mcr.microsoft.com/dotnet/core/sdk:3.1
+    steps:
+      - checkout
+      - run:
+          name: Install Snyk CLI
+          command: |
+            curl -Lo ./snyk "https://static.snyk.io/cli/latest/snyk-linux"
+            chmod +x ./snyk
+            mv ./snyk /usr/local/bin/
+      - run:
+          name: Run Snyk Scan
+          command: |
+            snyk auth $SNYK_TOKEN
+            snyk monitor \
+              --all-projects \
+              --exclude=test \
+              --org=$SNYK_ORG_ID
   release:
     docker:
       - image: mcr.microsoft.com/dotnet/core/sdk:3.1
@@ -49,6 +68,14 @@ workflows:
             tags:
               only: /.*/
       - test:
+          filters:
+            tags:
+              only: /.*/
+      - security-scan:
+          context:
+            - snyk
+          requires:
+            - build
           filters:
             tags:
               only: /.*/

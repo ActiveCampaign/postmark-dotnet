@@ -8,7 +8,12 @@ namespace Postmark.Tests
     {
         public ClientBounceTests()
         {
-            Client = new PostmarkClient(WriteTestServerToken, BaseUrl);
+            // Use dedicated bounce test server token if available (has actual delivery bounces with dumps)
+            // Otherwise fall back to WriteTestServerToken (selenium server, but only has SMTPApiError bounces)
+            var bounceToken = !string.IsNullOrWhiteSpace(ReadBounceTestServerToken) 
+                ? ReadBounceTestServerToken 
+                : WriteTestServerToken;
+            Client = new PostmarkClient(bounceToken, BaseUrl);
         }
 
         [Fact]

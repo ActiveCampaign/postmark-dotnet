@@ -26,7 +26,7 @@ namespace PostmarkDotNet
         /// <param name="headers">A collection of additional mail headers to send with the message.</param>
         /// <param name="messageStream">The message stream used to send this message.</param>
         /// <returns>A <see cref = "PostmarkResponse" /> with details about the transaction.</returns>
-        public static async Task<PostmarkResponse> SendMessageAsync(this PostmarkClient client,
+        public static async Task<PostmarkResponse> SendMessageAsync(this IPostmarkClient client,
             string from, string to, string subject, string textBody, string htmlBody,
              IDictionary<string, string> headers = null,
              IDictionary<string, string> metadata = null,
@@ -47,7 +47,7 @@ namespace PostmarkDotNet
         /// <param name="client">The client to use when sending the batch.</param>
         /// <param name="messages">A prepared message batch.</param>
         /// <returns></returns>
-        public static async Task<IEnumerable<PostmarkResponse>> SendMessagesAsync(this PostmarkClient client, IEnumerable<PostmarkMessage> messages)
+        public static async Task<IEnumerable<PostmarkResponse>> SendMessagesAsync(this IPostmarkClient client, IEnumerable<PostmarkMessage> messages)
         {
             return await client.SendMessagesAsync(messages.ToArray());
         }

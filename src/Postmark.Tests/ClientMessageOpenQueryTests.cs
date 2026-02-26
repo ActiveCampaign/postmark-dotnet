@@ -8,7 +8,7 @@ namespace Postmark.Tests
     {
         public ClientMessageOpenQueryTests()
         {
-            Client = new PostmarkClient(ReadSeleniumOpenTrackingToken, BaseUrl);
+            Client = BuildClient(ReadSeleniumOpenTrackingToken);
         }
 
         [Fact]

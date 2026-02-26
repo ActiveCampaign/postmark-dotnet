@@ -13,7 +13,7 @@ namespace Postmark.Tests
             var bounceToken = !string.IsNullOrWhiteSpace(ReadBounceTestServerToken) 
                 ? ReadBounceTestServerToken 
                 : WriteTestServerToken;
-            Client = new PostmarkClient(bounceToken, BaseUrl);
+            Client = BuildClient(bounceToken);
         }
 
         [Fact]

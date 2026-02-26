@@ -8,7 +8,7 @@ namespace Postmark.Tests
     {
         public ClientMessageClickQueryTests()
         {
-            Client = new PostmarkClient(ReadLinkTrackingTestServerToken, BaseUrl);
+            Client = BuildClient(ReadLinkTrackingTestServerToken);
         }
 
         [Fact]

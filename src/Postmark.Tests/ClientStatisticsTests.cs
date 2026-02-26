@@ -12,7 +12,7 @@ namespace Postmark.Tests
 
         public ClientStatisticsTests()
         {
-            Client = new PostmarkClient(ReadSeleniumTestServerToken, BaseUrl);
+            Client = BuildClient(ReadSeleniumTestServerToken);
             _lastMonth = TestingDate - TimeSpan.FromDays(30);
             WindowStartDate = TestingDate - TimeSpan.FromDays(35);
         }

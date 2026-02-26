@@ -1,155 +1,109 @@
-﻿using PostmarkDotNet.Converters;
-using PostmarkDotNet.Exceptions;
-using PostmarkDotNet.Utility;
-using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Net;
 using System.Net.Http;
 using System.Threading.Tasks;
 using Postmark.Exceptions;
+using PostmarkDotNet.Converters;
+using PostmarkDotNet.Exceptions;
+using PostmarkDotNet.Utility;
 
-namespace PostmarkDotNet
+namespace PostmarkDotNet;
+
+/// <summary>
+///     The core postmark client code.
+/// </summary>
+public abstract class PostmarkClientBase
 {
+	protected const string DateFormat = "yyyy-MM-dd";
+
     /// <summary>
-    /// The core postmark client code.
+    ///     Default transactional message stream id.
     /// </summary>
-    public abstract class PostmarkClientBase
-    {
-        private static Lazy<ISimpleHttpClient> _staticClient = 
-            new Lazy<ISimpleHttpClient>(()=>new SimpleHttpClient()) ;
+    protected const string DefaultTransactionalStream = "outbound";
 
-        /// <summary>
-        /// Configure a global connection factory to to process HTTP interactions.
-        /// </summary>
-        /// <remarks>
-        /// In most cases, you should not need to modify this property, but it's useful
-        /// in cases where you want to use another http client, or to mock the http processing
-        /// (for tests).
-        /// </remarks>
-        public static Func<ISimpleHttpClient> ClientFactory {get;set;} = () => _staticClient.Value;
+	private readonly HttpClient _client;
 
-        protected static readonly string DATE_FORMAT = "yyyy-MM-dd";
+	public PostmarkClientBase(HttpClient client)
+	{
+		_client = client;
+	}
 
-        /// <summary>
-        /// Default transactional message stream id.
-        /// </summary>
-        protected const string DefaultTransactionalStream = "outbound";
+    /// <summary>
+    ///     The core delivery method for all other API methods.
+    /// </summary>
+    /// <typeparam name="TRequestBody"></typeparam>
+    /// <typeparam name="TResponse"></typeparam>
+    /// <param name="apiPath"></param>
+    /// <param name="verb"></param>
+    /// <param name="message"></param>
+    /// <returns></returns>
+    /// <exception cref="System.Exception"></exception>
+    protected async Task<TResponse> ProcessRequestAsync<TRequestBody, TResponse>(string apiPath, HttpMethod verb, TRequestBody message = null)
+		where TRequestBody : class
+	{
+		var request = new HttpRequestMessage(verb, apiPath.TrimStart('/'));
 
-        private static readonly string _agent = "Postmark.NET 2.x (" +
-              typeof(PostmarkClient).AssemblyQualifiedName + ")";
+		//if the message is not a string, or the message is a non-empty string,
+		//set a body for this request.
+		if (message != null)
+		{
+			var content = new JsonContent<TRequestBody>(message);
+			request.Content = content;
+		}
 
-        private Uri baseUri;
+		var result = await _client.SendAsync(request);
 
-        /// <summary>
-        /// Provides a base implementation of core request/response interactions.
-        /// </summary>
-        /// <param name="apiBaseUri"></param>
-        /// <param name="requestTimeoutInSeconds"></param>
-        public PostmarkClientBase(string apiBaseUri = "https://api.postmarkapp.com")
-        {
-            baseUri = new Uri(apiBaseUri);
-        }
+		var body = await result.Content.ReadAsStringAsync();
 
-        protected abstract string AuthHeaderName { get; }
+		if (JsonExtensions.TryDeserializeObject(body, out TResponse parsedResponse)
+		    && result.StatusCode == HttpStatusCode.OK)
+			return parsedResponse;
 
-        protected string _authToken;
+		if (!JsonExtensions.TryDeserializeObject(body, out PostmarkResponse error)) 
+			throw new PostmarkResponseException("The response from the API could not be parsed.", body);
 
-        /// <summary>
-        /// The core delivery method for all other API methods.
-        /// </summary>
-        /// <typeparam name="TRequestBody"></typeparam>
-        /// <typeparam name="TResponse"></typeparam>
-        /// <param name="apiPath"></param>
-        /// <param name="verb"></param>
-        /// <param name="message"></param>
-        /// <returns></returns>
-        /// <exception cref="System.Exception"></exception>
-        protected async Task<TResponse> ProcessRequestAsync<TRequestBody, TResponse>(
-            string apiPath,
-            HttpMethod verb, TRequestBody message = null) where TRequestBody : class
-        {
-            var client = ClientFactory();
+		switch ((int)result.StatusCode)
+		{
+			case 422:
+				error.Status = PostmarkStatus.UserError;
+				break;
+			case 500:
+				error.Status = PostmarkStatus.ServerError;
+				break;
+			default:
+				error.Status = PostmarkStatus.Unknown;
+				break;
+		}
 
-            var request = new HttpRequestMessage(verb, baseUri + apiPath.TrimStart('/'));
+		throw new PostmarkValidationException(error);
+	}
 
-            //if the message is not a string, or the message is a non-empty string,
-            //set a body for this request.
-            if (message != null)
-            {
-                var content = new JsonContent<TRequestBody>(message);
-                request.Content = content;
-            }
+    /// <summary>
+    ///     Core implementation of HTTP interaction for "no body" requests (i.e. GET/DELETE)
+    /// </summary>
+    /// <typeparam name="TResponse"></typeparam>
+    /// <param name="apiPath"></param>
+    /// <param name="parameters"></param>
+    /// <param name="verb">The http verb to use for the request.</param>
+    /// <returns></returns>
+    protected async Task<TResponse> ProcessNoBodyRequestAsync<TResponse>(
+		string apiPath,
+		IDictionary<string, object> parameters = null,
+		HttpMethod verb = null)
+	{
+		parameters ??= new Dictionary<string, object>();
 
-            request.Headers.Add("Accept", "application/json");
-            request.Headers.Add(AuthHeaderName, _authToken);
-            request.Headers.Add("User-Agent", _agent);
+		var query = "";
+		foreach (var param in parameters)
+			if (param.Value != null)
+			{
+				if (query != "") query += "&";
+				query += $"{WebUtility.UrlEncode(param.Key)}={WebUtility.UrlEncode(param.Value.ToString())}";
+			}
 
-            var result = await client.SendAsync(request);
+		if (!string.IsNullOrWhiteSpace(query)) 
+			apiPath = $"{apiPath}?{query}";
 
-            var body = await result.Content.ReadAsStringAsync();
-
-            if (JsonExtensions.TryDeserializeObject<TResponse>(body, out TResponse parsedResponse) 
-                && result.StatusCode == HttpStatusCode.OK)
-            {
-                return parsedResponse;
-            }
-
-            if (!JsonExtensions.TryDeserializeObject<PostmarkResponse>(body, out PostmarkResponse error))
-            {
-                throw new PostmarkResponseException("The response from the API could not be parsed.", body);
-            }
-
-            switch ((int) result.StatusCode)
-            {
-                case 422:
-                    error.Status = PostmarkStatus.UserError;
-                    break;
-                case 500:
-                    error.Status = PostmarkStatus.ServerError;
-                    break;
-                default:
-                    error.Status = PostmarkStatus.Unknown;
-                    break;
-            }
-
-            throw new PostmarkValidationException(error);
-        }
-
-        /// <summary>
-        /// Core implementation of HTTP interaction for "no body" requests (i.e. GET/DELETE)
-        /// </summary>
-        /// <typeparam name="TResponse"></typeparam>
-        /// <param name="apiPath"></param>
-        /// <param name="parameters"></param>
-        /// <param name="verb">The http verb to use for the request.</param>
-        /// <returns></returns>
-        protected async Task<TResponse> ProcessNoBodyRequestAsync<TResponse>(
-            string apiPath,
-            IDictionary<string, object> parameters = null,
-            HttpMethod verb = null)
-        {
-            parameters = parameters ?? new Dictionary<string, object>();
-
-            var query = "";
-            foreach (var param in parameters)
-            {
-                if (param.Value != null)
-                {
-                    if (query != "")
-                    {
-                        query += "&";
-                    }
-                    query += String.Format("{0}={1}", WebUtility.UrlEncode(param.Key), WebUtility.UrlEncode(param.Value.ToString()));
-                }
-            }
-
-            if (!String.IsNullOrWhiteSpace(query))
-            {
-                apiPath = apiPath + "?" + query;
-            }
-
-            return await ProcessRequestAsync<object, TResponse>(apiPath, verb ?? HttpMethod.Get);
-        }
-
-    }
+		return await ProcessRequestAsync<object, TResponse>(apiPath, verb ?? HttpMethod.Get);
+	}
 }

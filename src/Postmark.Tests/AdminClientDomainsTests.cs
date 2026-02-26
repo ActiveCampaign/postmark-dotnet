@@ -9,13 +9,13 @@ namespace Postmark.Tests
 {
     public class AdminClientDomainsTests : ClientBaseFixture, IAsyncLifetime
     {
-        private PostmarkAdminClient _adminClient;
+        private IPostmarkAdminClient _adminClient;
         private string _domainName;
         private string _returnPath;
 
         public Task InitializeAsync()
         {
-            _adminClient = new PostmarkAdminClient(WriteAccountToken, BaseUrl);
+            _adminClient = BuildAdminClient(WriteAccountToken);
             _domainName = "dotnet-lib-test.com";
             _returnPath = $"return-path.{_domainName}";
 

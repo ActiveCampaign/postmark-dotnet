@@ -11,7 +11,7 @@ namespace Postmark.Tests
 {
     public class AdminClientSenderSignatureTests : ClientBaseFixture, IAsyncLifetime
     {
-        private PostmarkAdminClient _adminClient;
+        private IPostmarkAdminClient _adminClient;
         private string _senderEmail;
         private string _replyToAddress;
         private string _senderName;
@@ -20,7 +20,7 @@ namespace Postmark.Tests
 
         public Task InitializeAsync()
         {
-            _adminClient = new PostmarkAdminClient(WriteAccountToken, BaseUrl);
+            _adminClient = BuildAdminClient(WriteAccountToken);
             var id = Guid.NewGuid();
             _senderprefix = "test-sender-";
             _returnPath = "test." + WriteTestSenderSignaturePrototype.Split('@')[1];

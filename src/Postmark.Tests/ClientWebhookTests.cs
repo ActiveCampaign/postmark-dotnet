@@ -12,14 +12,14 @@ namespace Postmark.Tests
 {
     public class ClientWebhookTests : ClientBaseFixture, IAsyncLifetime
     {
-        private PostmarkAdminClient _adminClient;
+        private IPostmarkAdminClient _adminClient;
         private PostmarkServer _server;
 
         public async Task InitializeAsync()
         {
-            _adminClient = new PostmarkAdminClient(WriteAccountToken, BaseUrl);
+            _adminClient = BuildAdminClient(WriteAccountToken);
             _server = await _adminClient.CreateServerAsync($"integration-test-webhooks-{Guid.NewGuid()}");
-            Client = new PostmarkClient(_server.ApiTokens.First(), BaseUrl);
+            Client = BuildClient(_server.ApiTokens.First());
         }
 
         public async Task DisposeAsync()

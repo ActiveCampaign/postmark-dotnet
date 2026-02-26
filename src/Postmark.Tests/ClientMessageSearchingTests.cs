@@ -8,7 +8,7 @@ namespace Postmark.Tests
     {
         public ClientMessageSearchingTests()
         {
-            Client = new PostmarkClient(ReadSeleniumTestServerToken, BaseUrl);
+            Client = BuildClient(ReadSeleniumTestServerToken);
         }
 
         [Fact]

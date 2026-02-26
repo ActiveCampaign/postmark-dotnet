@@ -9,7 +9,7 @@ namespace Postmark.Tests
     {
         public PostmarkClientTests()
         {
-            Client = new PostmarkClient(WriteTestServerToken, BaseUrl);
+            Client = BuildClient(WriteTestServerToken);
         }
         
         [Fact]

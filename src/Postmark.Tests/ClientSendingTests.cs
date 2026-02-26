@@ -13,7 +13,7 @@ namespace Postmark.Tests
     {
         public ClientSendingTests()
         {
-            Client = new PostmarkClient(WriteTestServerToken, BaseUrl);
+            Client = BuildClient(WriteTestServerToken);
         }
 
         [Fact]

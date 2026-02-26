@@ -6,6 +6,7 @@ using System.Collections.Generic;
 using System.Reflection;
 using System.Linq;
 using System.Text.Json;
+using Microsoft.Extensions.DependencyInjection;
 
 namespace Postmark.Tests
 {
@@ -83,7 +84,21 @@ namespace Postmark.Tests
         protected static readonly string WriteTestSenderSignaturePrototype = ConfigVariable("WRITE_TEST_SENDER_SIGNATURE_PROTOTYPE");
         protected static readonly string BaseUrl = ConfigVariable("BASE_URL");
 
-        protected PostmarkClient Client;
+        protected IPostmarkClient Client;
+
+        protected static IPostmarkClient BuildClient(string token)
+        {
+            var services = new ServiceCollection();
+            services.AddPostmarkClient(token);
+            return services.BuildServiceProvider().GetRequiredService<IPostmarkClient>();
+        }
+
+        protected static IPostmarkAdminClient BuildAdminClient(string token)
+        {
+            var services = new ServiceCollection();
+            services.AddPostmarkAdminClient(token);
+            return services.BuildServiceProvider().GetRequiredService<IPostmarkAdminClient>();
+        }
 
         protected ClientBaseFixture()
         {

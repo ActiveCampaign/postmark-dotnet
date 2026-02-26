@@ -15,7 +15,7 @@ namespace Postmark.Tests
 
         public Task InitializeAsync()
         {
-            Client = new PostmarkClient(WriteTestServerToken, BaseUrl);
+            Client = BuildClient(WriteTestServerToken);
             return Task.CompletedTask;
         }
 

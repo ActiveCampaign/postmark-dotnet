@@ -20,7 +20,7 @@ namespace Postmark.Tests
 
         public Task InitializeAsync()
         {
-            Client = new PostmarkClient(WriteTestServerToken, BaseUrl);
+            Client = BuildClient(WriteTestServerToken);
             var id = Guid.NewGuid().ToString("n");
             _serverBaseName = "dotnet-integration-test-server";
 

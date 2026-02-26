@@ -11,7 +11,7 @@ namespace Postmark.Tests
 {
     public class AdminClientServersTests : ClientBaseFixture, IAsyncLifetime
     {
-        private PostmarkAdminClient _adminClient;
+        private IPostmarkAdminClient _adminClient;
         private string _serverPrefix;
         private bool? _smtpActivated;
         private string _inboundHookUrl;
@@ -29,7 +29,7 @@ namespace Postmark.Tests
 
         public Task InitializeAsync()
         {
-            _adminClient = new PostmarkAdminClient(WriteAccountToken, BaseUrl);
+            _adminClient = BuildAdminClient(WriteAccountToken);
             var id = Guid.NewGuid().ToString("n");
             _serverPrefix = "admin-client-integration-test-server-";
 

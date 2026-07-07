@@ -1,6 +1,7 @@
 ﻿using PostmarkDotNet.Model;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace PostmarkDotNet
@@ -30,11 +31,12 @@ namespace PostmarkDotNet
             string from, string to, string subject, string textBody, string htmlBody,
              IDictionary<string, string> headers = null,
              IDictionary<string, string> metadata = null,
-             string messageStream = null)
+             string messageStream = null,
+             CancellationToken cancellationToken = default)
         {
             var message = new PostmarkMessage(from, to, subject, textBody, htmlBody,
             new HeaderCollection(headers), metadata, messageStream);
-            return await client.SendMessageAsync(message);
+            return await client.SendMessageAsync(message, cancellationToken);
         }
 
         /// <summary>
@@ -47,9 +49,10 @@ namespace PostmarkDotNet
         /// <param name="client">The client to use when sending the batch.</param>
         /// <param name="messages">A prepared message batch.</param>
         /// <returns></returns>
-        public static async Task<IEnumerable<PostmarkResponse>> SendMessagesAsync(this PostmarkClient client, IEnumerable<PostmarkMessage> messages)
+        public static async Task<IEnumerable<PostmarkResponse>> SendMessagesAsync(this PostmarkClient client, IEnumerable<PostmarkMessage> messages,
+            CancellationToken cancellationToken = default)
         {
-            return await client.SendMessagesAsync(messages.ToArray());
+            return await client.SendMessagesAsync(cancellationToken, messages.ToArray());
         }
     }
 }

@@ -2,6 +2,7 @@ using PostmarkDotNet.Model;
 using System;
 using System.Collections.Generic;
 using System.Net.Http;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace PostmarkDotNet
@@ -36,9 +37,9 @@ namespace PostmarkDotNet
         /// </summary>
         /// <param name="serverId"></param>
         /// <returns></returns>
-        public async Task<PostmarkServer> GetServerAsync(int serverId)
+        public async Task<PostmarkServer> GetServerAsync(int serverId, CancellationToken cancellationToken = default)
         {
-            var retval = await this.ProcessNoBodyRequestAsync<PostmarkServer>("/servers/" + serverId);
+            var retval = await this.ProcessNoBodyRequestAsync<PostmarkServer>("/servers/" + serverId, cancellationToken: cancellationToken);
             //the API doesn't return the server ID here, which would be helpful.
             retval.ID = serverId;
             return retval;
@@ -51,7 +52,7 @@ namespace PostmarkDotNet
         /// <param name="serverId"></param>
         /// <remarks>To protected your account, you must first request access to use this endpont from support@postmarkapp.com</remarks>
         /// <returns></returns>
-        public async Task<PostmarkResponse> DeleteServerAsync(int serverId)
+        public async Task<PostmarkResponse> DeleteServerAsync(int serverId, CancellationToken cancellationToken = default)
         {
             // Adding a retry mechanism because server deletion currently fails intermittently due to deadlocks.
             // This is a temporary fix, and should be removed once the server delete operation is more reliable.
@@ -60,7 +61,7 @@ namespace PostmarkDotNet
             {
                 try
                 {
-                    return await this.ProcessNoBodyRequestAsync<PostmarkResponse>("/servers/" + serverId, verb: HttpMethod.Delete);
+                    return await this.ProcessNoBodyRequestAsync<PostmarkResponse>("/servers/" + serverId, verb: HttpMethod.Delete, cancellationToken: cancellationToken);
                 }
                 catch
                 {
@@ -81,7 +82,7 @@ namespace PostmarkDotNet
             string bounceHookUrl = null, string openHookUrl = null, bool? postFirstOpenOnly = null,
             bool? trackOpens = null, string inboundDomain = null, int? inboundSpamThreshold = null,
             LinkTrackingOptions? trackLinks = null, string clickHookUrl = null, string deliveryHookUrl = null,
-            bool? enableSmtpApiErrorHooks = null, string deliveryType = null)
+            bool? enableSmtpApiErrorHooks = null, string deliveryType = null, CancellationToken cancellationToken = default)
         {
 
             var body = new Dictionary<string, object>();
@@ -102,7 +103,7 @@ namespace PostmarkDotNet
             body["EnableSmtpApiErrorHooks"] = enableSmtpApiErrorHooks;
             body["DeliveryType"] = deliveryType;
 
-            return await this.ProcessRequestAsync<Dictionary<string, object>, PostmarkServer>("/servers/", HttpMethod.Post, body);
+            return await this.ProcessRequestAsync<Dictionary<string, object>, PostmarkServer>("/servers/", HttpMethod.Post, body, cancellationToken: cancellationToken);
         }
 
         /// <summary>
@@ -129,7 +130,7 @@ namespace PostmarkDotNet
             bool? rawEmailEnabled = null, bool? smtpApiActivated = null, string inboundHookUrl = null,
             string bounceHookUrl = null, string openHookUrl = null, bool? postFirstOpenOnly = null,
             bool? trackOpens = null, string inboundDomain = null, int? inboundSpamThreshold = null, 
-            LinkTrackingOptions? trackLinks = null, string clickHookUrl = null, string deliveryHookUrl = null, bool? enableSmtpApiErrorHooks = null)
+            LinkTrackingOptions? trackLinks = null, string clickHookUrl = null, string deliveryHookUrl = null, bool? enableSmtpApiErrorHooks = null, CancellationToken cancellationToken = default)
         {
 
             var body = new Dictionary<string, object>();
@@ -150,7 +151,7 @@ namespace PostmarkDotNet
             body["EnableSmtpApiErrorHooks"] = enableSmtpApiErrorHooks;
 
             return await this.ProcessRequestAsync<Dictionary<string, object>, PostmarkServer>
-                ("/servers/" + serverId, HttpMethod.Put, body);
+                ("/servers/" + serverId, HttpMethod.Put, body, cancellationToken: cancellationToken);
         }
 
         /// <summary>
@@ -159,12 +160,12 @@ namespace PostmarkDotNet
         /// <param name="offset"></param>
         /// <param name="count"></param>
         /// <returns></returns>
-        public async Task<PostmarkSenderSignatureList> GetSenderSignaturesAsync(int offset = 0, int count = 100)
+        public async Task<PostmarkSenderSignatureList> GetSenderSignaturesAsync(int offset = 0, int count = 100, CancellationToken cancellationToken = default)
         {
             var parameters = new Dictionary<string, object>();
             parameters["offset"] = offset;
             parameters["count"] = count;
-            return await this.ProcessNoBodyRequestAsync<PostmarkSenderSignatureList>("/senders", parameters);
+            return await this.ProcessNoBodyRequestAsync<PostmarkSenderSignatureList>("/senders", parameters, cancellationToken: cancellationToken);
         }
 
 
@@ -173,9 +174,9 @@ namespace PostmarkDotNet
         /// </summary>
         /// <param name="signatureId"></param>
         /// <returns></returns>
-        public async Task<PostmarkCompleteSenderSignature> GetSenderSignatureAsync(int signatureId)
+        public async Task<PostmarkCompleteSenderSignature> GetSenderSignatureAsync(int signatureId, CancellationToken cancellationToken = default)
         {
-            return await this.ProcessNoBodyRequestAsync<PostmarkCompleteSenderSignature>("/senders/" + signatureId);
+            return await this.ProcessNoBodyRequestAsync<PostmarkCompleteSenderSignature>("/senders/" + signatureId, cancellationToken: cancellationToken);
         }
 
         /// <summary>
@@ -183,10 +184,10 @@ namespace PostmarkDotNet
         /// </summary>
         /// <param name="signatureId"></param>
         /// <returns></returns>
-        public async Task<PostmarkResponse> DeleteSignatureAsync(int signatureId)
+        public async Task<PostmarkResponse> DeleteSignatureAsync(int signatureId, CancellationToken cancellationToken = default)
         {
             return await this.ProcessNoBodyRequestAsync<PostmarkResponse>
-                ("/senders/" + signatureId, verb: HttpMethod.Delete);
+                ("/senders/" + signatureId, verb: HttpMethod.Delete, cancellationToken: cancellationToken);
         }
 
         /// <summary>
@@ -194,10 +195,10 @@ namespace PostmarkDotNet
         /// </summary>
         /// <param name="signatureId"></param>
         /// <returns></returns>
-        public async Task<PostmarkResponse> ResendSignatureVerificationEmailAsync(int signatureId)
+        public async Task<PostmarkResponse> ResendSignatureVerificationEmailAsync(int signatureId, CancellationToken cancellationToken = default)
         {
             return await this.ProcessNoBodyRequestAsync<PostmarkResponse>
-                ("/senders/" + signatureId + "/resend", verb: HttpMethod.Post);
+                ("/senders/" + signatureId + "/resend", verb: HttpMethod.Post, cancellationToken: cancellationToken);
         }
 
         /// <summary>
@@ -205,10 +206,10 @@ namespace PostmarkDotNet
         /// </summary>
         /// <param name="signatureId"></param>
         /// <returns></returns>
-        public async Task<PostmarkResponse> RequestNewSignatureDKIMAsync(int signatureId)
+        public async Task<PostmarkResponse> RequestNewSignatureDKIMAsync(int signatureId, CancellationToken cancellationToken = default)
         {
             return await this.ProcessNoBodyRequestAsync<PostmarkResponse>
-                ("/senders/" + signatureId + "/requestnewdkim", verb: HttpMethod.Post);
+                ("/senders/" + signatureId + "/requestnewdkim", verb: HttpMethod.Post, cancellationToken: cancellationToken);
         }
 
         /// <summary>
@@ -217,10 +218,10 @@ namespace PostmarkDotNet
         /// <param name="signatureId"></param>
         /// <returns></returns>
         [Obsolete("We no longer require SPF verification. See here for details: https://postmarkapp.com/blog/why-we-no-longer-ask-for-spf-records")]
-        public async Task<PostmarkCompleteSenderSignature> VerifySignatureSPF(int signatureId)
+        public async Task<PostmarkCompleteSenderSignature> VerifySignatureSPF(int signatureId, CancellationToken cancellationToken = default)
         {
             return await this.ProcessNoBodyRequestAsync<PostmarkCompleteSenderSignature>
-                ("/senders/" + signatureId + "/verifyspf", verb: HttpMethod.Post);
+                ("/senders/" + signatureId + "/verifyspf", verb: HttpMethod.Post, cancellationToken: cancellationToken);
         }
 
         /// <summary>
@@ -233,7 +234,7 @@ namespace PostmarkDotNet
         /// <param name="returnPathDomain"></param>
         /// <param name="confirmationPersonalNote"></param>
         /// <returns></returns>
-        public async Task<PostmarkCompleteSenderSignature> CreateSignatureAsync(string fromEmail, string name, string replyToEmail = null, string returnPathDomain = null, string confirmationPersonalNote = null)
+        public async Task<PostmarkCompleteSenderSignature> CreateSignatureAsync(string fromEmail, string name, string replyToEmail = null, string returnPathDomain = null, string confirmationPersonalNote = null, CancellationToken cancellationToken = default)
         {
             var parameters = new Dictionary<string, object>();
             parameters["FromEmail"] = fromEmail;
@@ -243,7 +244,7 @@ namespace PostmarkDotNet
             parameters["ConfirmationPersonalNote"] = confirmationPersonalNote;
 
             return await this.ProcessRequestAsync<Dictionary<string, object>, PostmarkCompleteSenderSignature>
-               ("/senders/", HttpMethod.Post, parameters);
+               ("/senders/", HttpMethod.Post, parameters, cancellationToken: cancellationToken);
         }
 
         /// <summary>
@@ -256,7 +257,7 @@ namespace PostmarkDotNet
         /// <param name="confirmationPersonalNote"></param>
         /// <returns></returns>
         public async Task<PostmarkCompleteSenderSignature> UpdateSignatureAsync
-            (int signatureId, string name = null, string replyToEmail = null, string returnPathDomain = null, string confirmationPersonalNote = null)
+            (int signatureId, string name = null, string replyToEmail = null, string returnPathDomain = null, string confirmationPersonalNote = null, CancellationToken cancellationToken = default)
         {
             var parameters = new Dictionary<string, object>();
             parameters["Name"] = name;
@@ -265,7 +266,7 @@ namespace PostmarkDotNet
             parameters["ConfirmationPersonalNote"] = confirmationPersonalNote;
 
             return await this.ProcessRequestAsync<Dictionary<string, object>, PostmarkCompleteSenderSignature>
-               ("/senders/" + signatureId, HttpMethod.Put, parameters);
+               ("/senders/" + signatureId, HttpMethod.Put, parameters, cancellationToken: cancellationToken);
         }
 
         /// <summary>
@@ -274,12 +275,12 @@ namespace PostmarkDotNet
         /// <param name="offset"></param>
         /// <param name="count"></param>
         /// <returns></returns>
-        public async Task<PostmarkDomainList> GetDomainsAsync(int offset = 0, int count = 100)
+        public async Task<PostmarkDomainList> GetDomainsAsync(int offset = 0, int count = 100, CancellationToken cancellationToken = default)
         {
             var parameters = new Dictionary<string, object>();
             parameters["offset"] = offset;
             parameters["count"] = count;
-            return await this.ProcessNoBodyRequestAsync<PostmarkDomainList>("/domains", parameters);
+            return await this.ProcessNoBodyRequestAsync<PostmarkDomainList>("/domains", parameters, cancellationToken: cancellationToken);
         }
 
 
@@ -288,9 +289,9 @@ namespace PostmarkDotNet
         /// </summary>
         /// <param name="domainId"></param>
         /// <returns></returns>
-        public async Task<PostmarkCompleteDomain> GetDomainAsync(int domainId)
+        public async Task<PostmarkCompleteDomain> GetDomainAsync(int domainId, CancellationToken cancellationToken = default)
         {
-            return await this.ProcessNoBodyRequestAsync<PostmarkCompleteDomain>($"/domains/{domainId}");
+            return await this.ProcessNoBodyRequestAsync<PostmarkCompleteDomain>($"/domains/{domainId}", cancellationToken: cancellationToken);
         }
 
         /// <summary>
@@ -298,10 +299,10 @@ namespace PostmarkDotNet
         /// </summary>
         /// <param name="domainId"></param>
         /// <returns></returns>
-        public async Task<PostmarkResponse> DeleteDomainAsync(int domainId)
+        public async Task<PostmarkResponse> DeleteDomainAsync(int domainId, CancellationToken cancellationToken = default)
         {
             return await this.ProcessNoBodyRequestAsync<PostmarkResponse>
-                ("/domains/" + domainId, verb: HttpMethod.Delete);
+                ("/domains/" + domainId, verb: HttpMethod.Delete, cancellationToken: cancellationToken);
         }
 
         /// <summary>
@@ -309,10 +310,10 @@ namespace PostmarkDotNet
         /// </summary>
         /// <param name="domainId"></param>
         /// <returns></returns>
-        public async Task<PostmarkResponse> RequestNewDomainDKIMAsync(int domainId)
+        public async Task<PostmarkResponse> RequestNewDomainDKIMAsync(int domainId, CancellationToken cancellationToken = default)
         {
             return await this.ProcessNoBodyRequestAsync<PostmarkResponse>
-                ("/domains/" + domainId + "/rotatedkim", verb: HttpMethod.Post);
+                ("/domains/" + domainId + "/rotatedkim", verb: HttpMethod.Post, cancellationToken: cancellationToken);
         }
 
         /// <summary>
@@ -321,14 +322,14 @@ namespace PostmarkDotNet
         /// <param name="name"></param>
         /// <param name="returnPathDomain"></param>
         /// <returns></returns>
-        public async Task<PostmarkCompleteDomain> CreateDomainAsync(string name, string returnPathDomain = null)
+        public async Task<PostmarkCompleteDomain> CreateDomainAsync(string name, string returnPathDomain = null, CancellationToken cancellationToken = default)
         {
             var parameters = new Dictionary<string, object>();
             parameters["Name"] = name;
             parameters["ReturnPathDomain"] = returnPathDomain;
 
             return await this.ProcessRequestAsync<Dictionary<string, object>, PostmarkCompleteDomain>
-               ("/domains/", HttpMethod.Post, parameters);
+               ("/domains/", HttpMethod.Post, parameters, cancellationToken: cancellationToken);
         }
 
         /// <summary>
@@ -339,13 +340,13 @@ namespace PostmarkDotNet
         /// <param name="returnPathDomain">Setting this to null or empty will clear your Return-Path</param>
         /// <returns></returns>
         public async Task<PostmarkCompleteDomain> UpdateDomainAsync
-            (int domainId, string returnPathDomain)
+            (int domainId, string returnPathDomain, CancellationToken cancellationToken = default)
         {
             var parameters = new Dictionary<string, object>();
             parameters["ReturnPathDomain"] = returnPathDomain ?? "";
 
             return await this.ProcessRequestAsync<Dictionary<string, object>, PostmarkCompleteDomain>
-               ($"/domains/{domainId}", HttpMethod.Put, parameters);
+               ($"/domains/{domainId}", HttpMethod.Put, parameters, cancellationToken: cancellationToken);
         }
 
         /// <summary>
@@ -353,10 +354,10 @@ namespace PostmarkDotNet
         /// </summary>
         /// <param name="domainId"></param>
         /// <returns></returns>
-        public async Task<PostmarkCompleteDomain> VerifyDomainDkim(int domainId)
+        public async Task<PostmarkCompleteDomain> VerifyDomainDkim(int domainId, CancellationToken cancellationToken = default)
         {
             return await this.ProcessNoBodyRequestAsync<PostmarkCompleteDomain>
-               ($"/domains/{domainId}/verifydkim", verb: HttpMethod.Put);
+               ($"/domains/{domainId}/verifydkim", verb: HttpMethod.Put, cancellationToken: cancellationToken);
         }
 
         /// <summary>
@@ -364,10 +365,10 @@ namespace PostmarkDotNet
         /// </summary>
         /// <param name="domainId"></param>
         /// <returns></returns>
-        public async Task<PostmarkCompleteDomain> VerifyDomainReturnPath(int domainId)
+        public async Task<PostmarkCompleteDomain> VerifyDomainReturnPath(int domainId, CancellationToken cancellationToken = default)
         {
             return await this.ProcessNoBodyRequestAsync<PostmarkCompleteDomain>
-               ($"/domains/{domainId}/verifyreturnpath", verb: HttpMethod.Put);
+               ($"/domains/{domainId}/verifyreturnpath", verb: HttpMethod.Put, cancellationToken: cancellationToken);
         }
 
 
@@ -378,14 +379,14 @@ namespace PostmarkDotNet
         /// <param name="count"></param>
         /// <param name="name"></param>
         /// <returns></returns>
-        public async Task<PostmarkServerList> GetServersAsync(int offset = 0, int count = 100, string name = null)
+        public async Task<PostmarkServerList> GetServersAsync(int offset = 0, int count = 100, string name = null, CancellationToken cancellationToken = default)
         {
             var parameters = new Dictionary<string, object>();
             parameters["offset"] = offset;
             parameters["count"] = count;
             parameters["name"] = name;
 
-            return await this.ProcessNoBodyRequestAsync<PostmarkServerList>("/servers", parameters);
+            return await this.ProcessNoBodyRequestAsync<PostmarkServerList>("/servers", parameters, cancellationToken: cancellationToken);
         }
 
         /// <summary>
@@ -395,14 +396,14 @@ namespace PostmarkDotNet
         /// <param name="requestedFor">The email address of the recipient who's asking for their data to be removed. This must be a valid email address.</param>
         /// <param name="notifyWhenCompleted">Specifies whether the RequestedBy email address is notified when the data removal request is complete.</param>
         /// <returns></returns>
-        public async Task<PostmarkDataRemoval> RequestDataRemoval(string requestedBy, string requestedFor, bool notifyWhenCompleted)
+        public async Task<PostmarkDataRemoval> RequestDataRemoval(string requestedBy, string requestedFor, bool notifyWhenCompleted, CancellationToken cancellationToken = default)
         {
             var parameters = new Dictionary<string, object>();
             parameters["RequestedBy"] = requestedBy;
             parameters["RequestedFor"] = requestedFor;
             parameters["NotifyWhenCompleted"] = notifyWhenCompleted;
             
-            return await this.ProcessRequestAsync<Dictionary<string, object>, PostmarkDataRemoval>("/data-removals", HttpMethod.Post, parameters);
+            return await this.ProcessRequestAsync<Dictionary<string, object>, PostmarkDataRemoval>("/data-removals", HttpMethod.Post, parameters, cancellationToken: cancellationToken);
         }
 
         /// <summary>
@@ -410,9 +411,9 @@ namespace PostmarkDotNet
         /// </summary>
         /// <param name="id"></param>
         /// <returns></returns>
-        public async Task<PostmarkDataRemoval> GetDataRemovalStatus(long id)
+        public async Task<PostmarkDataRemoval> GetDataRemovalStatus(long id, CancellationToken cancellationToken = default)
         {
-            return await this.ProcessNoBodyRequestAsync<PostmarkDataRemoval>($"/data-removals/{id}");
+            return await this.ProcessNoBodyRequestAsync<PostmarkDataRemoval>($"/data-removals/{id}", cancellationToken: cancellationToken);
         }
     }
 }

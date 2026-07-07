@@ -39,6 +39,13 @@ sending email, using the bounce API, templates, and additional options.
 
 ## What's New
 
+### 5.4.2
+
+- All async methods on `PostmarkClient` and `PostmarkAdminClient` now accept an optional
+  `CancellationToken`, threaded through to the underlying HTTP request. Existing calls are
+  unaffected (the parameter defaults to `default`). For the batch/templated-send methods that
+  use `params`, a `(CancellationToken, params …)` overload is provided.
+
 ### 5.4.1
 
 - Added missing webhook payload models for type-safe deserialization of incoming

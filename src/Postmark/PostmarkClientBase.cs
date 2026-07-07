@@ -5,6 +5,7 @@ using System;
 using System.Collections.Generic;
 using System.Net;
 using System.Net.Http;
+using System.Threading;
 using System.Threading.Tasks;
 using Postmark.Exceptions;
 
@@ -66,7 +67,8 @@ namespace PostmarkDotNet
         /// <exception cref="System.Exception"></exception>
         protected async Task<TResponse> ProcessRequestAsync<TRequestBody, TResponse>(
             string apiPath,
-            HttpMethod verb, TRequestBody message = null) where TRequestBody : class
+            HttpMethod verb, TRequestBody message = null,
+            CancellationToken cancellationToken = default) where TRequestBody : class
         {
             var client = ClientFactory();
 
@@ -84,7 +86,7 @@ namespace PostmarkDotNet
             request.Headers.Add(AuthHeaderName, _authToken);
             request.Headers.Add("User-Agent", _agent);
 
-            var result = await client.SendAsync(request);
+            var result = await client.SendAsync(request, cancellationToken);
 
             var body = await result.Content.ReadAsStringAsync();
 
@@ -126,7 +128,8 @@ namespace PostmarkDotNet
         protected async Task<TResponse> ProcessNoBodyRequestAsync<TResponse>(
             string apiPath,
             IDictionary<string, object> parameters = null,
-            HttpMethod verb = null)
+            HttpMethod verb = null,
+            CancellationToken cancellationToken = default)
         {
             parameters = parameters ?? new Dictionary<string, object>();
 
@@ -148,7 +151,7 @@ namespace PostmarkDotNet
                 apiPath = apiPath + "?" + query;
             }
 
-            return await ProcessRequestAsync<object, TResponse>(apiPath, verb ?? HttpMethod.Get);
+            return await ProcessRequestAsync<object, TResponse>(apiPath, verb ?? HttpMethod.Get, cancellationToken: cancellationToken);
         }
 
     }

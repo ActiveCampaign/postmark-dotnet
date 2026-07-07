@@ -35,6 +35,12 @@ namespace PostmarkDotNet.Model
             }
         }
 
+        // Enables collection initializer syntax: Headers = new HeaderCollection { {"key","value"} }
+        public void Add(string name, string value)
+        {
+            this.Add(new MailHeader(name, value));
+        }
+
         /// <summary>
         /// Get the names associated with this collection. This property does not cache
         /// its results, so be aware that iterating over it multiple times will iterate over

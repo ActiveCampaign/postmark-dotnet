@@ -45,7 +45,10 @@ jobs:
               --org=$SNYK_ORG_ID
   release:
     docker:
-      - image: mcr.microsoft.com/dotnet/core/sdk:3.1
+      # Pack with a modern SDK (>= 5.0.300) so <PackageReadmeFile> is honored and the
+      # README is embedded/registered in the package. The build/test jobs stay on 3.1
+      # because the test suite targets netcoreapp3.1 and needs the 3.1 runtime.
+      - image: mcr.microsoft.com/dotnet/sdk:8.0
     steps:
       - checkout
       - run:

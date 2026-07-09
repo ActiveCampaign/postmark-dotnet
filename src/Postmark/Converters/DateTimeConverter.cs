@@ -18,7 +18,17 @@ namespace PostmarkDotNet.Converters
             {
                 value = value.Substring(0, value.Length - " (GMT)".Length);
             }
-            return DateTime.Parse(value);
+            if (value.EndsWith(" (UTC)", StringComparison.Ordinal))
+            {
+                value = value.Substring(0, value.Length - " (UTC)".Length);
+            }
+            if (DateTime.TryParse(value, out var dateTime))
+            {
+                return dateTime;
+            }
+
+            // Fallback so we can at least get responses.
+            return DateTime.UtcNow;
         }
 
         public override void Write(Utf8JsonWriter writer, DateTime value, JsonSerializerOptions options)

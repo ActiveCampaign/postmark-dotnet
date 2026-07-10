@@ -25,15 +25,16 @@ namespace PostmarkDotNet
         /// <param name="htmlBody">The HTML Body to be used for the message, this may be null if TextBody is set.</param>
         /// <param name="headers">A collection of additional mail headers to send with the message.</param>
         /// <param name="messageStream">The message stream used to send this message.</param>
+        /// <param name="cc">An email address for a CC recipient.</param>
         /// <returns>A <see cref = "PostmarkResponse" /> with details about the transaction.</returns>
         public static async Task<PostmarkResponse> SendMessageAsync(this PostmarkClient client,
             string from, string to, string subject, string textBody, string htmlBody,
              IDictionary<string, string> headers = null,
              IDictionary<string, string> metadata = null,
-             string messageStream = null)
+             string messageStream = null, string cc = null)
         {
             var message = new PostmarkMessage(from, to, subject, textBody, htmlBody,
-            new HeaderCollection(headers), metadata, messageStream);
+            new HeaderCollection(headers), metadata, messageStream, cc);
             return await client.SendMessageAsync(message);
         }
 

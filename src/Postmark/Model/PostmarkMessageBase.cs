@@ -105,7 +105,7 @@ namespace PostmarkDotNet
         ///  Adds a file attachment stream with inline support.
         /// </summary>
         /// <param name = "contentStream">An opened stream of the file attachments.</param>
-        /// <param name="attachmentName">The file name assocatiated with the attachment.</param>
+        /// <param name="attachmentName">The file name associated with the attachment.</param>
         /// <param name = "contentType">The content type.</param>
         /// <param name="contentId">The ContentId for inlined images.</param>
         public void AddAttachment(Stream contentStream, string attachmentName, string contentType = "application/octet-stream", string contentId = null)

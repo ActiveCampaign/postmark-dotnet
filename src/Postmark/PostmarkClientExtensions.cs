@@ -38,7 +38,7 @@ namespace PostmarkDotNet
         }
 
         /// <summary>
-        /// Sends a batch of up to messages through the Postmark API.
+        /// Sends a batch of up to 500 messages through the Postmark API.
         /// All email addresses must be valid, and the sender must be
         /// a valid sender signature according to Postmark. To obtain a valid
         /// sender signature, log in to Postmark and navigate to:

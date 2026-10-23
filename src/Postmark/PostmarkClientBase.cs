@@ -19,7 +19,7 @@ namespace PostmarkDotNet
             new Lazy<ISimpleHttpClient>(()=>new SimpleHttpClient()) ;
 
         /// <summary>
-        /// Configure a global connection factory to to process HTTP interactions.
+        /// Configure a global connection factory to process HTTP interactions.
         /// </summary>
         /// <remarks>
         /// In most cases, you should not need to modify this property, but it's useful

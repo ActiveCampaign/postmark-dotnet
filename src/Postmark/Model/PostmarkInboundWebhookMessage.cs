@@ -91,7 +91,7 @@ namespace PostmarkDotNet.Webhooks
         public string TextBody { get; set; }
 
         /// <summary>
-        /// Teh html part of the message
+        /// The html part of the message
         /// </summary>
         public string HtmlBody { get; set; }
 

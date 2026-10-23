@@ -68,7 +68,7 @@ namespace PostmarkDotNet
         VirusNotification = 8192,
 
         /// <summary>
-        /// Spam challenge verification — The bounce is a challenge asking for verification you actually sent the email. Typcial challenges are made by Spam Arrest, or MailFrontier Matador.
+        /// Spam challenge verification — The bounce is a challenge asking for verification you actually sent the email. Typical challenges are made by Spam Arrest, or MailFrontier Matador.
         /// </summary>
         ChallengeVerification = 16384,
 

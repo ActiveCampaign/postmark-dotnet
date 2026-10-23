@@ -60,17 +60,17 @@ namespace PostmarkDotNet.Model
         public string InboundAddress { get; set; }
 
         /// <summary>
-        /// URL to POST to everytime an inbound event occurs.
+        /// URL to POST to every time an inbound event occurs.
         /// </summary>
         public string InboundHookUrl { get; set; }
 
         /// <summary>
-        /// URL to POST to everytime a bounce event occurs.
+        /// URL to POST to every time a bounce event occurs.
         /// </summary>
         public string BounceHookUrl { get; set; }
 
         /// <summary>
-        /// URL to POST to everytime an open event occurs.
+        /// URL to POST to every time an open event occurs.
         /// </summary>
         public string OpenHookUrl { get; set; }
 
@@ -90,7 +90,7 @@ namespace PostmarkDotNet.Model
         public LinkTrackingOptions TrackLinks { get; set; }
 
         /// <summary>
-        /// URL to POST to everytime an click event occurs.
+        /// URL to POST to every time a click event occurs.
         /// </summary>
         public string ClickHookUrl { get; set; }
 
